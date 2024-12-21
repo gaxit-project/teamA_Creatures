@@ -47,7 +47,10 @@ public class Move : MonoBehaviour
             StartCoroutine(Pending());
         }
     }
-
+    /// <summary>
+    /// UŒ‚”»’f
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator Pending()
     {
         time = 0;
@@ -91,7 +94,9 @@ public class Move : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// ‚Ç‚ÌUŒ‚‚ğ‚·‚é‚Ì‚©
+    /// </summary>
     public void AttackPending()
     {
         animator.SetBool("run", false);
@@ -130,6 +135,9 @@ public class Move : MonoBehaviour
                 break;
         }
     }
+    /// <summary>
+    /// UŒ‚ˆ—‚ğI‚í‚ç‚¹‚é
+    /// </summary>
     public void AttackEnd()
     {
         animator.SetBool("FrontAttack",false);
