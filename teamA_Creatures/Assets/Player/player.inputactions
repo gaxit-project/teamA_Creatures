@@ -22,15 +22,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
-                },
-                {
-                    "name": "Attack",
-                    "type": "Button",
-                    "id": "df4f41bd-a16f-4577-98da-cf3f4d8c6bf5",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -80,6 +71,28 @@
                 },
                 {
                     "name": "",
+                    "id": "725475bc-2c0d-47f0-9f4a-b854e48b462f",
+                    "path": "<XInputController>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bfceee63-d344-4fa7-9c58-79aba072657a",
+                    "path": "<SwitchProControllerHID>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "66ae1b44-cf1f-4329-a193-e2948dfe989e",
                     "path": "<Gamepad>/leftStick",
                     "interactions": "",
@@ -91,12 +104,23 @@
                 },
                 {
                     "name": "",
-                    "id": "9541266e-0044-4246-8d28-36e5540336f4",
-                    "path": "<Keyboard>/#(J)",
+                    "id": "32a61eaf-36fd-48bc-aeab-e909ab7f3f44",
+                    "path": "<XInputController>/leftStick",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8dcab1bd-77c9-4dc6-b962-ac5557a422d0",
+                    "path": "<SwitchProControllerHID>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
