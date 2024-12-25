@@ -103,6 +103,8 @@ public class Attack : MonoBehaviour
 
     public void AttackPending()
     {
+        if (!attackNow)
+        {
         animator.SetBool("run", false);
         Move.Instance.moveX = 0;
         switch (attackType)
@@ -152,6 +154,8 @@ public class Attack : MonoBehaviour
                 }
                 break;
         }
+        }
+
     }
     public void AttackEnd()
     {
