@@ -75,12 +75,13 @@ public class Attack : MonoBehaviour
 
         if (Move.Instance.move.y < 0)
         {
-            absoluteValueY = Move.Instance.move.x * -1;
+            absoluteValueY = Move.Instance.move.y * -1;
         }
         else
         {
-            absoluteValueY = Move.Instance.move.x;
+            absoluteValueY = Move.Instance.move.y;
         }
+
         if (absoluteValueX == 0 && absoluteValueY == 0 && buttonHoldTime >= ULTPressed) 
         {
             attackType = AttackType.ULT;

@@ -133,15 +133,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5181673334304101342, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
       propertyPath: m_LocalScale.x
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5181673334304101342, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
       propertyPath: m_LocalScale.y
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5181673334304101342, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
       propertyPath: m_LocalScale.z
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5181673334304101342, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
       propertyPath: m_LocalPosition.x
@@ -240,6 +240,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   JumpSpeed: 30
+  JumpFlag: 0
   localGravity: {x: 0, y: -100, z: 0}
   JumpInput: {x: 0, y: 0}
   JumpY: 0
@@ -407,6 +408,7 @@ MonoBehaviour:
   left: 0
   absoluteValueX: 0
   absoluteValueY: 0
+  ULTPressed: 0.5
 --- !u!1 &739119663
 GameObject:
   m_ObjectHideFlags: 0
@@ -650,6 +652,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   JumpSpeed: 30
+  JumpFlag: 0
   localGravity: {x: 0, y: -100, z: 0}
   JumpInput: {x: 0, y: 0}
   JumpY: 0
