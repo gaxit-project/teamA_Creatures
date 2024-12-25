@@ -5,8 +5,12 @@ using UnityEngine;
 public class MPlayerMove : MonoBehaviour
 {
     [SerializeField] GameObject Player;
+     [SerializeField] float _jumpForce = 5f; // ジャンプ力
     float _speed = 5f; // 移動速度
     private Rigidbody _rb;
+    private bool _isGrounded; // 接地しているかどうかの判定用
+    [SerializeField] LayerMask groundLayer; // 地面レイヤー
+
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +42,24 @@ public class MPlayerMove : MonoBehaviour
         {
             transform.localScale = new Vector3(-1, 1.8f, 1); // 左向き
         }
+        if (Input.GetKey(KeyCode.Space) )
+        {
+            _rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+        }
 
+    }
+
+    /// <summary>
+    /// FixedUpdateで接地判定を行う
+    /// </summary>
+    private void FixedUpdate()
+    {
+        _isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f, groundLayer);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * 1.1f);
     }
 }

@@ -71,9 +71,9 @@ public class EnemyMove : MonoBehaviour
         }
         // プレイヤーに向けて進む
         transform.position = Vector2.MoveTowards(
-            transform.position,
-            new Vector2(_playerTr.position.x, _playerTr.position.y),
-            speed * Time.deltaTime);
+                            transform.position,
+                            new Vector2(_playerTr.position.x, transform.position.y), // X軸だけプレイヤーに追従
+                            speed * Time.deltaTime);
     }
 
     /// <summary>
