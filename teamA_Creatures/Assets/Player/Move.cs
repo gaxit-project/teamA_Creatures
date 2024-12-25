@@ -6,20 +6,25 @@ using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class Move : MonoBehaviour
 {
-    public static bool attackNow = false;
+    public static Move Instance;
     /// <summary>
     /// ‰½‚ÌUŒ‚‚ğ‚µ‚Ä‚¢‚é‚©•ª‚©‚è‚â‚·‚­‚µ‚Ä‚¢‚é
     /// </summary>
-    public enum AttackType
+    private void Awake()
     {
-        UPAttack,Attack
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+        }
     }
-    AttackType attackType;
 
     public  Vector2 move;
     public float moveX;
-    public float absoluteValueX;
-    public float absoluteValueY;
+
 
     public float Speed;
 
@@ -27,13 +32,13 @@ public class Move : MonoBehaviour
 
     public float time = 0f;
     public float isWait;
-    public bool left;
+    public bool attackMotion;
     public Animator animator;
 
     private void Start()
     {
         animator = GetComponent<Animator>();
-        left = false;
+        attackMotion = false;
     }
     /// <summary>
     /// inputaction‚©‚çæ‚Á‚Ä‚«‚Ä‚¢‚é
@@ -42,13 +47,13 @@ public class Move : MonoBehaviour
     {
         
         move = context.ReadValue<Vector2>();
-        if (!attackNow)
+        if (!Attack.Instance.attackNow)
         {
             StartCoroutine(Pending());
         }
     }
     /// <summary>
-    /// UŒ‚”»’f
+    /// ˆÚ“®‚·‚é‚©UŒ‚‚·‚é‚©
     /// </summary>
     /// <returns></returns>
     private IEnumerator Pending()
@@ -56,32 +61,15 @@ public class Move : MonoBehaviour
         time = 0;
         while (isWait > time)
         {
-            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.JoystickButton1))
+            if (Attack.Instance.attackNow)
             {
-                if (move.x < 0)
-                {
-                    absoluteValueX = move.x*-1;
-                }else
-                {
-                    absoluteValueX = move.x;
-                }
-                if (absoluteValueX > move.y) 
-                {
-                    attackType = AttackType.Attack;
-                }
-                else
-                {
-                    attackType = AttackType.UPAttack;
-                }
-
-                AttackPending();
                 yield break;
             }
             time += Time.deltaTime;
             yield return null;
         }
 
-        if (!attackNow)
+        if (!Attack.Instance.attackNow)
         {
             animator.SetBool("run", true);
             moveX = move.x;
@@ -97,58 +85,16 @@ public class Move : MonoBehaviour
     /// <summary>
     /// ‚Ç‚ÌUŒ‚‚ğ‚·‚é‚Ì‚©
     /// </summary>
-    public void AttackPending()
-    {
-        animator.SetBool("run", false);
-        moveX = 0;
-        switch (attackType)
-        {
-            case AttackType.UPAttack:
-                Debug.Log("ãUŒ‚");
-                //attackNow = true;
-                break;
-            case AttackType.Attack:
-                if (left && move.x < 0)
-                {
-                    Debug.Log("‘OUŒ‚");
-                    animator.SetBool("FrontAttack", true);
-                    attackNow = true;
-                }
-                else if (left && move.x > 0) 
-                {
-                    Debug.Log("Œã‚ëUŒ‚");
-                    animator.SetBool("BuckAttack",true);
-                    attackNow = false;
-                }
-                else if (!left && move.x > 0)
-                {
-                    Debug.Log("‘OUŒ‚");
-                    animator.SetBool("FrontAttack", true);
-                    attackNow = true;
-                }
-                else if(!left && move.x < 0)
-                {
-                    Debug.Log("Œã‚ëUŒ‚");
-                    animator.SetBool("BuckAttack", true);
-                    attackNow = true;
-                }
-                break;
-        }
-    }
+
     /// <summary>
     /// UŒ‚ˆ—‚ğI‚í‚ç‚¹‚é
     /// </summary>
-    public void AttackEnd()
-    {
-        animator.SetBool("FrontAttack",false);
-        animator.SetBool("BuckAttack",false );
-        attackNow = false;
-    }
+
     private void Update()
     {
-        if(moveX!=0)left = moveX > 0 ? false : true;
+        if(moveX!=0) Attack.Instance.left = moveX > 0 ? false : true;
 
-        if (left)
+        if (Attack.Instance.left)
         {
             transform.rotation = Quaternion.Euler(0, -90, 0);
         }
@@ -156,6 +102,13 @@ public class Move : MonoBehaviour
         {
             transform.rotation = Quaternion.Euler(0, 90, 0);
         }
+        if (!Attack.Instance.attackNow)
+        {
         transform.Translate(transform.TransformDirection(new Vector2(-moveX, 0)*Speed*Time.deltaTime));
+        }
+        if (moveX == 0)
+        {
+            attackMotion = false;
+        }
     }
 }

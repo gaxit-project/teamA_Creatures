@@ -6,14 +6,29 @@ using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class Jump : MonoBehaviour
 {
+    public static Jump Instance;
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject); 
+        }
+    }
+
     public float JumpSpeed;
-    private bool JumpFlag;
+    public bool JumpFlag;
     Rigidbody rb;
     [SerializeField] private Vector3 localGravity;
-    private Vector2 JumpY;
-
+    public Vector2 JumpInput;
+    public float JumpY;
     public GameObject moveObject;
     private Move MoveOJ;
+
+
     void Start()
     {
         MoveOJ = moveObject.GetComponent<Move>();
@@ -45,25 +60,25 @@ public class Jump : MonoBehaviour
     /// </summary>
     public void OnJump(InputAction.CallbackContext context)
     {
-        JumpY = context.ReadValue<Vector2>();
-        if(!Move.attackNow)
+        JumpInput = context.ReadValue<Vector2>();
+        if(!Attack.Instance.attackNow)
         {
             StartCoroutine(JumpAttack());
         }
     }
     public IEnumerator JumpAttack()
     {
-
+        JumpY = JumpInput.y;
         while (MoveOJ.isWait > MoveOJ.time)
         {
-            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.JoystickButton1))
+            if (Attack.Instance.attackNow)
             {
-                JumpY.y = 0;
+                JumpY = 0;
                 yield break;
             }
             yield return null;
         }
-            if (JumpFlag && JumpY.y > 0.5)
+            if (JumpFlag && JumpY > 0.5)
             {
                 rb.AddForce(Vector2.up * JumpSpeed, ForceMode.Impulse);
                 JumpFlag = false;

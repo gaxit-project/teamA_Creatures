@@ -218,6 +218,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5802172344162039397, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
       insertIndex: -1
       addedObject: {fileID: 13462059}
+    - targetCorrespondingSourceObject: {fileID: 5802172344162039397, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 13462064}
   m_SourcePrefab: {fileID: 100100000, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
 --- !u!1 &13462057 stripped
 GameObject:
@@ -238,6 +241,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   JumpSpeed: 30
   localGravity: {x: 0, y: -100, z: 0}
+  JumpInput: {x: 0, y: 0}
+  JumpY: 0
   moveObject: {fileID: 13462057}
 --- !u!114 &13462060
 MonoBehaviour:
@@ -253,13 +258,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   move: {x: 0, y: 0}
   moveX: 0
-  absoluteValueX: 0
-  absoluteValueY: 0
   Speed: 5
   DeadZone: 0.1
   time: 0
-  isWait: 1
-  left: 0
+  isWait: 0.3
+  attackMotion: 0
   animator: {fileID: 0}
 --- !u!114 &13462061
 MonoBehaviour:
@@ -319,8 +322,20 @@ MonoBehaviour:
     m_ActionId: 5dc7ec24-5d43-461d-8528-817485c5d596
     m_ActionName: player/Jump
   - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: df4f41bd-a16f-4577-98da-cf3f4d8c6bf5
+      m_Calls:
+      - m_Target: {fileID: 13462064}
+        m_TargetAssemblyTypeName: Attack, Assembly-CSharp
+        m_MethodName: OnAttack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: c68fc524-4f9b-47f6-a087-29d6ac27b15d
     m_ActionName: player/Attack[/Keyboard/j]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
@@ -375,6 +390,23 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &13462064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 13462057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffa5e63ef738361488fe6f57b0a39378, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 0}
+  attackNow: 0
+  left: 0
+  absoluteValueX: 0
+  absoluteValueY: 0
 --- !u!1 &739119663
 GameObject:
   m_ObjectHideFlags: 0
@@ -619,6 +651,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   JumpSpeed: 30
   localGravity: {x: 0, y: -100, z: 0}
+  JumpInput: {x: 0, y: 0}
+  JumpY: 0
   moveObject: {fileID: 0}
 --- !u!114 &1439644799
 MonoBehaviour:
@@ -634,13 +668,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   move: {x: 0, y: 0}
   moveX: 0
-  absoluteValueX: 0
-  absoluteValueY: 0
   Speed: 5
   DeadZone: 0.1
   time: 0
   isWait: 0.1
-  left: 0
+  attackMotion: 0
   animator: {fileID: 0}
 --- !u!114 &1439644800
 MonoBehaviour:
