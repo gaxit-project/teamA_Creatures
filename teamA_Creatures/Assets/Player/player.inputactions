@@ -90,6 +90,28 @@
                     "isPartOfComposite": false
                 },
                 {
+                    "name": "W",
+                    "id": "ac3f8ed1-afbf-4122-9c4e-ee28f0fa1ae2",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "960e075c-ed95-476a-9100-099d4fa2625d",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "",
                     "id": "9d67ba4a-fb65-4c22-aa23-374886c70a25",
                     "path": "<Keyboard>/j",
