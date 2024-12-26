@@ -132,7 +132,7 @@ public class Attack : MonoBehaviour
                 {
                     Debug.Log("•Ší•ÏX");
                     animator.SetBool("BuckAttack", true);
-                    attackNow = false;
+                    attackNow = true;
                 }
                 else if (!left && Move.Instance.move.x > 0)
                 {
