@@ -30,7 +30,7 @@ public class Attack : MonoBehaviour
 
     public enum AttackType
     {
-        Attack,FrontAttack_WeaponChange, UPAttack,ULT
+        Attack,FrontAttack_WeaponChange, UPAttack,DownAttack,ULT
     }
     AttackType attackType;
 
@@ -90,13 +90,17 @@ public class Attack : MonoBehaviour
         {
             attackType = AttackType.Attack;
         }
-        else if (absoluteValueX > Move.Instance.move.y) 
+        else if (absoluteValueX > absoluteValueY)
         {
             attackType = AttackType.FrontAttack_WeaponChange;
         }
-        else
+        else if (Move.Instance.move.y > 0)
         {
             attackType = AttackType.UPAttack;
+        }
+        else if (Move.Instance.move.y < 0)
+        {
+            attackType = AttackType.DownAttack;
         }
 
         AttackPending();
@@ -153,6 +157,13 @@ public class Attack : MonoBehaviour
                     Debug.Log("ãUŒ‚");
                     //attackNow = true;
                 }
+                    break;
+                case AttackType.DownAttack:
+                    if (Jump.Instance.JumpFlag)
+                    {
+                        Debug.Log("‰ºUŒ‚");
+                        //attackNow = true;
+                    }
                 break;
         }
         }

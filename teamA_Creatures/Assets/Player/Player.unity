@@ -262,7 +262,7 @@ MonoBehaviour:
   Speed: 5
   DeadZone: 0.1
   time: 0
-  isWait: 0.3
+  isWait: 0.4
   attackMotion: 0
   animator: {fileID: 0}
 --- !u!114 &13462061
@@ -735,21 +735,9 @@ MonoBehaviour:
     m_ActionId: 5dc7ec24-5d43-461d-8528-817485c5d596
     m_ActionName: player/Jump[/Keyboard/w]
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Attack, Assembly-CSharp
-        m_MethodName: OnAttack
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: df4f41bd-a16f-4577-98da-cf3f4d8c6bf5
-    m_ActionName: player/Attack
+      m_Calls: []
+    m_ActionId: c68fc524-4f9b-47f6-a087-29d6ac27b15d
+    m_ActionName: player/Attack[/Keyboard/j,/XInputControllerWindows/buttonEast,/SwitchProControllerHID/buttonEast]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: player
