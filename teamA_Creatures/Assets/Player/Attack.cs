@@ -82,15 +82,15 @@ public class Attack : MonoBehaviour
             absoluteValueY = Move.Instance.move.y;
         }
 
-        if (absoluteValueX == 0 && absoluteValueY == 0 && buttonHoldTime >= ULTPressed) 
+        if (absoluteValueX < 0.5 && absoluteValueY < 0.5 && buttonHoldTime >= ULTPressed)
         {
             attackType = AttackType.ULT;
         }
-        else if (absoluteValueX == 0 && absoluteValueY  == 0)
+        else if (absoluteValueX < 0.5 && absoluteValueY < 0.5) 
         {
             attackType = AttackType.Attack;
         }
-        else if (absoluteValueX > Move.Instance.move.y)
+        else if (absoluteValueX > absoluteValueY)
         {
             attackType = AttackType.FrontAttack_WeaponChange;
         }
