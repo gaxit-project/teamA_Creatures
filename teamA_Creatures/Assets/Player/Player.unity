@@ -262,7 +262,7 @@ MonoBehaviour:
   Speed: 5
   DeadZone: 0.1
   time: 0
-  isWait: 0.4
+  isWait: 0.2
   attackMotion: 0
   animator: {fileID: 0}
 --- !u!114 &13462061
@@ -409,6 +409,7 @@ MonoBehaviour:
   absoluteValueX: 0
   absoluteValueY: 0
   ULTPressed: 0.5
+  isGun: 0
 --- !u!1 &739119663
 GameObject:
   m_ObjectHideFlags: 0
