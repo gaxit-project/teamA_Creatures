@@ -45,9 +45,9 @@ public class Move : MonoBehaviour
     /// </summary>
     public void OnMove(InputAction.CallbackContext context)
     {
-        
         move = context.ReadValue<Vector2>();
-        if (!Attack.Instance.attackNow)
+        // ゲームオブジェクトがアクティブである場合のみコルーチンを開始
+        if (!Attack.Instance.attackNow && gameObject.activeInHierarchy)
         {
             StartCoroutine(Pending());
         }

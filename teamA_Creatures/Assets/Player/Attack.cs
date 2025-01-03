@@ -16,6 +16,8 @@ public class Attack : MonoBehaviour
     private float buttonHoldTime;
     public float ULTPressed = 0.5f;
     private bool isButtonPressed = false;
+
+    public bool isGun;
     private void Awake()
     {
         if (Instance == null)
@@ -30,7 +32,7 @@ public class Attack : MonoBehaviour
 
     public enum AttackType
     {
-        Attack,FrontAttack_WeaponChange, UPAttack,ULT
+        Attack,FrontAttack_WeaponChange, UPAttack,DownAttack,ULT
     }
     AttackType attackType;
 
@@ -38,6 +40,7 @@ public class Attack : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         left = false;
+        isGun = false;
     }
     public void OnAttack(InputAction.CallbackContext context)
     {
@@ -82,21 +85,25 @@ public class Attack : MonoBehaviour
             absoluteValueY = Move.Instance.move.y;
         }
 
-        if (absoluteValueX == 0 && absoluteValueY == 0 && buttonHoldTime >= ULTPressed) 
+        if (absoluteValueX < 0.05 && absoluteValueY < 0.05 && buttonHoldTime >= ULTPressed)
         {
             attackType = AttackType.ULT;
         }
-        else if (absoluteValueX == 0 && absoluteValueY  == 0)
+        else if (absoluteValueX < 0.05 && absoluteValueY < 0.05)
         {
             attackType = AttackType.Attack;
         }
-        else if (absoluteValueX > Move.Instance.move.y)
+        else if (absoluteValueX > absoluteValueY)
         {
             attackType = AttackType.FrontAttack_WeaponChange;
         }
-        else
+        else if (Move.Instance.move.y > 0)
         {
             attackType = AttackType.UPAttack;
+        }
+        else if (Move.Instance.move.y < 0)
+        {
+            attackType = AttackType.DownAttack;
         }
 
         AttackPending();
@@ -117,42 +124,77 @@ public class Attack : MonoBehaviour
                 break;
 
             case AttackType.Attack:
-                Debug.Log("çUåÇ");
-                //animator.SetBool("Attack", true);
-                //attackNow = true;
-                break;
+                    if (!isGun)
+                    {
+                         Debug.Log("çUåÇ");
+                        animator.SetBool("Attack", true);
+                    }
+                    else
+                    {
+                        Debug.Log("çUåÇ");
+                        animator.SetBool("GunAttack", true);
+                    }
+                    attackNow = true;
+                    break;
             case AttackType.FrontAttack_WeaponChange:
                 if (left && Move.Instance.move.x < 0)
                 {
                     Debug.Log("ëOçUåÇ");
+                        if (!isGun)
+                        {
                     animator.SetBool("FrontAttack", true);
-                    attackNow = true;
-                }
+
+                        }
+                        else
+                        {
+                            animator.SetBool("GunFrontAttack", true);
+                        }
+                        attackNow = true;
+                    }
                 else if (left && Move.Instance.move.x > 0)
                 {
                     Debug.Log("ïêäÌïœçX");
                     animator.SetBool("BuckAttack", true);
-                    attackNow = false;
+                    attackNow = true;
+                    isGun = !isGun;
                 }
                 else if (!left && Move.Instance.move.x > 0)
                 {
                     Debug.Log("ëOçUåÇ");
-                    animator.SetBool("FrontAttack", true);
-                    attackNow = true;
-                }
+                        if (!isGun)
+                        {
+                            animator.SetBool("FrontAttack", true);
+
+                        }
+                        else
+                        {
+                            animator.SetBool("GunFrontAttack", true);
+                        }
+                        attackNow = true;
+                    }
                 else if (!left && Move.Instance.move.x < 0)
                 {
                     Debug.Log("ïêäÌïœçX");
                     animator.SetBool("BuckAttack", true);
                     attackNow = true;
+                    isGun = !isGun;
                 }
                 break;
             case AttackType.UPAttack:
-                if (Jump.Instance.JumpFlag)
+                if (Jump.Instance.JumpFlag&&isGun)
                 {
                     Debug.Log("è„çUåÇ");
+                        //animator.SetBool("UPAttack", true);
                     //attackNow = true;
                 }
+                    break;
+                case AttackType.DownAttack:
+                    if (Jump.Instance.JumpFlag&&!isGun)
+                    {
+                        Debug.Log("â∫çUåÇ");
+                        //animator.SetBool("DownAttack", true);
+                        //attackNow = true;
+                    }
                 break;
         }
         }
@@ -161,8 +203,12 @@ public class Attack : MonoBehaviour
     public void AttackEnd()
     {
         //animator.SetBool("ULTAttack",false);
-        //animator.SetBool("Attack", false);
+        animator.SetBool("Attack", false);
+        animator.SetBool("GunAttack",false);
         animator.SetBool("FrontAttack", false);
+        animator.SetBool("GunFrontAttack", false);
+        //animator.SetBool("UPAttack", false);
+        //animator.SetBool("DownAttack", false);
         animator.SetBool("BuckAttack", false);
         attackNow = false;
 
