@@ -71,7 +71,11 @@ public class Move : MonoBehaviour
 
         if (!Attack.Instance.attackNow)
         {
-            animator.SetBool("run", true);
+            if (Jump.Instance.JumpFlag)
+            {
+                animator.SetBool("run", true);
+            }
+
             moveX = move.x;
         }
 

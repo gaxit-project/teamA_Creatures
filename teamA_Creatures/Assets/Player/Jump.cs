@@ -28,7 +28,7 @@ public class Jump : MonoBehaviour
     public GameObject moveObject;
     private Move MoveOJ;
 
-
+    public Animator animator;
     void Start()
     {
         MoveOJ = moveObject.GetComponent<Move>();
@@ -36,6 +36,7 @@ public class Jump : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.useGravity = false;
         JumpFlag = true;
+        animator = GetComponent<Animator>();
     }
 
     private void FixedUpdate()
@@ -52,6 +53,7 @@ public class Jump : MonoBehaviour
     {
         if (collision.gameObject.tag == "Ground")
         {
+            animator.SetBool("Jump",false);
             JumpFlag = true;
         }
     }
@@ -82,6 +84,8 @@ public class Jump : MonoBehaviour
             {
                 rb.AddForce(Vector2.up * JumpSpeed, ForceMode.Impulse);
                 JumpFlag = false;
+                animator.SetBool("Jump",true);
+            animator.SetBool("run", false);
             }
     }
 }
