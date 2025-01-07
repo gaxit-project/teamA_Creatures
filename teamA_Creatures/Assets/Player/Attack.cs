@@ -162,7 +162,7 @@ public class Attack : MonoBehaviour
                     if (Jump.Instance.JumpFlag)
                     {
                         Debug.Log("上攻撃");
-                        animator.SetTrigger(isGun ? "GunUPAttack" :"UPAttack"); // トリガーを設定
+                        animator.SetTrigger(isGun ? "GunUPAttack" : "UPAttack"); // トリガーを設定
                         attackNow = true; // 攻撃中フラグを設定
                     }
                     break;
