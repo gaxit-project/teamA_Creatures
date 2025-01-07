@@ -194,7 +194,7 @@ PrefabInstance:
     - target: {fileID: 6528275024325078563, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 21d9095d2816ba646b57aff4282aa641, type: 2}
+      objectReference: {fileID: 9100000, guid: 16e8d8f075a1e5145beee438a708a518, type: 2}
     - target: {fileID: 6528275024325078563, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0
@@ -261,11 +261,11 @@ MonoBehaviour:
   move: {x: 0, y: 0}
   moveX: 0
   Speed: 5
-  DeadZone: 0.1
+  DeadZone: 0.01
   time: 0
   isWait: 0.2
-  attackMotion: 0
   animator: {fileID: 0}
+  turnDelay: 0.2
 --- !u!114 &13462061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -678,8 +678,8 @@ MonoBehaviour:
   DeadZone: 0.1
   time: 0
   isWait: 0.1
-  attackMotion: 0
   animator: {fileID: 0}
+  turnDelay: 0.2
 --- !u!114 &1439644800
 MonoBehaviour:
   m_ObjectHideFlags: 0

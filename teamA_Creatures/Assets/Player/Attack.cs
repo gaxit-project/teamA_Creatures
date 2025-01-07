@@ -80,6 +80,12 @@ public class Attack : MonoBehaviour
     }
     public void AttackMotion()
     {
+        if (!Jump.Instance.JumpFlag)
+        {
+            Debug.Log("ƒWƒƒƒ“ƒv’†‚Ì‚½‚ßUŒ‚–³Œø");
+            return;
+        }
+
         if (Move.Instance.move.x < 0)
         {
             absoluteValueX = Move.Instance.move.x * -1;
