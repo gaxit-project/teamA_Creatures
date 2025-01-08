@@ -138,8 +138,8 @@ public class Attack : MonoBehaviour
                     if (buttonHoldTime >= ULTPressed)
                     {
                         Debug.Log("ULT");
-                        animator.SetTrigger("ULTAttack"); // トリガーを設定
-                        attackNow = true; // 攻撃中フラグを設定
+                        //animator.SetTrigger("ULTAttack"); // トリガーを設定
+                        //attackNow = true; // 攻撃中フラグを設定
                     }
                     break;
 
