@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:teamA_Creatures/Assets/Player/animation/GunFrontA.anim.meta
+guid: 61cf0198435433d4684683d5aa7a6e52
+========
+guid: 3355c5cb2fe6bbc4b8d004850a84b3ec
+>>>>>>>> origin/develop:teamA_Creatures/Assets/Player/animation/FrontAttack.anim.meta
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
