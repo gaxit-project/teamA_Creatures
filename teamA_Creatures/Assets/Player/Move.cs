@@ -147,7 +147,7 @@ public class Move : MonoBehaviour
             transform.Translate(transform.TransformDirection(new Vector2(-moveX, 0) * Speed * Time.deltaTime));
         }
 
-        if (!Attack.Instance.attackNow && Mathf.Abs(moveX) > DeadZone && !isTurn)
+        if (!Attack.Instance.attackNow && Mathf.Abs(moveX) > DeadZone && !isTurn && Jump.Instance.JumpFlag)
         {
             animator.SetBool("run", true);
         }
