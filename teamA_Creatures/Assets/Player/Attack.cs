@@ -147,6 +147,17 @@ public class Attack : MonoBehaviour
                     Debug.Log("攻撃");
                     animator.SetTrigger(isGun ? "GunAttack" : "Attack"); // トリガーを設定
                     attackNow = true; // 攻撃中フラグを設定
+
+                    Hit hitComponent = GetComponentInChildren<Hit>();
+                    if(hitComponent != null)
+                    {
+                        hitComponent.PunchHitCheck();
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Hitコンポーネントが見つかりません！");
+                    }
+
                     break;
 
                 case AttackType.FrontAttack_WeaponChange:
