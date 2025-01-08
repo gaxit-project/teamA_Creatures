@@ -16,6 +16,8 @@ public class Attack : MonoBehaviour
     private float buttonHoldTime;
     public float ULTPressed = 0.5f;
     private bool isButtonPressed = false;
+
+    public bool isGun;
     private void Awake()
     {
         if (Instance == null)
@@ -30,7 +32,7 @@ public class Attack : MonoBehaviour
 
     public enum AttackType
     {
-        Attack,FrontAttack_WeaponChange, UPAttack,DownAttack,ULT
+        Attack, FrontAttack_WeaponChange, UPAttack, DownAttack, ULT
     }
     AttackType attackType;
 
@@ -38,18 +40,32 @@ public class Attack : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         left = false;
+        isGun = false;
     }
+    private Coroutine buttonHoldCoroutine;
     public void OnAttack(InputAction.CallbackContext context)
     {
         if (context.started) // ボタンを押した瞬間
         {
             isButtonPressed = true;
-            buttonHoldTime = 0; // 押下時間をリセット
-            StartCoroutine(MeasureButtonHoldTime());
+            buttonHoldTime = 0;
+
+            if (buttonHoldCoroutine != null)
+            {
+                StopCoroutine(buttonHoldCoroutine); // 既存のコルーチンを停止
+            }
+            buttonHoldCoroutine = StartCoroutine(MeasureButtonHoldTime());
         }
         else if (context.canceled) // ボタンを離した瞬間
         {
             isButtonPressed = false;
+
+            if (buttonHoldCoroutine != null)
+            {
+                StopCoroutine(buttonHoldCoroutine);
+                buttonHoldCoroutine = null;
+            }
+
             AttackMotion();
         }
     }
@@ -64,6 +80,12 @@ public class Attack : MonoBehaviour
     }
     public void AttackMotion()
     {
+        if (!Jump.Instance.JumpFlag)
+        {
+            Debug.Log("ジャンプ中のため攻撃無効");
+            return;
+        }
+
         if (Move.Instance.move.x < 0)
         {
             absoluteValueX = Move.Instance.move.x * -1;
@@ -98,83 +120,66 @@ public class Attack : MonoBehaviour
         {
             attackType = AttackType.UPAttack;
         }
-        else if (Move.Instance.move.y < 0)
-        {
-            attackType = AttackType.DownAttack;
-        }
 
         AttackPending();
     }
 
     public void AttackPending()
     {
-        if (!attackNow)
+        if (!attackNow) // 攻撃中か確認
         {
-        animator.SetBool("run", false);
-        Move.Instance.moveX = 0;
-        switch (attackType)
-        {
-            case AttackType.ULT:
-                Debug.Log("ULT");
-                //animator.SetBool("ULTAttack", true);
-               // attackNow = true;
-                break;
 
-            case AttackType.Attack:
-                Debug.Log("攻撃");
-                //animator.SetBool("Attack", true);
-                //attackNow = true;
-                break;
-            case AttackType.FrontAttack_WeaponChange:
-                if (left && Move.Instance.move.x < 0)
-                {
-                    Debug.Log("前攻撃");
-                    animator.SetBool("FrontAttack", true);
-                    attackNow = true;
-                }
-                else if (left && Move.Instance.move.x > 0)
-                {
-                    Debug.Log("武器変更");
-                    animator.SetBool("BuckAttack", true);
-                    attackNow = true;
-                }
-                else if (!left && Move.Instance.move.x > 0)
-                {
-                    Debug.Log("前攻撃");
-                    animator.SetBool("FrontAttack", true);
-                    attackNow = true;
-                }
-                else if (!left && Move.Instance.move.x < 0)
-                {
-                    Debug.Log("武器変更");
-                    animator.SetBool("BuckAttack", true);
-                    attackNow = true;
-                }
-                break;
-            case AttackType.UPAttack:
-                if (Jump.Instance.JumpFlag)
-                {
-                    Debug.Log("上攻撃");
-                    //attackNow = true;
-                }
+            animator.SetBool("run", false);
+            Move.Instance.moveX = 0;
+
+            switch (attackType)
+            {
+                case AttackType.ULT:
+                    if (buttonHoldTime >= ULTPressed)
+                    {
+                        Debug.Log("ULT");
+                        //animator.SetTrigger("ULTAttack"); // トリガーを設定
+                        //attackNow = true; // 攻撃中フラグを設定
+                    }
                     break;
-                case AttackType.DownAttack:
+
+                case AttackType.Attack:
+                    Debug.Log("攻撃");
+                    animator.SetTrigger(isGun ? "GunAttack" : "Attack"); // トリガーを設定
+                    attackNow = true; // 攻撃中フラグを設定
+                    break;
+
+                case AttackType.FrontAttack_WeaponChange:
+                    Debug.Log("前攻撃または武器変更");
+                    if (left && Move.Instance.move.x < 0 || !left && Move.Instance.move.x > 0)
+                    {
+                        animator.SetTrigger(isGun ? "GunFrontAttack" : "FrontAttack"); // トリガーを設定
+                        attackNow = true; // 攻撃中フラグを設定
+                    }
+                    else
+                    {
+                        animator.SetTrigger("Change"); // トリガーを設定
+                        isGun = !isGun; // 武器を切り替え
+                        attackNow = true; // 攻撃中フラグを設定
+                    }
+                    break;
+
+                case AttackType.UPAttack:
                     if (Jump.Instance.JumpFlag)
                     {
-                        Debug.Log("下攻撃");
-                        //attackNow = true;
+                        Debug.Log("上攻撃");
+                        animator.SetTrigger(isGun ? "GunUPAttack" : "UPAttack"); // トリガーを設定
+                        attackNow = true; // 攻撃中フラグを設定
                     }
-                break;
+                    break;
+            }
         }
-        }
-
     }
+
     public void AttackEnd()
     {
-        //animator.SetBool("ULTAttack",false);
-        //animator.SetBool("Attack", false);
-        animator.SetBool("FrontAttack", false);
-        animator.SetBool("BuckAttack", false);
+        Debug.Log("EndAttack");
+        animator.SetTrigger("EndAttack");
         attackNow = false;
 
     }
