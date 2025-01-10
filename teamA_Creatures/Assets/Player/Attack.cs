@@ -18,6 +18,8 @@ public class Attack : MonoBehaviour
     private bool isButtonPressed = false;
 
     public bool isGun;
+
+    private Hit cubeController;
     private void Awake()
     {
         if (Instance == null)
@@ -41,6 +43,8 @@ public class Attack : MonoBehaviour
         animator = GetComponent<Animator>();
         left = false;
         isGun = false;
+
+        cubeController = GetComponent<Hit>();
     }
     private Coroutine buttonHoldCoroutine;
     public void OnAttack(InputAction.CallbackContext context)
@@ -148,14 +152,9 @@ public class Attack : MonoBehaviour
                     animator.SetTrigger(isGun ? "GunAttack" : "Attack"); // トリガーを設定
                     attackNow = true; // 攻撃中フラグを設定
 
-                    Hit hitComponent = GetComponentInChildren<Hit>();
-                    if(hitComponent != null)
+                    if (!isGun && cubeController != null)
                     {
-                        hitComponent.PunchHitCheck();
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Hitコンポーネントが見つかりません！");
+                        cubeController.ShowActiveCube();
                     }
 
                     break;
@@ -192,6 +191,11 @@ public class Attack : MonoBehaviour
         Debug.Log("EndAttack");
         animator.SetTrigger("EndAttack");
         attackNow = false;
+
+        if(cubeController != null)
+        {
+            cubeController.HideActiveCube();
+        }
 
     }
 

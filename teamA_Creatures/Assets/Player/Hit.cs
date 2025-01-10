@@ -4,25 +4,59 @@ using UnityEngine;
 
 public class Hit : MonoBehaviour
 {
-    public void PunchHitCheck()
-    {
-        // 攻撃範囲をCubeのColliderで定義していると仮定
-        Collider[] hitColliders = Physics.OverlapBox(transform.position, transform.localScale / 2, transform.rotation);
+    public GameObject hitJudgmentPrefab; // CubeのPrefabをアタッチ
+    private GameObject activeCube;
 
-        foreach (var hitCollider in hitColliders)
+    // Cubeを表示
+    public void ShowActiveCube()
+    {
+        if (hitJudgmentPrefab != null)
         {
-            if (hitCollider.CompareTag("Enemy")) // 敵に衝突した場合
+            if (activeCube == null)
             {
-                Debug.Log("パンチが敵にヒットしました！: " + hitCollider.name);
+                // プレイヤーの前方にCubeを生成
+                Vector3 spawnPosition = transform.position + transform.forward * 1.5f; // 前方に1.5f
+                spawnPosition.y += 2.2f; // Y座標を2上げる
+                activeCube = Instantiate(hitJudgmentPrefab, spawnPosition, Quaternion.identity);
+
+                SetupHitDetection(); // 当たり判定をセットアップ
+            }
+            else
+            {
+                activeCube.SetActive(true);
+                Vector3 updatedPosition = transform.position + transform.forward * 1.5f; // 前方に1.5f
+                updatedPosition.y += 2.2f; // Y座標を2上げる
+                activeCube.transform.position = updatedPosition;
             }
         }
     }
 
-    private void OnDrawGizmos()
+    // Cubeを非表示
+    public void HideActiveCube()
     {
-        // オーバーラップボックスの範囲を視覚化（デバッグ用）
-        Gizmos.color = Color.red;
-        Gizmos.matrix = transform.localToWorldMatrix;
-        Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
+        if (activeCube != null)
+        {
+            activeCube.SetActive(false);
+        }
+    }
+
+    // 当たり判定のセットアップ
+    private void SetupHitDetection()
+    {
+        if (activeCube != null)
+        {
+            Collider collider = activeCube.GetComponent<Collider>();
+            if (collider == null)
+            {
+                collider = activeCube.AddComponent<BoxCollider>(); // BoxColliderを追加
+            }
+            collider.isTrigger = true; // トリガーとして設定
+
+            // トリガースクリプトを追加
+            if (activeCube.GetComponent<HitDetection>() == null)
+            {
+                activeCube.AddComponent<HitDetection>();
+            }
+        }
     }
 }
