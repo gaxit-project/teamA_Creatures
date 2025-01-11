@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class Jump : MonoBehaviour
 {
@@ -60,12 +59,17 @@ public class Jump : MonoBehaviour
     /// <summary>
     /// inputaction‚©‚çŽæ‚Á‚Ä‚«‚Ä‚¢‚é
     /// </summary>
+    public float JumpDeadZone;
     public void OnJump(InputAction.CallbackContext context)
     {
         JumpInput = context.ReadValue<Vector2>();
         if(!Attack.Instance.attackNow && gameObject.activeInHierarchy)
         {
-            StartCoroutine(JumpAttack());
+            if (JumpInput.y > JumpDeadZone)
+            {
+                StartCoroutine(JumpAttack());
+            }
+
         }
     }
     public IEnumerator JumpAttack()

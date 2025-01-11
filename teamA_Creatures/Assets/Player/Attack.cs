@@ -18,6 +18,8 @@ public class Attack : MonoBehaviour
     private bool isButtonPressed = false;
 
     public bool isGun;
+
+    private Hit cubeController;
     private void Awake()
     {
         if (Instance == null)
@@ -32,7 +34,7 @@ public class Attack : MonoBehaviour
 
     public enum AttackType
     {
-        Attack, FrontAttack_WeaponChange, UPAttack, DownAttack, ULT
+        Attack, FrontAttack,WeaponChange, UPAttack, DownAttack, ULT
     }
     AttackType attackType;
 
@@ -41,6 +43,8 @@ public class Attack : MonoBehaviour
         animator = GetComponent<Animator>();
         left = false;
         isGun = false;
+
+        cubeController = GetComponent<Hit>();
     }
     private Coroutine buttonHoldCoroutine;
     public void OnAttack(InputAction.CallbackContext context)
@@ -114,7 +118,11 @@ public class Attack : MonoBehaviour
         }
         else if (absoluteValueX > absoluteValueY)
         {
-            attackType = AttackType.FrontAttack_WeaponChange;
+            attackType = AttackType.FrontAttack;
+        }
+        else if (Move.Instance.move.y < 0) 
+        {
+            attackType = AttackType.WeaponChange;
         }
         else if (Move.Instance.move.y > 0)
         {
@@ -147,23 +155,34 @@ public class Attack : MonoBehaviour
                     Debug.Log("攻撃");
                     animator.SetTrigger(isGun ? "GunAttack" : "Attack"); // トリガーを設定
                     attackNow = true; // 攻撃中フラグを設定
+
+                    if (!isGun && cubeController != null)
+                    {
+                        cubeController.ShowPunchCube();
+                    }
+
                     break;
 
-                case AttackType.FrontAttack_WeaponChange:
-                    Debug.Log("前攻撃または武器変更");
+                case AttackType.FrontAttack:
+                    Debug.Log("前攻撃");
                     if (left && Move.Instance.move.x < 0 || !left && Move.Instance.move.x > 0)
                     {
                         animator.SetTrigger(isGun ? "GunFrontAttack" : "FrontAttack"); // トリガーを設定
                         attackNow = true; // 攻撃中フラグを設定
-                    }
-                    else
-                    {
-                        animator.SetTrigger("Change"); // トリガーを設定
-                        isGun = !isGun; // 武器を切り替え
-                        attackNow = true; // 攻撃中フラグを設定
-                    }
-                    break;
 
+                        if(!isGun && cubeController != null)
+                        {
+                            cubeController.ShowPunchCube();
+                        }
+                    }
+
+                    break;
+                case AttackType.WeaponChange:
+                    Debug.Log("武器変更");
+                    animator.SetTrigger("Change");
+                    isGun = !isGun;
+                    attackNow = true;
+                    break;
                 case AttackType.UPAttack:
                     if (Jump.Instance.JumpFlag)
                     {
@@ -181,6 +200,11 @@ public class Attack : MonoBehaviour
         Debug.Log("EndAttack");
         animator.SetTrigger("EndAttack");
         attackNow = false;
+
+        if(cubeController != null)
+        {
+            cubeController.HidePunchCube();
+        }
 
     }
 
