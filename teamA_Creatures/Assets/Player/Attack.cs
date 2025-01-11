@@ -34,7 +34,7 @@ public class Attack : MonoBehaviour
 
     public enum AttackType
     {
-        Attack, FrontAttack_WeaponChange, UPAttack, DownAttack, ULT
+        Attack, FrontAttack,WeaponChange, UPAttack, DownAttack, ULT
     }
     AttackType attackType;
 
@@ -118,7 +118,11 @@ public class Attack : MonoBehaviour
         }
         else if (absoluteValueX > absoluteValueY)
         {
-            attackType = AttackType.FrontAttack_WeaponChange;
+            attackType = AttackType.FrontAttack;
+        }
+        else if (Move.Instance.move.y < 0) 
+        {
+            attackType = AttackType.WeaponChange;
         }
         else if (Move.Instance.move.y > 0)
         {
@@ -159,8 +163,8 @@ public class Attack : MonoBehaviour
 
                     break;
 
-                case AttackType.FrontAttack_WeaponChange:
-                    Debug.Log("前攻撃または武器変更");
+                case AttackType.FrontAttack:
+                    Debug.Log("前攻撃");
                     if (left && Move.Instance.move.x < 0 || !left && Move.Instance.move.x > 0)
                     {
                         animator.SetTrigger(isGun ? "GunFrontAttack" : "FrontAttack"); // トリガーを設定
@@ -171,14 +175,14 @@ public class Attack : MonoBehaviour
                             cubeController.ShowPunchCube();
                         }
                     }
-                    else
-                    {
-                        animator.SetTrigger("Change"); // トリガーを設定
-                        isGun = !isGun; // 武器を切り替え
-                        attackNow = true; // 攻撃中フラグを設定
-                    }
-                    break;
 
+                    break;
+                case AttackType.WeaponChange:
+                    Debug.Log("武器変更");
+                    animator.SetTrigger("Change");
+                    isGun = !isGun;
+                    attackNow = true;
+                    break;
                 case AttackType.UPAttack:
                     if (Jump.Instance.JumpFlag)
                     {
