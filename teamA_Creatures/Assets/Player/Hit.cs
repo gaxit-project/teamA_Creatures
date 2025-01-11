@@ -8,7 +8,7 @@ public class Hit : MonoBehaviour
     private GameObject activeCube;
 
     // Cube‚ð•\Ž¦
-    public void ShowActiveCube()
+    public void ShowPunchCube()
     {
         if (hitJudgmentPrefab != null)
         {
@@ -31,8 +31,9 @@ public class Hit : MonoBehaviour
         }
     }
 
+
     // Cube‚ð”ñ•\Ž¦
-    public void HideActiveCube()
+    public void HidePunchCube()
     {
         if (activeCube != null)
         {

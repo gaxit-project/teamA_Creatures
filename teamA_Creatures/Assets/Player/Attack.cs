@@ -154,7 +154,7 @@ public class Attack : MonoBehaviour
 
                     if (!isGun && cubeController != null)
                     {
-                        cubeController.ShowActiveCube();
+                        cubeController.ShowPunchCube();
                     }
 
                     break;
@@ -165,6 +165,11 @@ public class Attack : MonoBehaviour
                     {
                         animator.SetTrigger(isGun ? "GunFrontAttack" : "FrontAttack"); // トリガーを設定
                         attackNow = true; // 攻撃中フラグを設定
+
+                        if(!isGun && cubeController != null)
+                        {
+                            cubeController.ShowPunchCube();
+                        }
                     }
                     else
                     {
@@ -194,7 +199,7 @@ public class Attack : MonoBehaviour
 
         if(cubeController != null)
         {
-            cubeController.HideActiveCube();
+            cubeController.HidePunchCube();
         }
 
     }
