@@ -48,6 +48,7 @@ public class Move : MonoBehaviour
         {
             StartCoroutine(Pending());
         }
+
     }
     /// <summary>
     /// 移動するか攻撃するか
@@ -69,11 +70,21 @@ public class Move : MonoBehaviour
         if (!Attack.Instance.attackNow)
         {
             moveX = move.x;
+            if (Jump.Instance.JumpFlag)
+            {
+                animator.SetBool("run", true);
+            }
+            if (moveX != 0)
+            {
+                Attack.Instance.left = moveX < 0;
+            }
+
         }
 
         if (Mathf.Abs(moveX) < DeadZone)
         {
             moveX = 0; // 微小な値を無視
+            animator.SetBool("run",false);
         }
     }
 
@@ -85,50 +96,9 @@ public class Move : MonoBehaviour
     /// 攻撃処理を終わらせる
     /// </summary>
 
-    public float turnDelay; // 後ろを向くまでの猶予時間
-    private float turnTimer = 0f;  // 猶予時間を計測するタイマー
-    private bool ChangeDirection = false; // 向きを変える必要があるか
-    private bool isTurn = false;
-
     private void Update()
     {
-        // スティック入力がある場合に向きを判定
-        if (Mathf.Abs(moveX) > 0.1f) // DeadZone より大きい場合に処理
-        {
-            bool newDirection = moveX < 0; // moveX が負なら左向き
 
-            if (newDirection != Attack.Instance.left)
-            {
-                if (!ChangeDirection)
-                {
-                    ChangeDirection = true; // 向き変更の準備開始
-                    turnTimer = 0f; // タイマーをリセット
-                    isTurn = true;
-                }
-            }
-            else
-            {
-                ChangeDirection = false; // 向き変更の必要がなくなる
-                isTurn = false;
-            }
-        }
-        else
-        {
-            ChangeDirection = false; // スティック入力がなければ向き変更をリセット
-            isTurn = false;
-        }
-
-        // タイマーを進める
-        if (ChangeDirection)
-        {
-            turnTimer += Time.deltaTime;
-            if (turnTimer >= turnDelay)
-            {
-                Attack.Instance.left = moveX < 0; // 向きを変更
-                ChangeDirection = false;  // 処理完了
-                isTurn = false;
-            }
-        }
 
         // 向きの変更を適用
         if (Attack.Instance.left)
@@ -141,18 +111,9 @@ public class Move : MonoBehaviour
         }
 
         // 攻撃中でない場合は移動
-        if (!Attack.Instance.attackNow && !isTurn)
+        if (!Attack.Instance.attackNow)
         {
             transform.Translate(transform.TransformDirection(new Vector2(-moveX, 0) * Speed * Time.deltaTime));
-        }
-
-        if (!Attack.Instance.attackNow && Mathf.Abs(moveX) > DeadZone && !isTurn && Jump.Instance.JumpFlag)
-        {
-            animator.SetBool("run", true);
-        }
-        else
-        {
-            animator.SetBool("run", false);
         }
 
     }
