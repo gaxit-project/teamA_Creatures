@@ -19,11 +19,16 @@ public class EnemyMove : MonoBehaviour
     public float middleDistance; // 中距離を測る変数
     public float longDistance; // 遠距離を測る変数
     private float _targetDistance; // 現在の目標距離
+    float _previousValue = 0f; // 前フレームの値を記録する変数
     // 現在の状態を保持する変数
     private EnemyState _currentState;
     private float stateCooldown = 0f; // 状態遷移のクールダウンタイマー
     private float stateCooldownDuration = 1f; // クールダウン時間（1秒）
     private bool _isCoroutineRunning = false; // コルーチン実行中かどうか
+
+    Animator _enemyAnim; // Animatorコンポーネント
+    bool _isAnimActive = true; // フラグの初期状態
+
     /// <summary>
     /// エネミーの列挙型
     /// </summary>
@@ -35,9 +40,10 @@ public class EnemyMove : MonoBehaviour
         MiddleRetreat,    // 中距離まで退避
         LongRetreat,      // 遠距離まで退避
         Guard,            // ガード
-        ShortAttack,      // 近距離攻撃
-        MiddleAttack,     // 中距離攻撃
-        LongAttack        // 遠距離攻撃
+        Punch,            // 近距離攻撃
+        Tackle,           // 中距離攻撃
+        Chain,            // 遠距離攻撃
+        Walk
     }
     #region スタートたち
     void Start()
@@ -49,13 +55,26 @@ public class EnemyMove : MonoBehaviour
         _rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
         // エネミーとプレイヤーの距離計測
         _distancePtoE = Vector2.Distance(transform.position, _playerTr.position);
+        _enemyAnim = GetComponent<Animator>(); // Animatorを取得
     }
     #endregion
     #region アップデートたち
     void Update()
     {
-        // 互いの距離計測
+        // 互いの距離計測 + 敵の向き交換
         _distancePtoE = Vector2.Distance(transform.position, _playerTr.position);
+        Vector2 direction = _playerTr.position - transform.position;
+
+        if (direction.x > 0)
+        {
+            transform.rotation = Quaternion.Euler(0, 90, 0);
+            Debug.Log("プレイヤーは右側にいます");
+        }
+        else if (direction.x < 0)
+        {
+            transform.rotation = Quaternion.Euler(0, -90, 0);
+            Debug.Log("プレイヤーは左側にいます");
+        }
         //DebugKey();
         switch (_currentState)
         {
@@ -80,14 +99,14 @@ public class EnemyMove : MonoBehaviour
             case EnemyState.Guard:
                 HandleGuard();
                 break;
-            case EnemyState.ShortAttack:
-                HandleShortAttack();
+            case EnemyState.Punch:
+                HandlePunch();
                 break;
-            case EnemyState.MiddleAttack:
-                HandleMiddleAttack();
+            case EnemyState.Tackle:
+                HandleTackle();
                 break;
-            case EnemyState.LongAttack:
-                HandleLongAttack();
+            case EnemyState.Chain:
+                HandleChain();
                 break;
         }
     }
@@ -100,56 +119,40 @@ public class EnemyMove : MonoBehaviour
     void HandleMiddleFollow()
     {
         PlayerFollow(_targetDistance);
-        if (_distancePtoE <= _targetDistance)
-        {
-            _currentState = EnemyState.Idle; // 到達後Idleに戻る
-        }
     }
     void HandleShortFollow()
     {
         PlayerFollow(_targetDistance);
-        if (_distancePtoE <= _targetDistance)
-        {
-            _currentState = EnemyState.Idle; // 到達後Idleに戻る
-        }
     }
     void HandleMiddleRetreat()
     {
         PlayerRetreat(_targetDistance);
-        if (_distancePtoE <= _targetDistance)
-        {
-            _currentState = EnemyState.Idle; // 到達後Idleに戻る
-        }
     }
     void HandleLongRetreat()
     {
         PlayerRetreat(_targetDistance);
-        if (_distancePtoE <= _targetDistance)
-        {
-            _currentState = EnemyState.Idle; // 到達後Idleに戻る
-        }
     }
     void HandleGuard()
     {
         EnemyGaurd();
         _currentState = EnemyState.Idle;
     }
-    void HandleShortAttack()
+    void HandlePunch()
     {
-        if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
-        StartCoroutine(EnemyShortAttack());
+        //if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
+        StartCoroutine(EnemyPunch());
         //_currentState = EnemyState.Idle;
     }
-    void HandleMiddleAttack()
+    void HandleTackle()
     {
-        if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
-        StartCoroutine(EnemyMiddleAttack());
+        //if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
+        StartCoroutine(EnemyTackle());
         //_currentState = EnemyState.Idle;
     }
-    void HandleLongAttack()
+    void HandleChain()
     {
-        if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
-        StartCoroutine(EnemyLongAttack());
+        //if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
+        StartCoroutine(EnemyChain());
         //_currentState = EnemyState.Idle;
     }
     /// <summary>
@@ -162,14 +165,12 @@ public class EnemyMove : MonoBehaviour
         // 距離に基づく状態遷移
         if (_distancePtoE < middleDistance)
         {
-            if (randomState <= 70)
+            if (randomState <= 80)
             {
-                Debug.Log("近距離攻撃");
-                _currentState = EnemyState.ShortAttack; // 近距離で攻撃
+                _currentState = EnemyState.Punch; // 近距離で攻撃
             }
             else if (randomState <= 100)
             {
-                Debug.Log("中距離まで退避");
                 _currentState = EnemyState.MiddleRetreat; // 中距離まで退避
                 _targetDistance = middleDistance + 3f;
             }
@@ -181,18 +182,15 @@ public class EnemyMove : MonoBehaviour
         {
             if (randomState <= 60)
             {
-                Debug.Log("中距離攻撃");
-                _currentState = EnemyState.MiddleAttack; // 中距離で攻撃
+                _currentState = EnemyState.Tackle; // 中距離で攻撃
             }
             else if (randomState <= 80)
             {
-                Debug.Log("近距離まで追跡");
                 _currentState = EnemyState.ShortFollow; // 小距離まで追跡
                 _targetDistance = shortDistance + 2f;
             }
             else if (randomState <= 100)
             {
-                Debug.Log("遠距離まで退避");
                 _currentState = EnemyState.LongRetreat; // 遠距離まで退避
                 _targetDistance = longDistance + 3f;
             }
@@ -201,12 +199,10 @@ public class EnemyMove : MonoBehaviour
         {
             if (randomState <= 50)
             {
-                Debug.Log("遠距離攻撃");
-                _currentState = EnemyState.LongAttack; // 遠距離で攻撃
+                _currentState = EnemyState.Chain; // 遠距離で攻撃
             }
             else if (randomState <= 100)
             {
-                Debug.Log("中距離まで追跡");
                 _currentState = EnemyState.MiddleFollow; // 中距離まで追跡
                 _targetDistance = middleDistance + 2f;
             }
@@ -223,27 +219,58 @@ public class EnemyMove : MonoBehaviour
     }
     #endregion
     #region 攻撃の処理たち
-    IEnumerator EnemyShortAttack()
+    IEnumerator EnemyPunch()
     {
-        _isCoroutineRunning = true; // 実行中フラグを立てる
-        Debug.Log("近距離攻撃中");
-        yield return new WaitForSeconds(5);
-        _currentState = EnemyState.Idle;
-        _isCoroutineRunning = false; // 実行中フラグを立てる
+        Debug.Log("パンチ！");
+        _isAnimActive = true;
+        _enemyAnim.SetBool("RightPunch", true);
+        _enemyAnim.SetBool("LeftPunch", true);
+        // 現在のアニメーションステート情報を取得
+        AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
+        // 現在のアニメーションが終了したかを確認
+        if (currentState.normalizedTime >= 1f && _isAnimActive)
+        {
+            _isAnimActive = false; // フラグをオフにする
+            _enemyAnim.SetBool("RightPunch", false);
+            _enemyAnim.SetBool("LeftPunch", false);
+            Debug.Log("パンチ終了");
+            yield return new WaitForSeconds(0.1f);
+            _currentState = EnemyState.Idle;
+        }
     }
-    IEnumerator EnemyMiddleAttack()
+    IEnumerator EnemyTackle()
     {
-        _isCoroutineRunning = true; // 実行中フラグを立てる
-        yield return new WaitForSeconds(3);
-        _currentState = EnemyState.Idle;
-        _isCoroutineRunning = false; // 実行中フラグを立てる
+        Debug.Log("タックル！");
+        _isAnimActive = true;
+        _enemyAnim.SetBool("Tackle", true);
+        // 現在のアニメーションステート情報を取得
+        AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
+        // 現在のアニメーションが終了したかを確認
+        if (currentState.normalizedTime >= 1f && _isAnimActive)
+        {
+            _isAnimActive = false; // フラグをオフにする
+            _enemyAnim.SetBool("Tackle", false);
+            Debug.Log("タックル終了");
+            yield return new WaitForSeconds(0.1f);
+            _currentState = EnemyState.Idle;
+        }
     }
-    IEnumerator EnemyLongAttack()
+    IEnumerator EnemyChain()
     {
-        _isCoroutineRunning = true; // 実行中フラグを立てる
-        yield return new WaitForSeconds(3);
-        _currentState = EnemyState.Idle;
-        _isCoroutineRunning = false; // 実行中フラグを立てる
+        Debug.Log("チェーン！");
+        _isAnimActive = true;
+        _enemyAnim.SetBool("Chain", true);
+        // 現在のアニメーションステート情報を取得
+        AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
+        // 現在のアニメーションが終了したかを確認
+        if (currentState.normalizedTime >= 1f && _isAnimActive)
+        {
+            _isAnimActive = false; // フラグをオフにする
+            _enemyAnim.SetBool("Chain", false);
+            Debug.Log("チェーン終了");
+            yield return new WaitForSeconds(0.1f);
+            _currentState = EnemyState.Idle;
+        }
     }
     IEnumerator EnemyIdle()
     {
@@ -311,8 +338,13 @@ public class EnemyMove : MonoBehaviour
         // プレイヤーとの距離が指定の距離になったら実行しない
         if (_distancePtoE < moveDistance)
         {
+            Debug.Log("追う終了！！");
+            _currentState = EnemyState.Idle; // 到達後Idleに戻る
+            _enemyAnim.SetBool("Walk", false);
             return;
         }
+        _enemyAnim.SetBool("Walk", true);
+        Debug.Log("追う！！");
         // プレイヤーに向けて進む
         transform.position = Vector2.MoveTowards(
                             transform.position,
@@ -324,10 +356,18 @@ public class EnemyMove : MonoBehaviour
     /// </summary>
     public void PlayerRetreat(float moveDistance)
     {
-        if (_distancePtoE >= moveDistance) return; // 目標距離に到達した場合は退却終了
+        if (_distancePtoE >= moveDistance)
+        {
+            Debug.Log("逃げる終了！！");
+            _currentState = EnemyState.Idle; // 到達後Idleに戻る
+            _enemyAnim.SetBool("Walk", false);
+            return; // 目標距離に到達した場合は退却終了
+        }
         // 指定の距離離れるまで実行
         if (_distancePtoE < moveDistance)
         {
+            Debug.Log("逃げる！！");
+            _enemyAnim.SetBool("Walk", true);
             // プレイヤーから逃げる方向を計算
             Vector3 directionAwayFromPlayer = (transform.position - _playerTr.position).normalized;
             // 逆方向に移動
