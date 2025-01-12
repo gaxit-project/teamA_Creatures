@@ -52,15 +52,20 @@ public class AttackComponent : MonoBehaviour
         switch (attackType)
         {
             case AttackType.attack:
-                Debug.Log("攻撃");
-                animator.SetTrigger("Attack");
-                attackNow = true;
-
-                if (cubeController != null)
+                if (JumpComponent.Instance.jumpFlag)
                 {
-                    cubeController.ShowPunchCube();
+                    Debug.Log("攻撃");
+                    animator.SetTrigger("Attack");
+                    attackNow = true;
+
+                    if (cubeController != null)
+                    {
+                        cubeController.ShowPunchCube();
+                    }
                 }
+
                 break;
+
             case AttackType.counterNow:
                 Debug.Log("カウンター");
                 CounterRange = true;
