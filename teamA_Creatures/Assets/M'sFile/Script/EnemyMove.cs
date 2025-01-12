@@ -221,6 +221,10 @@ public class EnemyMove : MonoBehaviour
     }
     #endregion
     #region 攻撃の処理たち
+
+    /// <summary>
+    /// パンチ攻撃
+    /// </summary>
     IEnumerator EnemyPunch()
     {
         Debug.Log("パンチ！");
@@ -242,6 +246,10 @@ public class EnemyMove : MonoBehaviour
             _currentState = EnemyState.Idle;
         }
     }
+    /// <summary>
+    /// タックル攻撃
+    /// </summary>
+    /// <returns></returns>
     IEnumerator EnemyTackle()
     {
         Debug.Log("タックル！");
@@ -261,6 +269,11 @@ public class EnemyMove : MonoBehaviour
             _currentState = EnemyState.Idle;
         }
     }
+
+    /// <summary>
+    /// チェーン攻撃
+    /// </summary>
+    /// <returns></returns>
     IEnumerator EnemyChain()
     {
         Debug.Log("チェーン！");
