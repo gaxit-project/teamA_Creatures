@@ -507,6 +507,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5802172344162039397, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1661968427}
+    - targetCorrespondingSourceObject: {fileID: 5802172344162039397, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1661968433}
   m_SourcePrefab: {fileID: 100100000, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
 --- !u!1 &1661968426 stripped
 GameObject:
@@ -525,13 +528,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 836111792fbedc04d9b5b150fa7f0893, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyHP: 0
-  speed: 4
-  backSpeed: 3
-  isFollow: 0
-  shortDistance: 2
-  middleDistance: 6
-  longDistance: 12
 --- !u!114 &1661968428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -658,6 +654,25 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &1661968433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1661968426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d138dde13307b154b99aa53494b78274, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyHP: 1000
+  speed: 4
+  backSpeed: 3
+  isFollow: 0
+  shortDistance: 2
+  middleDistance: 6
+  longDistance: 12
 --- !u!1001 &1999971562
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -804,6 +819,7 @@ MonoBehaviour:
   JumpY: 0
   moveObject: {fileID: 1999971563}
   animator: {fileID: 0}
+  JumpDeadZone: 0
 --- !u!114 &1999971566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -823,7 +839,6 @@ MonoBehaviour:
   time: 0
   isWait: 0.2
   animator: {fileID: 0}
-  turnDelay: 0.2
 --- !u!114 &1999971567
 MonoBehaviour:
   m_ObjectHideFlags: 0
