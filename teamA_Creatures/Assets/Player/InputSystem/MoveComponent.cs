@@ -1,0 +1,85 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MoveComponent : MonoBehaviour
+{
+    public static MoveComponent Instance;
+
+    Animator animator;
+
+    public float moveSpeed = 10f;
+    public bool left;
+    public bool ATFieldNow;
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        animator = GetComponent<Animator>();
+    }
+    private void Start()
+    {
+        left = false;
+        ATFieldNow = false;
+    }
+
+    /// <summary>
+    /// Down‚æ‚èSpeed‚Ì’l‚ª‘½‚¯‚ê‚ÎˆÚ“®‚·‚é
+    /// </summary>
+    /// <param name="Speed"></param>
+    /// <param name="Down"></param>
+    public void MoveHorizontal(float Speed, float Down)
+    {
+        if (Mathf.Abs(Speed) > Mathf.Abs(Down)||Down>0)
+        {
+            transform.Translate(transform.TransformDirection(new Vector2(Speed, 0) * moveSpeed * Time.deltaTime));
+        }
+        if (JumpComponent.Instance.jumpFlag&&(Speed!=0||Down!=0))
+        {
+            if (Mathf.Abs(Speed) > -Down)
+            {
+                Debug.Log("run");
+                animator.SetBool("run", true);
+                animator.SetBool("Shield", false);
+                if (ATFieldNow)
+                {
+                    Shield.Instance.OffShield();
+                }
+            }
+            else
+            {
+                Debug.Log("Shield");
+                animator.SetBool("Shield", true);
+                animator.SetBool("run", false);
+                if (!ATFieldNow)
+                {
+                    Shield.Instance.OnShield();
+                }
+
+            }
+        }
+        else
+        {
+            animator.SetBool("run", false);
+            animator.SetBool("Shield", false);
+            if (ATFieldNow)
+            {
+                Shield.Instance.OffShield();
+            }
+        }
+
+        if (Speed != 0)
+        {
+            left = Speed > 0;
+        }
+
+        transform.rotation = Quaternion.Euler(0,left ? -90:90, 0);
+        
+    }
+}
