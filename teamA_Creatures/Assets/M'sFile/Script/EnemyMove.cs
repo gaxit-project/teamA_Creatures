@@ -14,6 +14,7 @@ public class EnemyMove : MonoBehaviour
     float _distanceAway = 5f; // プレイヤーから離れる距離
     float _distanceApp = 1.5f; // プレイヤーに近づく距離
     float _distancePtoE;  // エネミーとプレイヤーの距離を入れる変数
+    float forwardSpeed = 3f;  // 攻撃するときに前進する速度
     // プレイヤーとの距離関連
     public float shortDistance; // 近距離を測る変数
     public float middleDistance; // 中距離を測る変数
@@ -52,7 +53,7 @@ public class EnemyMove : MonoBehaviour
         _playerTr = GameObject.FindGameObjectWithTag("Player").transform;
         // リジットボディの設定
         _rb = GetComponent<Rigidbody>();
-        _rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotation;
+        _rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
         // エネミーとプレイヤーの距離計測
         _distancePtoE = Vector2.Distance(transform.position, _playerTr.position);
         _enemyAnim = GetComponent<Animator>(); // Animatorを取得
@@ -165,7 +166,7 @@ public class EnemyMove : MonoBehaviour
         // 距離に基づく状態遷移
         if (_distancePtoE < middleDistance)
         {
-            if (randomState <= 80)
+            if (randomState <= 90)
             {
                 _currentState = EnemyState.Punch; // 近距離で攻撃
             }
@@ -174,17 +175,14 @@ public class EnemyMove : MonoBehaviour
                 _currentState = EnemyState.MiddleRetreat; // 中距離まで退避
                 _targetDistance = middleDistance + 3f;
             }
-            else
-            {
-            }
         }
         else if (_distancePtoE >= middleDistance && _distancePtoE < longDistance)
         {
-            if (randomState <= 60)
+            if (randomState <= 80)
             {
-                _currentState = EnemyState.Tackle; // 中距離で攻撃
+                _currentState = EnemyState.Tackle; // タックルで攻撃
             }
-            else if (randomState <= 80)
+            else if (randomState <= 95)
             {
                 _currentState = EnemyState.ShortFollow; // 小距離まで追跡
                 _targetDistance = shortDistance + 2f;
@@ -199,7 +197,11 @@ public class EnemyMove : MonoBehaviour
         {
             if (randomState <= 50)
             {
-                _currentState = EnemyState.Chain; // 遠距離で攻撃
+                _currentState = EnemyState.Chain; // チェーン投げで攻撃
+            }
+            else if (randomState <= 80)
+            {
+                _currentState = EnemyState.Tackle; // タックルで攻撃
             }
             else if (randomState <= 100)
             {
@@ -219,6 +221,10 @@ public class EnemyMove : MonoBehaviour
     }
     #endregion
     #region 攻撃の処理たち
+
+    /// <summary>
+    /// パンチ攻撃
+    /// </summary>
     IEnumerator EnemyPunch()
     {
         Debug.Log("パンチ！");
@@ -227,6 +233,8 @@ public class EnemyMove : MonoBehaviour
         _enemyAnim.SetBool("LeftPunch", true);
         // 現在のアニメーションステート情報を取得
         AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
+        // 敵を前進させる
+        transform.position += transform.forward * forwardSpeed * Time.deltaTime;
         // 現在のアニメーションが終了したかを確認
         if (currentState.normalizedTime >= 1f && _isAnimActive)
         {
@@ -238,15 +246,21 @@ public class EnemyMove : MonoBehaviour
             _currentState = EnemyState.Idle;
         }
     }
+    /// <summary>
+    /// タックル攻撃
+    /// </summary>
+    /// <returns></returns>
     IEnumerator EnemyTackle()
     {
         Debug.Log("タックル！");
         _isAnimActive = true;
         _enemyAnim.SetBool("Tackle", true);
+        // 敵を前進させる
+        transform.position += transform.forward * forwardSpeed * Time.deltaTime;
         // 現在のアニメーションステート情報を取得
         AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
         // 現在のアニメーションが終了したかを確認
-        if (currentState.normalizedTime >= 1f && _isAnimActive)
+        if (_distancePtoE <= shortDistance+1f)
         {
             _isAnimActive = false; // フラグをオフにする
             _enemyAnim.SetBool("Tackle", false);
@@ -255,6 +269,11 @@ public class EnemyMove : MonoBehaviour
             _currentState = EnemyState.Idle;
         }
     }
+
+    /// <summary>
+    /// チェーン攻撃
+    /// </summary>
+    /// <returns></returns>
     IEnumerator EnemyChain()
     {
         Debug.Log("チェーン！");
