@@ -8,6 +8,11 @@ public class AttackComponent : MonoBehaviour
     public bool Countered;
     
     Animator animator;
+    AudioSource audioSource;
+    public AudioClip attackSound;
+    public float soundCooldownTime = 2.0f;
+
+    private bool canPlaySound = true;
 
     public bool attackNow;
     public bool CounterRange;
@@ -23,6 +28,7 @@ public class AttackComponent : MonoBehaviour
         }
 
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
         cubeController = GetComponent<Hit>();
     }
     public void Start()
@@ -58,6 +64,13 @@ public class AttackComponent : MonoBehaviour
                     animator.SetTrigger("Attack");
                     attackNow = true;
 
+                    if(audioSource != null && attackSound != null && canPlaySound)
+                    {
+                        audioSource.PlayOneShot(attackSound);
+                        canPlaySound = false;
+                        StartCoroutine(ResetSoundCooldown());
+                    }
+
                     if (cubeController != null)
                     {
                         cubeController.ShowPunchCube();
@@ -91,5 +104,11 @@ public class AttackComponent : MonoBehaviour
 
         Shield.Instance.OffShield();
         CounterRange = false;
+    }
+
+    private IEnumerator ResetSoundCooldown()
+    {
+        yield return new WaitForSeconds(soundCooldownTime);
+        canPlaySound = true;
     }
 }
