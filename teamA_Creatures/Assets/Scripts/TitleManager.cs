@@ -10,6 +10,9 @@ public class TitleManager : MonoBehaviour
     public Button endButton;   // ENDボタン
     private Button currentButton; // 現在選択中のボタン
 
+    private float joystickInputCooldown = 0.2f; // ジョイスティック入力のクールダウンタイム
+    private float joystickInputTimer = 0f; // クールダウン用タイマー
+
     void Start()
     {
         // 初期設定でSTARTボタンを選択
@@ -24,26 +27,35 @@ public class TitleManager : MonoBehaviour
 
     void HandleInput()
     {
-        // ボタンの切り替え
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        // タイマーを更新
+        joystickInputTimer += Time.deltaTime;
+
+        // ジョイスティックの入力を取得
+        float joystickY = Input.GetAxis("Vertical");
+
+        // ジョイスティック上方向
+        if (joystickY > 0.5f && joystickInputTimer >= joystickInputCooldown)
         {
             if (currentButton == endButton)
             {
                 currentButton = startButton;
                 HighlightButton(currentButton);
             }
+            joystickInputTimer = 0f;
         }
-        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+        // ジョイスティック下方向
+        else if (joystickY < -0.5f && joystickInputTimer >= joystickInputCooldown)
         {
             if (currentButton == startButton)
             {
                 currentButton = endButton;
                 HighlightButton(currentButton);
             }
+            joystickInputTimer = 0f;
         }
 
-        // Enterキーで選択中のボタンを実行
-        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+        // Bボタンで選択中のボタンを実行
+        if (Input.GetButtonDown("Cancel"))
         {
             if (currentButton == startButton)
             {
@@ -88,7 +100,6 @@ public class TitleManager : MonoBehaviour
             endText.color = Color.black; // デフォルトの文字色
         }
     }
-
 
     void StartGame()
     {
