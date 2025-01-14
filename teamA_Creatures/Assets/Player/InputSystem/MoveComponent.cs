@@ -7,10 +7,12 @@ public class MoveComponent : MonoBehaviour
     public static MoveComponent Instance;
 
     Animator animator;
+    AudioSource audioSource;
 
     public float moveSpeed = 10f;
     public bool left;
     public bool ATFieldNow;
+    public AudioClip runningSound;
     private void Awake()
     {
         if (Instance == null)
@@ -22,6 +24,7 @@ public class MoveComponent : MonoBehaviour
             Destroy(gameObject);
         }
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
     }
     private void Start()
     {
@@ -46,6 +49,12 @@ public class MoveComponent : MonoBehaviour
             {
                 Debug.Log("run");
                 animator.SetBool("run", true);
+                if (!audioSource.isPlaying)
+                {
+                    audioSource.clip = runningSound;
+                    audioSource.loop = true; // âπÇÉãÅ[Évçƒê∂
+                    audioSource.Play();
+                }
                 animator.SetBool("Shield", false);
                 if (ATFieldNow)
                 {
@@ -57,6 +66,12 @@ public class MoveComponent : MonoBehaviour
                 Debug.Log("Shield");
                 animator.SetBool("Shield", true);
                 animator.SetBool("run", false);
+
+                if (audioSource.isPlaying)
+                {
+                    audioSource.Stop();
+                }
+
                 if (!ATFieldNow)
                 {
                     Shield.Instance.OnShield();
@@ -68,6 +83,12 @@ public class MoveComponent : MonoBehaviour
         {
             animator.SetBool("run", false);
             animator.SetBool("Shield", false);
+
+            if (audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
+
             if (ATFieldNow)
             {
                 Shield.Instance.OffShield();

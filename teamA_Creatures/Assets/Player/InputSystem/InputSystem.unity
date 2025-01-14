@@ -333,6 +333,7 @@ MonoBehaviour:
   moveSpeed: 10
   left: 0
   ATFieldNow: 0
+  runningSound: {fileID: 8300000, guid: 6fd2bdce13da6a9488e291ab272176c2, type: 3}
 --- !u!114 &13462070
 MonoBehaviour:
   m_ObjectHideFlags: 0
