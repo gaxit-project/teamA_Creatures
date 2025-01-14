@@ -7,12 +7,15 @@ public class JumpComponent : MonoBehaviour
     public static JumpComponent Instance;
 
     Animator animator;
+    AudioSource audioSource;
     Rigidbody rb;
     [SerializeField] private Vector3 localGravity;
 
     public float jumpForce = 10f;
     public bool jumpFlag;
-    
+    public AudioClip jumpingSound;
+    public AudioClip landingSound;
+
     private void Awake()
     {
         if(Instance == null)
@@ -26,6 +29,7 @@ public class JumpComponent : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Start()
@@ -52,7 +56,7 @@ public class JumpComponent : MonoBehaviour
             rb.AddForce(Vector2.up * jumpForce ,ForceMode.Impulse);
             jumpFlag = false;
             animator.SetTrigger("Jump");
-
+            audioSource.PlayOneShot(jumpingSound);
         }
     }
 
@@ -61,6 +65,7 @@ public class JumpComponent : MonoBehaviour
         if (collision.gameObject.tag == "Ground")
         {
             jumpFlag = true;
+            audioSource.PlayOneShot(landingSound);
         }
     }
 }
