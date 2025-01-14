@@ -34,7 +34,7 @@ public class Attack : MonoBehaviour
 
     public enum AttackType
     {
-        Attack, FrontAttack,WeaponChange, UPAttack, DownAttack, ULT
+        Attack, FrontAttack,WeaponChange, UPAttack, DownAttack, ULT,Protect
     }
     AttackType attackType;
 
@@ -108,26 +108,29 @@ public class Attack : MonoBehaviour
             absoluteValueY = Move.Instance.move.y;
         }
 
-        if (absoluteValueX < 0.05 && absoluteValueY < 0.05 && buttonHoldTime >= ULTPressed)
-        {
-            attackType = AttackType.ULT;
-        }
-        else if (absoluteValueX < 0.05 && absoluteValueY < 0.05)
+        if (absoluteValueX < 0.05 && absoluteValueY < 0.05)
         {
             attackType = AttackType.Attack;
         }
+        else if (Move.Instance.move.y < 0)
+        {
+            attackType = AttackType.Protect;
+        }
+
+        /*if (absoluteValueX < 0.05 && absoluteValueY < 0.05 && buttonHoldTime >= ULTPressed)
+        {
+            attackType = AttackType.ULT;
+        }
+
         else if (absoluteValueX > absoluteValueY)
         {
             attackType = AttackType.FrontAttack;
         }
-        else if (Move.Instance.move.y < 0) 
-        {
-            attackType = AttackType.WeaponChange;
-        }
+
         else if (Move.Instance.move.y > 0)
         {
             attackType = AttackType.UPAttack;
-        }
+        }*/
 
         AttackPending();
     }
@@ -142,15 +145,6 @@ public class Attack : MonoBehaviour
 
             switch (attackType)
             {
-                case AttackType.ULT:
-                    if (buttonHoldTime >= ULTPressed)
-                    {
-                        Debug.Log("ULT");
-                        //animator.SetTrigger("ULTAttack"); // トリガーを設定
-                        //attackNow = true; // 攻撃中フラグを設定
-                    }
-                    break;
-
                 case AttackType.Attack:
                     Debug.Log("攻撃");
                     animator.SetTrigger(isGun ? "GunAttack" : "Attack"); // トリガーを設定
@@ -162,6 +156,22 @@ public class Attack : MonoBehaviour
                     }
 
                     break;
+
+                case AttackType.Protect:
+                    Debug.Log("カウンター");
+                    animator.SetTrigger("Counter");
+                    attackNow = true;
+                    break;
+
+                /*case AttackType.ULT:
+                    if (buttonHoldTime >= ULTPressed)
+                    {
+                        Debug.Log("ULT");
+                        //animator.SetTrigger("ULTAttack"); // トリガーを設定
+                        //attackNow = true; // 攻撃中フラグを設定
+                    }
+                    break;
+
 
                 case AttackType.FrontAttack:
                     Debug.Log("前攻撃");
@@ -177,12 +187,7 @@ public class Attack : MonoBehaviour
                     }
 
                     break;
-                case AttackType.WeaponChange:
-                    Debug.Log("武器変更");
-                    animator.SetTrigger("Change");
-                    isGun = !isGun;
-                    attackNow = true;
-                    break;
+
                 case AttackType.UPAttack:
                     if (Jump.Instance.JumpFlag)
                     {
@@ -190,7 +195,7 @@ public class Attack : MonoBehaviour
                         animator.SetTrigger(isGun ? "GunUPAttack" : "UPAttack"); // トリガーを設定
                         attackNow = true; // 攻撃中フラグを設定
                     }
-                    break;
+                    break;*/
             }
         }
     }
