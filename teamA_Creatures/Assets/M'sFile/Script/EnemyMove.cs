@@ -357,9 +357,10 @@ public class EnemyMove : MonoBehaviour
     /// </summary>
     void OnTriggerEnter(Collider collision)
     {
-        if (collision.CompareTag("PlayerHit"))
+        if (collision.CompareTag("PlayerJab"))
         {
             Debug.Log("プレイヤーの攻撃にあたった");
+            ReduceEnemyHP(10);
             _currentState = EnemyState.Guard; // 状態をガードに変更
         }
         if (collision.CompareTag("Wall"))
