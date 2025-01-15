@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public class EnemyMove : MonoBehaviour
+public class EnemyMove2 : MonoBehaviour
 {
     // 敵のステータス関連
     public float enemyHP; // 敵のHP
     int _enemyGaurd;
-    [Header("Enemyステータス")]
     [SerializeField] float speed = 4; // 敵の動くスピード
     [SerializeField] float backSpeed = 3; // 敵の動くスピード
     public bool isFollow = false; // 追従するかどうかのフラグ
@@ -31,14 +30,7 @@ public class EnemyMove : MonoBehaviour
     Animator _enemyAnim; // Animatorコンポーネント
     bool _isAnimActive = true; // フラグの初期状態
 
-    public GameObject _chainCube;
-
-    Vector2 _directionX;
-
-    bool _isWallFlag = false;
-
     private EnemyAttack enemyAttack; // EnemyAttack スクリプトの参照
-    private GameObject attackCube;  // 攻撃キューブの参照
 
     /// <summary>
     /// エネミーの列挙型
@@ -67,6 +59,7 @@ public class EnemyMove : MonoBehaviour
         // エネミーとプレイヤーの距離計測
         _distancePtoE = Vector2.Distance(transform.position, _playerTr.position);
         _enemyAnim = GetComponent<Animator>(); // Animatorを取得
+        //同じオブジェクトにスクリプトがついているか確認
         enemyAttack = GetComponent<EnemyAttack>();
     }
     #endregion
@@ -75,15 +68,26 @@ public class EnemyMove : MonoBehaviour
     {
         // 互いの距離計測 + 敵の向き交換
         _distancePtoE = Vector2.Distance(transform.position, _playerTr.position);
-        Debug.Log("距離計測中");
-        _directionX = _playerTr.position - transform.position;
+        Vector2 direction = _playerTr.position - transform.position;
 
+        if (direction.x > 0)
+        {
+            transform.rotation = Quaternion.Euler(0, 90, 0);
+            Debug.Log("プレイヤーは右側にいます");
+        }
+        else if (direction.x < 0)
+        {
+            transform.rotation = Quaternion.Euler(0, -90, 0);
+            Debug.Log("プレイヤーは左側にいます");
+        }
         //DebugKey();
         switch (_currentState)
         {
             case EnemyState.Idle:
-                Debug.Log("アイドルだよ～ん");
                 HandleIdle();
+                // 距離に基づく状態遷移
+                UpdateState();
+                Debug.Log("アイドル状態になりました");
                 break;
             case EnemyState.MiddleFollow:
                 HandleMiddleFollow();
@@ -115,8 +119,7 @@ public class EnemyMove : MonoBehaviour
     #region 状態遷移を管理するプログラムたち
     void HandleIdle()
     {
-        if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
-        StartCoroutine(EnemyIdle());
+        _currentState = EnemyState.Idle;
     }
     void HandleMiddleFollow()
     {
@@ -141,20 +144,19 @@ public class EnemyMove : MonoBehaviour
     }
     void HandlePunch()
     {
-        if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
+        //if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
         StartCoroutine(EnemyPunch());
         //_currentState = EnemyState.Idle;
     }
     void HandleTackle()
     {
-        Debug.Log("タックル呼び出し処理開始！！！");
-        if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
+        //if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
         StartCoroutine(EnemyTackle());
         //_currentState = EnemyState.Idle;
     }
     void HandleChain()
     {
-        if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
+        //if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
         StartCoroutine(EnemyChain());
         //_currentState = EnemyState.Idle;
     }
@@ -230,35 +232,24 @@ public class EnemyMove : MonoBehaviour
     IEnumerator EnemyPunch()
     {
         Debug.Log("パンチ！");
-        _isCoroutineRunning = true;
         _isAnimActive = true;
         _enemyAnim.SetBool("RightPunch", true);
         _enemyAnim.SetBool("LeftPunch", true);
-        
-        while (true)
-        {
-            
-            // 現在のアニメーションステート情報を取得
-            AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
-            enemyAttack.Punch();
-            // 敵を前進させる
-            transform.position += transform.forward * forwardSpeed * Time.deltaTime;
-            if (currentState.normalizedTime >= 1f && _isAnimActive )
-            {
-                
-                break;
-            }
-            // フレーム間の待機
-            yield return null;
-        }
+        enemyAttack.Punch();
+        // 現在のアニメーションステート情報を取得
+        AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
+        // 敵を前進させる
+        transform.position += transform.forward * forwardSpeed * Time.deltaTime;
         // 現在のアニメーションが終了したかを確認
-        _isAnimActive = false; // フラグをオフにする
-        _isCoroutineRunning = false;
-        _enemyAnim.SetBool("RightPunch", false);
-        _enemyAnim.SetBool("LeftPunch", false);
-        Debug.Log("パンチ終了");
-        yield return new WaitForSeconds(0.1f);
-        _currentState = EnemyState.Idle;
+        if (currentState.normalizedTime >= 1f && _isAnimActive)
+        {
+            _isAnimActive = false; // フラグをオフにする
+            _enemyAnim.SetBool("RightPunch", false);
+            _enemyAnim.SetBool("LeftPunch", false);
+            Debug.Log("パンチ終了");
+            yield return new WaitForSeconds(0.1f);
+            _currentState = EnemyState.Idle;
+        }
     }
     /// <summary>
     /// タックル攻撃
@@ -267,27 +258,21 @@ public class EnemyMove : MonoBehaviour
     IEnumerator EnemyTackle()
     {
         Debug.Log("タックル！");
-        _isCoroutineRunning = true;
+        _isAnimActive = true;
         _enemyAnim.SetBool("Tackle", true);
+        // 敵を前進させる
+        transform.position += transform.forward * forwardSpeed * Time.deltaTime;
+        // 現在のアニメーションステート情報を取得
+        AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
         // 現在のアニメーションが終了したかを確認
-        while (true)
+        if (_distancePtoE <= shortDistance + 1f)
         {
-            // 敵を前進させる
-            transform.position += transform.forward * forwardSpeed * Time.deltaTime;
-            float _distancePtoE2 = Vector2.Distance(transform.position, _playerTr.position);
-            if (_distancePtoE2 <= shortDistance + 1f || _isWallFlag)
-            {
-                break;
-            }
-            // フレーム間の待機
-            yield return null;
+            _isAnimActive = false; // フラグをオフにする
+            _enemyAnim.SetBool("Tackle", false);
+            Debug.Log("タックル終了");
+            yield return new WaitForSeconds(0.1f);
+            _currentState = EnemyState.Idle;
         }
-        _isWallFlag = false;
-        _enemyAnim.SetBool("Tackle", false);
-        Debug.Log("タックル終了");
-        yield return new WaitForSeconds(0.1f);
-        _currentState = EnemyState.Idle;
-        _isCoroutineRunning = false;
     }
 
     /// <summary>
@@ -297,75 +282,34 @@ public class EnemyMove : MonoBehaviour
     IEnumerator EnemyChain()
     {
         Debug.Log("チェーン！");
-        _isCoroutineRunning = true;
         _isAnimActive = true;
         _enemyAnim.SetBool("Chain", true);
-        ChainAtack();
-        
+        // 現在のアニメーションステート情報を取得
+        AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
         // 現在のアニメーションが終了したかを確認
-        while (true)
+        if (currentState.normalizedTime >= 1f && _isAnimActive)
         {
-            // 現在のアニメーションステート情報を取得
-            AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
-            if (currentState.normalizedTime >= 1f && _isAnimActive)
-            {
-                break;
-            }
-            // フレーム間の待機
-            yield return null;
+            _isAnimActive = false; // フラグをオフにする
+            _enemyAnim.SetBool("Chain", false);
+            Debug.Log("チェーン終了");
+            yield return new WaitForSeconds(0.1f);
+            _currentState = EnemyState.Idle;
         }
-        _isAnimActive = false; // フラグをオフにする
-        _isCoroutineRunning = false;
-        _enemyAnim.SetBool("Chain", false);
-        Debug.Log("チェーン終了");
-        yield return new WaitForSeconds(0.1f);
-        _currentState = EnemyState.Idle;
-
     }
-
-
     IEnumerator EnemyIdle()
     {
-        _isCoroutineRunning = true;
-        if (_directionX.x > 0)
-        {
-            transform.rotation = Quaternion.Euler(0, 90, 0);
-            Debug.Log("プレイヤーは右側にいます");
-        }
-        else if (_directionX.x < 0)
-        {
-            transform.rotation = Quaternion.Euler(0, -90, 0);
-            Debug.Log("プレイヤーは左側にいます");
-        }
-        float _IdleRnd = Random.Range(1, 3);
-        yield return new WaitForSeconds(_IdleRnd);
-        _currentState = EnemyState.Idle;
-        _isCoroutineRunning = false;
-        // 距離に基づく状態遷移
-        UpdateState();
-        Debug.Log("アイドル状態になりました");
+        yield return new WaitForSeconds(3);
     }
     #endregion
-
-    void ChainAtack()
-    {
-        Vector3 offset = new Vector3(-1, 0, 0);
-        GameObject chianAtack = Instantiate(_chainCube, transform.position + offset, Quaternion.identity);//キューブを生成
-    }
     /// <summary>
-    /// 攻撃を受けたか+壁に当たったかの判定を返す
+    /// 攻撃を受けたかの判定を返す
     /// </summary>
     void OnTriggerEnter(Collider collision)
     {
-        if (collision.CompareTag("PlayerHit"))
+        if (collision.CompareTag("Enemy"))
         {
             Debug.Log("プレイヤーの攻撃にあたった");
             _currentState = EnemyState.Guard; // 状態をガードに変更
-        }
-        if (collision.CompareTag("Wall"))
-        {
-            Debug.Log("プレイヤーの攻撃にあたった");
-            _isWallFlag = true;
         }
     }
     /// <summary>
@@ -466,16 +410,6 @@ public class EnemyMove : MonoBehaviour
             isFollow = true;
         }
         else if (Input.GetKey(KeyCode.X))
-        {
-            Debug.Log("isFollow" + isFollow);
-            isFollow = false;
-        }
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            Debug.Log("isFollow" + isFollow);
-            _currentState = EnemyState.Chain; // チェーン投げで攻撃
-        }
-        else if (Input.GetKeyDown(KeyCode.L))
         {
             Debug.Log("isFollow" + isFollow);
             isFollow = false;
