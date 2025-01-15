@@ -37,6 +37,8 @@ public class EnemyMove : MonoBehaviour
 
     bool _isWallFlag = false;
 
+    bool _isAtackEnd = false;
+
     /// <summary>
     /// エネミーの列挙型
     /// </summary>
@@ -49,9 +51,10 @@ public class EnemyMove : MonoBehaviour
         LongRetreat,      // 遠距離まで退避
         Guard,            // ガード
         Punch,            // 近距離攻撃
+        Smash,            // ガードブレイク攻撃
         Tackle,           // 中距離攻撃
         Chain,            // 遠距離攻撃
-        Walk
+        Walk              // 歩いている
     }
     #region スタートたち
     void Start()
@@ -60,7 +63,7 @@ public class EnemyMove : MonoBehaviour
         _playerTr = GameObject.FindGameObjectWithTag("Player").transform;
         // リジットボディの設定
         _rb = GetComponent<Rigidbody>();
-        _rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+        _rb.constraints = RigidbodyConstraints.FreezePositionZ /*| RigidbodyConstraints.FreezePositionY*/ | RigidbodyConstraints.FreezeRotation;
         // エネミーとプレイヤーの距離計測
         _distancePtoE = Vector2.Distance(transform.position, _playerTr.position);
         _enemyAnim = GetComponent<Animator>(); // Animatorを取得
@@ -98,6 +101,9 @@ public class EnemyMove : MonoBehaviour
                 break;
             case EnemyState.Punch:
                 HandlePunch();
+                break;
+            case EnemyState.Smash:
+                HandleSmash();
                 break;
             case EnemyState.Tackle:
                 HandleTackle();
@@ -141,6 +147,12 @@ public class EnemyMove : MonoBehaviour
         StartCoroutine(EnemyPunch());
         //_currentState = EnemyState.Idle;
     }
+    void HandleSmash()
+    {
+        if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
+        StartCoroutine(EnemySmash());
+        //_currentState = EnemyState.Idle;
+    }
     void HandleTackle()
     {
         Debug.Log("タックル呼び出し処理開始！！！");
@@ -164,9 +176,13 @@ public class EnemyMove : MonoBehaviour
         // 距離に基づく状態遷移
         if (_distancePtoE < middleDistance)
         {
-            if (randomState <= 90)
+            if (randomState <= 75)
             {
                 _currentState = EnemyState.Punch; // 近距離で攻撃
+            }
+            else if (randomState <= 90)
+            {
+                _currentState = EnemyState.Smash; // 近距離で攻撃
             }
             else if (randomState <= 100)
             {
@@ -237,7 +253,7 @@ public class EnemyMove : MonoBehaviour
             AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
             // 敵を前進させる
             transform.position += transform.forward * forwardSpeed * Time.deltaTime;
-            if (currentState.normalizedTime >= 1f && _isAnimActive)
+            if (_isAtackEnd&&/*currentState.normalizedTime >= 1f &&*/ _isAnimActive)
             {
                 break;
             }
@@ -245,11 +261,52 @@ public class EnemyMove : MonoBehaviour
             yield return null;
         }
         // 現在のアニメーションが終了したかを確認
+        _isAtackEnd = false;
         _isAnimActive = false; // フラグをオフにする
         _isCoroutineRunning = false;
         _enemyAnim.SetBool("RightPunch", false);
         _enemyAnim.SetBool("LeftPunch", false);
         Debug.Log("パンチ終了");
+        yield return new WaitForSeconds(0.1f);
+        int smashRnd = Random.Range(1, 10);
+        if (smashRnd <= 3)
+        {
+            _currentState = EnemyState.Smash;
+        }
+        else
+        {
+            _currentState = EnemyState.Idle;
+        }
+    }
+    /// <summary>
+    /// ガードブレイク攻撃
+    /// </summary>
+    IEnumerator EnemySmash()
+    {
+        Debug.Log("ガードブレイク！");
+        _isCoroutineRunning = true;
+        _isAnimActive = true;
+        _enemyAnim.SetBool("Smash", true);
+        while (true)
+        {
+            // 現在のアニメーションステート情報を取得
+            AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
+            // 敵を前進させる
+            transform.position += transform.forward * forwardSpeed * Time.deltaTime;
+            if (_isAtackEnd &&/*currentState.normalizedTime >= 1f &&*/ _isAnimActive)
+            {
+                break;
+            }
+            // フレーム間の待機
+            yield return null;
+            Debug.Log("ガードブレイク中です");
+        }
+        // 現在のアニメーションが終了したかを確認
+        _isAtackEnd = false;
+        _isAnimActive = false; // フラグをオフにする
+        _isCoroutineRunning = false;
+        _enemyAnim.SetBool("Smash", false);
+        Debug.Log("ガードブレイク終了");
         yield return new WaitForSeconds(0.1f);
         _currentState = EnemyState.Idle;
     }
@@ -293,20 +350,21 @@ public class EnemyMove : MonoBehaviour
         _isCoroutineRunning = true;
         _isAnimActive = true;
         _enemyAnim.SetBool("Chain", true);
-        ChainAtack();
+        //ChainAtack();
         
         // 現在のアニメーションが終了したかを確認
         while (true)
         {
             // 現在のアニメーションステート情報を取得
             AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
-            if (currentState.normalizedTime >= 1f && _isAnimActive)
+            if (_isAtackEnd &&/*currentState.normalizedTime >= 1f &&*/ _isAnimActive)
             {
                 break;
             }
             // フレーム間の待機
             yield return null;
         }
+        _isAtackEnd = false;
         _isAnimActive = false; // フラグをオフにする
         _isCoroutineRunning = false;
         _enemyAnim.SetBool("Chain", false);
@@ -340,11 +398,11 @@ public class EnemyMove : MonoBehaviour
     }
     #endregion
 
-    void ChainAtack()
-    {
-        Vector3 offset = new Vector3(-1, 0, 0);
-        GameObject chianAtack = Instantiate(_chainCube, transform.position + offset, Quaternion.identity);//キューブを生成
-    }
+    //void ChainAtack()
+    //{
+    //    Vector3 offset = new Vector3(-1, 0, 0);
+    //    GameObject chianAtack = Instantiate(_chainCube, transform.position + offset, Quaternion.identity);//キューブを生成
+    //}
     /// <summary>
     /// 攻撃を受けたか+壁に当たったかの判定を返す
     /// </summary>
@@ -358,7 +416,7 @@ public class EnemyMove : MonoBehaviour
         }
         if (collision.CompareTag("Wall"))
         {
-            Debug.Log("プレイヤーの攻撃にあたった");
+            Debug.Log("壁に当たった");
             _isWallFlag = true;
         }
     }
@@ -448,6 +506,16 @@ public class EnemyMove : MonoBehaviour
             Vector3 newPosition = transform.position + (directionAwayFromPlayer * backSpeed * Time.deltaTime);
             _rb.MovePosition(newPosition);
         }
+    }
+
+    void EnemyAtackEnd()
+    {
+        _enemyAnim.SetBool("Chain", false);
+        _enemyAnim.SetBool("RightPunch", false);
+        _enemyAnim.SetBool("LeftPunch", false);
+        _enemyAnim.SetBool("Smash", false);
+        _isAtackEnd = true;
+        Debug.Log("エネミーアタックエンド！！！");
     }
     /// <summary>
     /// デバッグ関連を詰め込んだ関数
