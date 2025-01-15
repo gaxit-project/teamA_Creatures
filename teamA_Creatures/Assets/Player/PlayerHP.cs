@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 public class PlayerHP : MonoBehaviour
 {
-    private int playerMaxHP;
-    private int playerHP;
+    private float playerMaxHP;
+    private float playerHP;
 
     public Slider slider;
     void Start()
@@ -16,7 +16,7 @@ public class PlayerHP : MonoBehaviour
 
     private void Update()
     {
-        slider.value = (float)playerHP / (float)playerMaxHP;
+        slider.value = playerHP / playerMaxHP;
     }
     public void Button()
     {
