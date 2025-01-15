@@ -72,12 +72,12 @@ public class MoveComponent : MonoBehaviour
                     Shield.Instance.OffShield();
                 }
             }
-            else
+            else if ( Down < -0.4)
             {
                 Debug.Log("Shield");
                 animator.SetBool("Shield", true);
                 animator.SetBool("run", false);
-
+                runningNow = false;
                 if (audioSource.isPlaying)
                 {
                     audioSource.Stop();
@@ -106,14 +106,15 @@ public class MoveComponent : MonoBehaviour
         }
         if (Mathf.Abs(Speed) == 0)
         {
-            Runwait += 0.1f*Time.deltaTime;
+            Runwait += 0.25f * Time.deltaTime;
         }
         if (Mathf.Abs(Speed)> 0.4)
         {
             Runwait = 0;
             left = Speed > 0;
-            transform.rotation = Quaternion.Euler(0, left ? -90 : 90, 0);
         }
+        transform.rotation = Quaternion.Euler(0, left ? -90 : 90, 0);
+
         if (runningNow)
         {
             animator.SetBool("run",true);
@@ -134,7 +135,6 @@ public class MoveComponent : MonoBehaviour
                 yield return null;
                 continue;
             }
-            Runwait += Time.deltaTime;
             yield return null;
         }
         runningNow = false;
