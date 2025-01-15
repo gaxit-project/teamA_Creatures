@@ -334,6 +334,9 @@ MonoBehaviour:
   left: 0
   ATFieldNow: 0
   runningSound: {fileID: 8300000, guid: 6fd2bdce13da6a9488e291ab272176c2, type: 3}
+  runningNow: 0
+  RunMWait: 0.05
+  Runwait: 0
 --- !u!114 &13462070
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -716,7 +719,6 @@ GameObject:
   - component: {fileID: 1155886842}
   - component: {fileID: 1155886841}
   - component: {fileID: 1155886840}
-  - component: {fileID: 1155886843}
   - component: {fileID: 1155886839}
   - component: {fileID: 1155886844}
   m_Layer: 0
@@ -812,18 +814,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1155886843
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1155886838}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 836111792fbedc04d9b5b150fa7f0893, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!54 &1155886844
 Rigidbody:
   m_ObjectHideFlags: 0

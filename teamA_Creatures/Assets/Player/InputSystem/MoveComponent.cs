@@ -13,6 +13,9 @@ public class MoveComponent : MonoBehaviour
     public bool left;
     public bool ATFieldNow;
     public AudioClip runningSound;
+    public bool runningNow;
+    public float RunMWait;
+    public float Runwait;
     private void Awake()
     {
         if (Instance == null)
@@ -30,6 +33,7 @@ public class MoveComponent : MonoBehaviour
     {
         left = false;
         ATFieldNow = false;
+        runningNow = false;
     }
 
     /// <summary>
@@ -42,11 +46,18 @@ public class MoveComponent : MonoBehaviour
         if (Mathf.Abs(Speed) > Mathf.Abs(Down)||Down>0)
         {
             transform.Translate(transform.TransformDirection(new Vector2(Speed, 0) * moveSpeed * Time.deltaTime));
+
         }
         if (JumpComponent.Instance.jumpFlag&&(Speed!=0||Down!=0))
         {
             if (Mathf.Abs(Speed) > -Down)
             {
+                if (!runningNow)
+                {
+                    StartCoroutine(RunNow());
+                }
+
+
                 Debug.Log("run");
                 animator.SetBool("run", true);
                 if (!audioSource.isPlaying)
@@ -76,7 +87,6 @@ public class MoveComponent : MonoBehaviour
                 {
                     Shield.Instance.OnShield();
                 }
-
             }
         }
         else
@@ -94,13 +104,39 @@ public class MoveComponent : MonoBehaviour
                 Shield.Instance.OffShield();
             }
         }
-
-        if (Speed != 0)
+        if (Mathf.Abs(Speed) == 0)
         {
-            left = Speed > 0;
+            Runwait += 0.1f*Time.deltaTime;
         }
+        if (Mathf.Abs(Speed)> 0.4)
+        {
+            Runwait = 0;
+            left = Speed > 0;
+            transform.rotation = Quaternion.Euler(0, left ? -90 : 90, 0);
+        }
+        if (runningNow)
+        {
+            animator.SetBool("run",true);
+        }
+        else
+        {
+            animator.SetBool("run",false);
+        }
+    }
 
-        transform.rotation = Quaternion.Euler(0,left ? -90:90, 0);
-        
+    private IEnumerator RunNow()
+    {
+        runningNow = true;
+        while (RunMWait > Runwait)
+        {
+            if (Runwait == 0f)
+            {
+                yield return null;
+                continue;
+            }
+            Runwait += Time.deltaTime;
+            yield return null;
+        }
+        runningNow = false;
     }
 }
