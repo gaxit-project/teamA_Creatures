@@ -24,7 +24,7 @@ public class PlayerHP : MonoBehaviour
     }
     public void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.tag == "enemy")
+        if(other.gameObject.tag == "Enemy")
         {
             playerHP = playerHP-10;
             
