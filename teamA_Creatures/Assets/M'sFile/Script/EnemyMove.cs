@@ -37,6 +37,7 @@ public class EnemyMove : MonoBehaviour
 
     bool _isWallFlag = false;
 
+    private EnemyHit cubeController; // EnemyAttack スクリプトの参照
     /// <summary>
     /// エネミーの列挙型
     /// </summary>
@@ -64,6 +65,7 @@ public class EnemyMove : MonoBehaviour
         // エネミーとプレイヤーの距離計測
         _distancePtoE = Vector2.Distance(transform.position, _playerTr.position);
         _enemyAnim = GetComponent<Animator>(); // Animatorを取得
+        cubeController = GetComponent<EnemyHit>();
     }
     #endregion
     #region アップデートたち
@@ -230,20 +232,23 @@ public class EnemyMove : MonoBehaviour
         _isAnimActive = true;
         _enemyAnim.SetBool("RightPunch", true);
         _enemyAnim.SetBool("LeftPunch", true);
-        
-        while(true)
+        cubeController.Punch();
+        while (true)
         {
+            
             // 現在のアニメーションステート情報を取得
             AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
             // 敵を前進させる
             transform.position += transform.forward * forwardSpeed * Time.deltaTime;
-            if (currentState.normalizedTime >= 1f && _isAnimActive)
+            if (currentState.normalizedTime >= 1f && _isAnimActive )
             {
+                
                 break;
             }
             // フレーム間の待機
             yield return null;
         }
+        EnemyEndAttack();
         // 現在のアニメーションが終了したかを確認
         _isAnimActive = false; // フラグをオフにする
         _isCoroutineRunning = false;
@@ -482,5 +487,15 @@ public class EnemyMove : MonoBehaviour
         {
             PlayerFollow(10f);
         }
+    }
+
+    public void EnemyEndAttack()
+    {
+        if (cubeController == null)
+        {
+            Debug.LogError("cubeController が設定されていません！");
+            return;
+        }
+        cubeController.DestroyCube();
     }
 }
