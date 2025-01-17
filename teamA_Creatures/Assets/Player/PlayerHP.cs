@@ -22,12 +22,12 @@ public class PlayerHP : MonoBehaviour
     {
         playerHP = playerHP - 7;
     }
-    public void OnTriggerEnter(Collider other)
+    public void OnCollisionEnter(Collision collision)
     {
-        if(other.gameObject.tag == "Enemy")
+        if (collision.gameObject.tag == "Enemy")
         {
-            playerHP = playerHP-10;
-            
+            playerHP = playerHP - 10;
+
         }
     }
 }
