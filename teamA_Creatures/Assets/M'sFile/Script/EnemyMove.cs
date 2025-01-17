@@ -15,7 +15,8 @@ public class EnemyMove : MonoBehaviour
     float _distanceAway = 5f; // プレイヤーから離れる距離
     float _distanceApp = 1.5f; // プレイヤーに近づく距離
     float _distancePtoE;  // エネミーとプレイヤーの距離を入れる変数
-    float forwardSpeed = 3f;  // 攻撃するときに前進する速度
+    float forwardSpeed = 1.2f;  // 攻撃するときに前進する速度
+    float tackleSpeed = 5f;  // 攻撃するときに前進する速度
     // プレイヤーとの距離関連
     public float shortDistance; // 近距離を測る変数
     public float middleDistance; // 中距離を測る変数
@@ -63,7 +64,7 @@ public class EnemyMove : MonoBehaviour
         _playerTr = GameObject.FindGameObjectWithTag("Player").transform;
         // リジットボディの設定
         _rb = GetComponent<Rigidbody>();
-        _rb.constraints = RigidbodyConstraints.FreezePositionZ /*| RigidbodyConstraints.FreezePositionY*/ | RigidbodyConstraints.FreezeRotation;
+        _rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
         // エネミーとプレイヤーの距離計測
         _distancePtoE = Vector2.Distance(transform.position, _playerTr.position);
         _enemyAnim = GetComponent<Animator>(); // Animatorを取得
@@ -211,7 +212,7 @@ public class EnemyMove : MonoBehaviour
         {
             if (randomState <= 50)
             {
-                _currentState = EnemyState.Chain; // チェーン投げで攻撃
+                _currentState = EnemyState.Tackle; // チェーン投げで攻撃
             }
             else if (randomState <= 80)
             {
@@ -319,11 +320,12 @@ public class EnemyMove : MonoBehaviour
         Debug.Log("タックル！");
         _isCoroutineRunning = true;
         _enemyAnim.SetBool("Tackle", true);
+        yield return new WaitForSeconds(1f);
         // 現在のアニメーションが終了したかを確認
         while (true)
         {
             // 敵を前進させる
-            transform.position += transform.forward * forwardSpeed * Time.deltaTime;
+            transform.position += transform.forward * tackleSpeed * Time.deltaTime;
             float _distancePtoE2 = Vector2.Distance(transform.position, _playerTr.position);
             if (_distancePtoE2 <= shortDistance + 1f || _isWallFlag)
             {
@@ -335,7 +337,6 @@ public class EnemyMove : MonoBehaviour
         _isWallFlag = false;
         _enemyAnim.SetBool("Tackle", false);
         Debug.Log("タックル終了");
-        yield return new WaitForSeconds(0.1f);
         _currentState = EnemyState.Idle;
         _isCoroutineRunning = false;
     }
