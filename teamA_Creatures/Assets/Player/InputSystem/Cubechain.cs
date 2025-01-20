@@ -32,22 +32,23 @@ public void OnTriggerEnter(Collider other)
             Cubeee.Instance.chainAttackDone = true; // 攻撃終了フラグ
             Cubeee.Instance.chainAttackNow = false; // 攻撃中フラグを解除n
         }
-        else if(other.gameObject.CompareTag("Enemy"))
-        {
-            Debug.Log($"無視するタグ: {other.gameObject.tag}");
-        }
     }
 
 void Update()
     {
 
+        StartCoroutine(ChainLong());
+    }
 
+    IEnumerator ChainLong()
+    {
         if (Cubeee.Instance.chainAttackNow)
         {
-            heightPos += 10f*Time.deltaTime;
+            heightPos += 10f * Time.deltaTime;
             transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, heightPos);
             transform.position += new Vector3(5f, 0, 0) * Time.deltaTime;
         }
+        //ここで伸ばし切った後一定時間止めることもできる
         if (Cubeee.Instance.chainAttackDone)
         {
             heightPos -= 10f * Time.deltaTime;
@@ -59,11 +60,8 @@ void Update()
                 Cubeee.Instance.chainAttackDone = false;
                 Cubeee.Instance.chainAttackNow = false;
                 Destroy(this.gameObject);
-
-
             }
         }
-
-
+        yield return null;
     }
 }
