@@ -27,7 +27,7 @@ public class chain : MonoBehaviour
     public Vector3 EnemyChainNow;
 
     public float ChainSpeed=10f;
-    private void ChainAttack()
+    public void ChainAttack()
     {
         EnemyChain = Enemy.transform.position + Enemy.transform.forward * 2f + Enemy.transform.up * 2f;
         ChainCube = Instantiate(chainCube, EnemyChain, Quaternion.identity);
