@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4690835379517689990}
   - component: {fileID: 7459791029643488569}
   m_Layer: 0
-  m_Name: Cube2
+  m_Name: BossHit
   m_TagString: EnemyPunch
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
