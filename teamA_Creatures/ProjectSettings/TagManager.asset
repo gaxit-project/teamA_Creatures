@@ -8,8 +8,11 @@ TagManager:
   - Enemy
   - Wall
   - PlayerJab
-  - EnemyPunch
   - ChainAtack
+  - EnemyPunchAttack
+  - EnemyChainAttack
+  - EnemySmashAttack
+  - EnemyTackleAttack
   layers:
   - Default
   - TransparentFX

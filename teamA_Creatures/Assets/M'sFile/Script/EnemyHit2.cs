@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemyHit2 : MonoBehaviour
@@ -14,7 +15,8 @@ public class EnemyHit2 : MonoBehaviour
     {
         if (attackCube != null)
         {
-            attackCube.SetActive(false);
+            Destroy(attackCube);
+            //attackCube.SetActive(false);
         }
     }
 
@@ -57,6 +59,7 @@ public class EnemyHit2 : MonoBehaviour
         spawnPosition.y = transform.position.y + offset.y;
         attackCube = Instantiate(attackCubePrefab, spawnPosition, Quaternion.identity);
         attackCube.transform.localScale = new Vector3(1, 1, 1); // サイズ設定
+        attackCube.tag = "EnemyPunchAttack";
     }
 
 
@@ -85,9 +88,10 @@ public class EnemyHit2 : MonoBehaviour
         spawnPosition.y = transform.position.y + offset.y;
         attackCube = Instantiate(attackCubePrefab, spawnPosition, Quaternion.identity);
         attackCube.transform.localScale = new Vector3(3, 1, 1); // サイズ設定
+        attackCube.tag = "EnemySmashAttack";
     }
 
-    public void Tackle()
+    public void TackleCube()
     {
         if (attackCubePrefab != null)
         {
@@ -110,7 +114,8 @@ public class EnemyHit2 : MonoBehaviour
         Vector3 spawnPosition = transform.position + transform.forward * offset.z;
         spawnPosition.y = transform.position.y + offset.y;
         attackCube = Instantiate(attackCubePrefab, spawnPosition, Quaternion.identity);
-        attackCube.transform.localScale = new Vector3(1, 4, 1); // サイズ設定
+        attackCube.transform.localScale = new Vector3(2f, 4, 1); // サイズ設定
+        attackCube.tag = "EnemyTackleAttack";
     }
 }
 
