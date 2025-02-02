@@ -35,17 +35,21 @@ public class MovePlayer2 : MonoBehaviour
 
     void Update()
     {
-        if (!AttackComponent.Instance.attackNow)
+        if (!PlayerHP.Instance.HitNow)
         {
-            // スティックの移動を取得して動かす
-            velocity = input.PlatformAction.Move.ReadValue<Vector2>();
+            if (!AttackComponent.Instance.attackNow)
+            {
+                // スティックの移動を取得して動かす
+                velocity = input.PlatformAction.Move.ReadValue<Vector2>();
 
-            move.MoveHorizontal(-velocity.x, velocity.y);
-            jump.JumpVertical(velocity.y);
+                move.MoveHorizontal(-velocity.x, velocity.y);
+                jump.JumpVertical(velocity.y);
+            }
+
+
+            AttackButton = (input.PlatformAction.Attack.ReadValue<float>() >= InputSystem.settings.defaultButtonPressPoint);
+            if (AttackButton) attack.Attack();
         }
 
-
-        AttackButton = (input.PlatformAction.Attack.ReadValue<float>() >= InputSystem.settings.defaultButtonPressPoint);
-        if (AttackButton) attack.Attack();
     }
 }
