@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.063576035, g: 0.052026946, b: 0.056728896, a: 1}
+  m_IndirectSpecularColor: {r: 0.06361822, g: 0.052069563, b: 0.056787517, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -4850,13 +4850,7 @@ MonoBehaviour:
   voiceAudioSource: {fileID: 1733926467}
   BGMAudioSource: {fileID: 1733926467}
   SE_List:
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 8300000, guid: 6fd2bdce13da6a9488e291ab272176c2, type: 3}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!4 &1733926465
 Transform:
   m_ObjectHideFlags: 0

@@ -9,11 +9,15 @@ public class AudioManager : MonoBehaviour
     public AudioSource enemyAttackAudioSource;
     public AudioSource playerMovingAudioSource;
     public AudioSource enemyMovingAudioSource;
+    public AudioSource playerRunAudioSource;
+    public AudioSource enemyRunAudioSource;
     public AudioSource settingSceneAudioSource;
-    public AudioSource voiceAudioSource;
+    public AudioSource playerVoiceAudioSource;
+    public AudioSource enemyVoiceAudioSource;
     public AudioSource BGMAudioSource;
 
     [SerializeField] AudioClip[] SE_List;
+    [SerializeField] AudioClip[] BGM_List;
 
     private Dictionary<string, int> SE_Index = new Dictionary<string, int>
     {
@@ -26,12 +30,8 @@ public class AudioManager : MonoBehaviour
         { "BGM", 6 }
     };
 
-    public void PlaySE(string audioSourceName)
+    public void PlaySE(string audioSourceName,int index)
     {
-        int index = SE_Index[audioSourceName];
-
-        AudioClip clip = SE_List[index];
-
         switch (audioSourceName)
         {
             case "playerAttack":
@@ -40,62 +40,71 @@ public class AudioManager : MonoBehaviour
             case "enemyAttack":
                 enemyAttackAudioSource.PlayOneShot(SE_List[index]);
                 break;
-            
+            case "playerMove":
+                enemyAttackAudioSource.PlayOneShot(SE_List[index]);
+                break;
+            case "enemyMove":
+                enemyAttackAudioSource.PlayOneShot(SE_List[index]);
+                break;
             case "settingScene":
                 settingSceneAudioSource.PlayOneShot(SE_List[index]);
                 break;
-            case "voice":
-                voiceAudioSource.PlayOneShot(SE_List[index]);
+            case "playrVoice":
+                playerVoiceAudioSource.PlayOneShot(SE_List[index]);
+                break;
+            case "enemyVoice":
+                enemyVoiceAudioSource.PlayOneShot(SE_List[index]);
                 break;
         }
     }
 
-    public void PlayLoopSE(string audioSourceName)
+    public void PlayLoopSE(string audioSourceName, int index)
     {
-        int index = SE_Index[audioSourceName];
-
-        AudioClip clip = SE_List[index];
-
         switch (audioSourceName)
         {
             case "playerMove":
-                playerMovingAudioSource.Play();
+                playerRunAudioSource.clip = SE_List[index];
+                playerRunAudioSource.Play();
                 break;
             case "enemyMove":
-                enemyMovingAudioSource.Play();
+                enemyRunAudioSource.clip = SE_List[index];
+                enemyRunAudioSource.Play();
                 break;
         }
     }
 
     public void StopLoopSE(string audioSourceName)
     {
-        int index = SE_Index[audioSourceName];
-
-        AudioClip clip = SE_List[index];
-
         switch (audioSourceName)
         {
             case "playerMove":
-                playerMovingAudioSource.Stop();
+                playerRunAudioSource.Stop();
                 break;
             case "enemyMove":
-                enemyMovingAudioSource.Stop();
+                enemyRunAudioSource.Stop();
                 break;
         }
     }
 
-    public void PlayBGM(string audioSourceName)
+    public void PlayBGM(string audioSourceName, int index)
     {
-        int index = SE_Index[audioSourceName];
-
-        AudioClip clip = SE_List[index];
-
         switch (audioSourceName)
         {
             case "BGM":
-                BGMAudioSource.clip = clip;
+                BGMAudioSource.clip = BGM_List[index];
                 BGMAudioSource.Play();
                 break;
         }
+    }
+
+
+    public static AudioManager Instance = null;
+    public static AudioManager GetInstance()
+    {
+        if (Instance == null)
+        {
+            Instance = FindObjectOfType<AudioManager>();
+        }
+        return Instance;
     }
 }

@@ -60,13 +60,14 @@ public class MoveComponent : MonoBehaviour
 
                 Debug.Log("run");
                 animator.SetBool("run", true);
+                //AudioManager.GetInstance().PlayLoopSE("playerMove",0);
                 ///<summary>
-                ///if (!audioSource.isPlaying)
-                ///{
-                    ///audioSource.clip = runningSound;
-                    ///audioSource.loop = true; // 音をループ再生
-                   /// audioSource.Play();
-                ///}
+                if (!audioSource.isPlaying)
+                {
+                    audioSource.clip = runningSound;
+                    audioSource.loop = true; // 音をループ再生
+                    audioSource.Play();
+                }
                 animator.SetBool("Shield", false);
                 if (ATFieldNow)
                 {
@@ -94,7 +95,7 @@ public class MoveComponent : MonoBehaviour
         {
             animator.SetBool("run", false);
             animator.SetBool("Shield", false);
-
+            //AudioManager.GetInstance().StopLoopSE("playerMove");
             if (audioSource.isPlaying)
             {
                 audioSource.Stop();
