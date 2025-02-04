@@ -60,12 +60,13 @@ public class MoveComponent : MonoBehaviour
 
                 Debug.Log("run");
                 animator.SetBool("run", true);
-                if (!audioSource.isPlaying)
-                {
-                    audioSource.clip = runningSound;
-                    audioSource.loop = true; // 音をループ再生
-                    audioSource.Play();
-                }
+                ///<summary>
+                ///if (!audioSource.isPlaying)
+                ///{
+                    ///audioSource.clip = runningSound;
+                    ///audioSource.loop = true; // 音をループ再生
+                   /// audioSource.Play();
+                ///}
                 animator.SetBool("Shield", false);
                 if (ATFieldNow)
                 {
