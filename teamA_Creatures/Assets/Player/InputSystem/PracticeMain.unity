@@ -217,7 +217,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5181673334304101342, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5181673334304101342, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1539,7 +1539,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5181673334304101342, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.41
+      value: 5.89
       objectReference: {fileID: 0}
     - target: {fileID: 5181673334304101342, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1768,14 +1768,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d138dde13307b154b99aa53494b78274, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyHP: 1000
-  speed: 4
-  backSpeed: 3
-  isFollow: 0
-  shortDistance: 2
-  middleDistance: 6
-  longDistance: 12
-  _chainCube: {fileID: 1357208336}
 --- !u!114 &1661968434
 MonoBehaviour:
   m_ObjectHideFlags: 0

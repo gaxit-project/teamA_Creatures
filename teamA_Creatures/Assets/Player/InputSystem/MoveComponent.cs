@@ -60,6 +60,8 @@ public class MoveComponent : MonoBehaviour
 
                 Debug.Log("run");
                 animator.SetBool("run", true);
+                //AudioManager.GetInstance().PlayLoopSE("playerMove",0);
+                ///<summary>
                 if (!audioSource.isPlaying)
                 {
                     audioSource.clip = runningSound;
@@ -93,7 +95,7 @@ public class MoveComponent : MonoBehaviour
         {
             animator.SetBool("run", false);
             animator.SetBool("Shield", false);
-
+            //AudioManager.GetInstance().StopLoopSE("playerMove");
             if (audioSource.isPlaying)
             {
                 audioSource.Stop();

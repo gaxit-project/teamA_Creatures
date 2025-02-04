@@ -61,7 +61,8 @@ public class JumpComponent : MonoBehaviour
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             jumpFlag = false;
             animator.SetTrigger("Jump");
-            jumpAudioSource.PlayOneShot(jumpingSound);
+            //jumpAudioSource.PlayOneShot(jumpingSound);
+            AudioManager.GetInstance().PlaySE("playerMove", 1);
         }
     }
 
@@ -71,7 +72,8 @@ public class JumpComponent : MonoBehaviour
         {
             isLanding = true;
             jumpFlag = true;
-            landingAudioSource.PlayOneShot(landingSound);
+            //landingAudioSource.PlayOneShot(landingSound);
+            AudioManager.GetInstance().PlaySE("playerMove", 2);
             StartCoroutine(ResetLandingFlag());
         }
     }
