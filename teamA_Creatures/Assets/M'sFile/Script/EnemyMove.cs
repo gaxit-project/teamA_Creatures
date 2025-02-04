@@ -21,6 +21,7 @@ public class EnemyMove : MonoBehaviour
     float _acceleration = 3f; // タックル攻撃の加速度
     float _tackleAcceleration = 0f;
     // プレイヤーとの距離関連
+    [Header("Enemy距離計測")]
     public float shortDistance = 2f; // 近距離を測る変数
     public float middleDistance = 6f; // 中距離を測る変数
     public float longDistance = 12f; // 遠距離を測る変数
