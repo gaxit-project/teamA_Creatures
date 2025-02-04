@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 public class EnemyMove : MonoBehaviour
 {
@@ -7,22 +8,23 @@ public class EnemyMove : MonoBehaviour
     public float enemyHP; // 敵のHP
     int _enemyGaurd;
     [Header("Enemyステータス")]
-    [SerializeField] float speed = 4; // 敵の動くスピード
-    [SerializeField] float backSpeed = 3; // 敵の動くスピード
+    [SerializeField] float speed = 1; // 敵の動くスピード
+    [SerializeField] float backSpeed = 2; // 敵の動くスピード
     public bool isFollow = false; // 追従するかどうかのフラグ
     Transform _playerTr; // プレイヤーのTransform
     Rigidbody _rb; // このオブジェクトの Rigidbody
     float _distanceAway = 5f; // プレイヤーから離れる距離
     float _distanceApp = 1.5f; // プレイヤーに近づく距離
     float _distancePtoE;  // エネミーとプレイヤーの距離を入れる変数
-    float forwardSpeed = 1.2f;  // 攻撃するときに前進する速度
+    float forwardSpeed = 1.1f;  // 攻撃するときに前進する速度
     float tackleSpeed = 5f;  // 攻撃するときに前進する速度
     float _acceleration = 3f; // タックル攻撃の加速度
     float _tackleAcceleration = 0f;
     // プレイヤーとの距離関連
-    public float shortDistance; // 近距離を測る変数
-    public float middleDistance; // 中距離を測る変数
-    public float longDistance; // 遠距離を測る変数
+    [Header("Enemy距離計測")]
+    public float shortDistance = 2f; // 近距離を測る変数
+    public float middleDistance = 6f; // 中距離を測る変数
+    public float longDistance = 12f; // 遠距離を測る変数
     private float _targetDistance; // 現在の目標距離
     float _previousValue = 0f; // 前フレームの値を記録する変数
     // 現在の状態を保持する変数
@@ -47,6 +49,15 @@ public class EnemyMove : MonoBehaviour
     private float _moveMaxTimer = 3f; // 退却の最大時間
 
     public chain Chain;
+    public EnemyHit2 EnemyHit2;
+
+
+    AudioSource WalkAudioSource;
+    public AudioClip WalkSound;
+    AudioSource RunAudioSource;
+    public AudioClip RunSound;
+    AudioSource PunchAudioSource;
+    public AudioClip PunchSound;
     /// <summary>
     /// エネミーの列挙型
     /// </summary>
@@ -77,6 +88,9 @@ public class EnemyMove : MonoBehaviour
         _distancePtoE = Vector2.Distance(transform.position, _playerTr.position);
         _enemyAnim = GetComponent<Animator>(); // Animatorを取得
         cubeController = GetComponent<EnemyHit>();
+        WalkAudioSource = gameObject.AddComponent<AudioSource>();
+        RunAudioSource = gameObject.AddComponent<AudioSource>();
+        PunchAudioSource = gameObject.AddComponent<AudioSource>();
     }
     #endregion
     #region アップデートたち
@@ -215,11 +229,11 @@ public class EnemyMove : MonoBehaviour
         }
         else if (_distancePtoE >= middleDistance && _distancePtoE < longDistance)
         {
-            if (randomState <= 0)
+            if (randomState <= 60)
             {
                 _currentState = EnemyState.Tackle; // タックルで攻撃
             }
-            else if (randomState <= 50)
+            else if (randomState <= 80)
             {
                 _currentState = EnemyState.ShortFollow; // 小距離まで追跡
                 _targetDistance = shortDistance + 2f;
@@ -234,7 +248,7 @@ public class EnemyMove : MonoBehaviour
         {
             if (randomState <= 50)
             {
-                _currentState = EnemyState.Chain; // チェーン投げで攻撃
+                _currentState = EnemyState.Tackle; // チェーン投げで攻撃
             }
             else if (randomState <= 80)
             {
@@ -269,10 +283,10 @@ public class EnemyMove : MonoBehaviour
         _isAnimActive = true;
         _enemyAnim.SetBool("RightPunch", true);
         _enemyAnim.CrossFade("RightPunch", 0.1f);
-        cubeController.Punch();
+        PunchAudioSource.PlayOneShot(PunchSound);
+        //cubeController.Punch();
         while (true)
         {
-
             // 現在のアニメーションステート情報を取得
             AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
             // 敵を前進させる
@@ -290,9 +304,8 @@ public class EnemyMove : MonoBehaviour
         // 現在のアニメーションが終了したかを確認
         _isAtackEnd = false;
         _isAnimActive = false; // フラグをオフにする
-        
+        _enemyAnim.SetBool("RightPunch", false);
         Debug.Log("右パンチ終了");
-        yield return new WaitForSeconds(0.1f);
         yield return null;
         _currentState = EnemyState.LeftPunch;
         _isCoroutineRunning = false;
@@ -308,7 +321,8 @@ public class EnemyMove : MonoBehaviour
         _isAnimActive = true;
         _enemyAnim.SetBool("LeftPunch", true);
         _enemyAnim.CrossFade("LeftPunch", 0.1f);
-        cubeController.Punch();
+        PunchAudioSource.PlayOneShot(PunchSound);
+        //cubeController.Punch();
         while (true)
         {
 
@@ -331,9 +345,7 @@ public class EnemyMove : MonoBehaviour
         _isAnimActive = false; // フラグをオフにする
        
         _enemyAnim.SetBool("LeftPunch", false);
-        _enemyAnim.SetBool("RightPunch", false);
         Debug.Log("左パンチ終了");
-        yield return new WaitForSeconds(0.1f);
         yield return null;
         int smashRnd = Random.Range(1, 10);
         if (smashRnd <= 3)
@@ -390,14 +402,15 @@ public class EnemyMove : MonoBehaviour
         _isCoroutineRunning = true;
         _enemyAnim.SetBool("Tackle", true);
         _enemyAnim.CrossFade("Tackle", 0.1f);
-        tackleSpeed = 7f;
+        tackleSpeed = 5f;
+        RunAudioSource.clip = RunSound;
+        RunAudioSource.Play();
         // 現在のアニメーションが終了したかを確認
         while (true)
         {
             // 敵を前進させる
             transform.position += transform.forward * tackleSpeed * Time.deltaTime;
             _tackleAcceleration += Time.deltaTime;
-            Debug.Log(_tackleAcceleration);
             if(_tackleAcceleration >= 0.3f)
             {
                 tackleSpeed += _acceleration;
@@ -406,11 +419,14 @@ public class EnemyMove : MonoBehaviour
             float _distancePtoE2 = Vector2.Distance(transform.position, _playerTr.position);
             if (_distancePtoE2 <= shortDistance + 1f || _isWallFlag)
             {
+                tackleSpeed = 0f;
                 break;
             }
             // フレーム間の待機
             yield return null;
         }
+        EnemyHit2.DestroyCube();
+        RunAudioSource.Stop();
         _isWallFlag = false;
         _enemyAnim.SetBool("Tackle", false);
         Debug.Log("タックル終了");
@@ -495,6 +511,14 @@ public class EnemyMove : MonoBehaviour
             _isWallFlag = true;
         }
     }
+    private void OnTriggerStay(Collider collision)
+    {
+        if (collision.CompareTag("Wall"))
+        {
+            Debug.Log("壁に当たった");
+            _isWallFlag = true;
+        }
+    }
     /// <summary>
     /// 敵のHPを減らしたりする
     /// </summary>
@@ -562,6 +586,8 @@ public class EnemyMove : MonoBehaviour
         _enemyAnim.SetBool("Walk", true);
         _enemyAnim.CrossFade("Walk", 0.1f);
         _isCoroutineRunning = true;
+        WalkAudioSource.clip = WalkSound;
+        WalkAudioSource.Play();
         while (true)
         {
             _moveTimer += Time.deltaTime;
@@ -577,6 +603,7 @@ public class EnemyMove : MonoBehaviour
         }
         Debug.Log("追う終了！！");
         _moveTimer = 0f;
+        WalkAudioSource.Stop();
         _currentState = EnemyState.Idle; // 到達後Idleに戻る
         _enemyAnim.SetBool("Walk", false);
         _isCoroutineRunning = false;
@@ -607,6 +634,8 @@ public class EnemyMove : MonoBehaviour
         //}
         _enemyAnim.SetBool("Walk", true);
         _enemyAnim.CrossFade("Walk", 0.1f);
+        WalkAudioSource.clip = WalkSound;
+        WalkAudioSource.Play();
         _isCoroutineRunning = true;
         while (true)
         {
@@ -624,6 +653,7 @@ public class EnemyMove : MonoBehaviour
         }
         Debug.Log("逃げる終了！！");
         _moveTimer = 0f;
+        WalkAudioSource.Stop();
         _currentState = EnemyState.Idle; // 到達後Idleに戻る
         _enemyAnim.SetBool("Walk", false);
         _isCoroutineRunning = false;
