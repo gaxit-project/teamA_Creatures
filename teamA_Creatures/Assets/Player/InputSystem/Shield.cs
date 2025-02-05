@@ -22,6 +22,13 @@ public class Shield : MonoBehaviour
         }
     }
 
+    public void OnCollishonEnter(Collider collider)
+    {
+        if (collider.gameObject.tag == "Enemy")
+        {
+            Debug.Log("1");
+        }
+    }
     public void OnShield()
     {
         if(ShieldInstance == null)

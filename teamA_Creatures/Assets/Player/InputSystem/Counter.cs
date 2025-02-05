@@ -23,7 +23,7 @@ public class Counter : MonoBehaviour
 
         if (other.gameObject.tag == "Enemy" && AttackComponent.Instance.CounterRange) 
         {
-            Debug.Log("1");
+            Debug.Log("Counter");
             AttackComponent.Instance.Countered = true;
         }
     }

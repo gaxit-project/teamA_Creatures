@@ -24,12 +24,14 @@ public class PlayerHP : MonoBehaviour
     public Slider slider;
 
     public bool HitNow;
+    public bool muteki;
     void Start()
     {
         playerMaxHP = 100;
         playerHP = playerMaxHP;
         animator = GetComponent<Animator>();
         HitNow = false;
+        muteki = false;
     }
 
     private void Update()
@@ -50,47 +52,57 @@ public class PlayerHP : MonoBehaviour
     {
         playerHP = playerHP - 7;
     }
-    public void OnCollisionEnter(Collision collision)
+    public void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.tag == "Enemy")
+        if (!MoveComponent.Instance.ATFieldNow&&!muteki)
         {
-            playerHP = playerHP - 5;
+            if (other.gameObject.tag == "Enemy")
+            {
+                playerHP = playerHP - 5;
 
-        }
+            }
 
-        if(collision.gameObject.tag == "EnemyPunchAttack")
-        {
-            playerHP = playerHP - 10;
-            animator.SetTrigger("falter");
-            HitNow = true;
-            //ãØÇﬁ
-        }
+            if (other.gameObject.tag == "EnemyPunchAttack")
+            {
+                playerHP = playerHP - 10;
+                animator.SetTrigger("falter");
+                AudioManager.GetInstance().PlaySE("enemyAttack",3);
+                HitNow = true;
+                muteki = true;
+                //ãØÇﬁ
+            }
 
-        if (collision.gameObject.tag == "EnemyChainAttack")
-        {
-            playerHP = playerHP - 10;
-            animator.SetTrigger("falter");
-            HitNow = true;
-            //ãØÇﬁ
-        }
+            if (other.gameObject.tag == "EnemyChainAttack")
+            {
+                playerHP = playerHP - 10;
+                animator.SetTrigger("falter");
+                HitNow = true;
+                muteki = true;
+                AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+                //ãØÇﬁ
+            }
 
-        if (collision.gameObject.tag == "EnemyTackleAttack")
-        {
-            playerHP = playerHP - 20;
-            animator.SetTrigger("EnemyTackleHit");
-            HitNow = true;
-            //êÅÇ¡îÚÇ‘
-        }
+            if (other.gameObject.tag == "EnemyTackleAttack")
+            {
+                playerHP = playerHP - 20;
+                animator.SetTrigger("EnemyTackleHit");
+                HitNow = true;
+                muteki = true;
+                AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+                //êÅÇ¡îÚÇ‘
+            }
 
-        if (collision.gameObject.tag == "EnemySmashAttack")
-        {
-            playerHP = playerHP - 30;
-            animator.SetTrigger("EnemyTackleHit");
-            HitNow = true;
-            //êÅÇ¡îÚÇ‘
+            if (other.gameObject.tag == "EnemySmashAttack")
+            {
+                playerHP = playerHP - 30;
+                animator.SetTrigger("EnemyTackleHit");
+                HitNow = true;
+                muteki = true;
+                AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+                //êÅÇ¡îÚÇ‘
+            }
         }
     }
-
     public void GetUpTime()
     {
         animator.SetTrigger("GetUp");
@@ -100,5 +112,11 @@ public class PlayerHP : MonoBehaviour
     {
         animator.SetTrigger("Stand");
         HitNow = false;
+        StartCoroutine(Mmuteki());
+    }
+    public IEnumerator Mmuteki()
+    {
+        yield return new WaitForSeconds(2f);
+        muteki = false;
     }
 }
