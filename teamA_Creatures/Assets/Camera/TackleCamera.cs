@@ -4,27 +4,35 @@ using UnityEngine;
 
 public class TackleCamera : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        this.gameObject.SetActive(false);
-    }
+    public static TackleCamera Instance;
 
-    // Update is called once per frame
-    void Update()
+    private static GameObject tCamera;
+
+    public void Awake()
     {
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Instance == null)
         {
-            StartCoroutine("tackleCamera");
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(Instance);
         }
     }
 
-    public IEnumerator tackleCamera()
+    private void Start()
     {
-        this .gameObject.SetActive(true);
+        tCamera = this.gameObject;
+        this.gameObject.SetActive(false);
+    }
+
+
+    public static IEnumerator tackleCameraCor()
+    {
+        tCamera.gameObject.SetActive(true);
         Time.timeScale = 0.5f;
         yield return new WaitForSeconds(1f);
         Time.timeScale = 0f;
-        this .gameObject.SetActive(false);
+        tCamera.gameObject.SetActive(false);
     }
 }
