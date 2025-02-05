@@ -5,6 +5,7 @@ using UnityEngine;
 public class JumpCamera : MonoBehaviour
 {
     public GameObject player;
+    public float cameraJump = 0.3f;
     private Vector3 posi;
     private Vector3 startPosi;
 
@@ -16,7 +17,7 @@ public class JumpCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        posi.y = (float)(player.transform.position.y * 0.3) + startPosi.y;
+        posi.y = player.transform.position.y * cameraJump + startPosi.y;
         this.transform.position = posi;
     }
 }
