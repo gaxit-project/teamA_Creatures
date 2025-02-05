@@ -6,19 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class JudgeManager : MonoBehaviour
 {
-    
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        StartCoroutine(ClearJudge());
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
 
     void ChangeOverScene()
     {
