@@ -336,6 +336,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 6fd2bdce13da6a9488e291ab272176c2, type: 3}
   - {fileID: 8300000, guid: edf0660962a967a4d857b872594513ec, type: 3}
   - {fileID: 8300000, guid: 41c194e46b2e1b84dad7ec72dcd8d049, type: 3}
+  - {fileID: 8300000, guid: 700d33946a37910418f72012e58ec2d2, type: 3}
   BGM_List: []
 --- !u!4 &36277828
 Transform:
