@@ -215,24 +215,6 @@ PrefabInstance:
       addedObject: {fileID: 13462062}
     - targetCorrespondingSourceObject: {fileID: 5802172344162039397, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 13462070}
-    - targetCorrespondingSourceObject: {fileID: 5802172344162039397, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 13462069}
-    - targetCorrespondingSourceObject: {fileID: 5802172344162039397, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 13462068}
-    - targetCorrespondingSourceObject: {fileID: 5802172344162039397, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 13462073}
-    - targetCorrespondingSourceObject: {fileID: 5802172344162039397, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 13462067}
-    - targetCorrespondingSourceObject: {fileID: 5802172344162039397, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 13462074}
-    - targetCorrespondingSourceObject: {fileID: 5802172344162039397, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 13462081}
     - targetCorrespondingSourceObject: {fileID: 5802172344162039397, guid: 3a96360183aca44448800a4ee34e6807, type: 3}
       insertIndex: -1
@@ -291,103 +273,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &13462067
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 13462057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5178eab121b40914789dc99da3bd052f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hitJudgmentPrefab: {fileID: 7864208582863454044, guid: c7f2c8ad31e25e04b9a10ca3abbd73aa, type: 3}
---- !u!114 &13462068
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 13462057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae2ed3ae6f9781c4e9a5190171c055ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  localGravity: {x: 0, y: -100, z: 0}
-  jumpForce: 35
-  jumpFlag: 0
-  jumpingSound: {fileID: 8300000, guid: edf0660962a967a4d857b872594513ec, type: 3}
-  landingSound: {fileID: 8300000, guid: 41c194e46b2e1b84dad7ec72dcd8d049, type: 3}
---- !u!114 &13462069
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 13462057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e8840ff25d05aa4b8890ddfbc86bb5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 10
-  left: 0
-  ATFieldNow: 0
-  runningSound: {fileID: 8300000, guid: 6fd2bdce13da6a9488e291ab272176c2, type: 3}
-  runningNow: 0
-  RunMWait: 0.01
-  Runwait: 0
---- !u!114 &13462070
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 13462057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 692b59ee4fcd999469f37fc58eb653b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  move: {fileID: 13462069}
-  jump: {fileID: 13462068}
-  attack: {fileID: 13462073}
-  AttackButton: 0
-  velocity: {x: 0, y: 0}
---- !u!114 &13462073
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 13462057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad91d27519a3eb04e9ca957e02d21358, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Countered: 0
-  attackSound: {fileID: 8300000, guid: 700d33946a37910418f72012e58ec2d2, type: 3}
-  soundCooldownTime: 1.25
-  attackNow: 0
-  CounterRange: 0
---- !u!114 &13462074
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 13462057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ee63e2c2afc8b640a6dcba0e1d9a128, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShieldObject: {fileID: 6355284357238028309, guid: 3f5540ad59a33704085a04178e632bbd, type: 3}
-  shieldRotation: {x: 0, y: 90, z: 0}
 --- !u!82 &13462077
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2264,6 +2149,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slider: {fileID: 1264189847}
+  HitNow: 0
+  muteki: 0
 --- !u!4 &2130520177
 Transform:
   m_ObjectHideFlags: 0
