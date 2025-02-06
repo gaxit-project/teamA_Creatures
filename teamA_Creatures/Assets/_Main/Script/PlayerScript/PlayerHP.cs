@@ -22,6 +22,7 @@ public class PlayerHP : MonoBehaviour
 
     Animator animator;
     public Slider slider;
+    public TackleCamera tackleCamScript;
 
     public bool HitNow;
     public bool muteki;
@@ -88,6 +89,7 @@ public class PlayerHP : MonoBehaviour
                 animator.SetTrigger("EnemyTackleHit");
                 HitNow = true;
                 muteki = true;
+                tackleCamScript.StartCoroutine("tackleCameraCor");
                 AudioManager.GetInstance().PlaySE("enemyAttack", 3);
                 //êÅÇ¡îÚÇ‘
             }

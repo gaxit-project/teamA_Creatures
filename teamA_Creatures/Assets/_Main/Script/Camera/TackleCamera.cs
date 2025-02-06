@@ -4,35 +4,31 @@ using UnityEngine;
 
 public class TackleCamera : MonoBehaviour
 {
-    public static TackleCamera Instance;
-
-    private static GameObject tCamera;
-
-    public void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else if (Instance != this)
-        {
-            Destroy(Instance);
-        }
-    }
-
+    private Camera tackleCamera;
     private void Start()
     {
-        tCamera = this.gameObject;
-        this.gameObject.SetActive(false);
+        tackleCamera = this.GetComponent<Camera>();
+        tackleCamera.depth = -2;
     }
 
 
-    public static IEnumerator tackleCameraCor()
+    public IEnumerator tackleCameraCor()
     {
-        tCamera.gameObject.SetActive(true);
-        Time.timeScale = 0.5f;
-        yield return new WaitForSeconds(1f);
-        Time.timeScale = 0f;
-        tCamera.gameObject.SetActive(false);
+        tackleCamera.depth = 1;
+        Time.timeScale = 0.2f;
+        tackleCamera.fieldOfView = 103f;
+        yield return new WaitForSeconds(0.005f);
+        tackleCamera.fieldOfView = 100f;
+        yield return new WaitForSeconds(0.005f);
+        tackleCamera.fieldOfView = 102f;
+        yield return new WaitForSeconds(0.005f);
+        tackleCamera.fieldOfView = 100f;
+        yield return new WaitForSeconds(0.005f);
+        tackleCamera.fieldOfView = 101f;
+        yield return new WaitForSeconds(0.005f);
+        tackleCamera.fieldOfView = 100f;
+        yield return new WaitForSeconds(0.2f);
+        Time.timeScale = 1f;
+        tackleCamera.depth = -2;
     }
 }
