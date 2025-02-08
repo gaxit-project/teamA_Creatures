@@ -1,37 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class Pause : MonoBehaviour
 {
     public GameObject pauseObject;
-    public GameObject settingObject;
-    public GameObject volumeObject; // 音量調整用のオブジェクト
-    public Image speakerIcon; // スピーカーマークの画像
-    public Slider volumeSlider; // 音量調整スライダー
 
     public Button continueButton;
     public Button settingButton;
     public Button titleButton;
-    public Button volumeButton;
+
+    // Settingクラスのインスタンスを参照
+    public Setting settingScript;
 
     void Start()
     {
         continueButton.onClick.AddListener(Continue);
         settingButton.onClick.AddListener(Setting);
         titleButton.onClick.AddListener(Title);
-        volumeButton.onClick.AddListener(Volume);
 
         pauseObject.SetActive(false);
-        settingObject.SetActive(false);
-        volumeObject.SetActive(false);
-
-        // スライダーの初期値をシステム音量に設定
-        volumeSlider.value = AudioListener.volume;
-        volumeSlider.onValueChanged.AddListener(ChangeVolume);
 
         Time.timeScale = 1f;
     }
@@ -43,46 +34,16 @@ public class Pause : MonoBehaviour
 
     void Update()
     {
-        if ((Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton7)))
+        // ポーズ画面の開閉処理
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton7))
         {
-            if (!pauseObject.activeSelf && !settingObject.activeSelf && !volumeObject.activeSelf)
+            if (Time.timeScale == 1f)
             {
-                PauseGame();
+                PauseGame(); // ゲームをポーズ状態にする
             }
-            else if (pauseObject.activeSelf && !settingObject.activeSelf && !volumeObject.activeSelf)
+            else
             {
-                Continue();
-            }
-            else if (settingObject.activeSelf)
-            {
-                settingObject.SetActive(false);
-                volumeObject.SetActive(false);
-                volumeButton.gameObject.SetActive(true);
-                continueButton.gameObject.SetActive(true);
-                settingButton.gameObject.SetActive(true);
-                titleButton.gameObject.SetActive(true);
-                continueButton.Select();
-            }
-            else if (volumeObject.activeSelf) // Escapeで音量設定を閉じる
-            {
-                volumeObject.SetActive(false);
-                volumeButton.gameObject.SetActive(true);
-                continueButton.Select();
-            }
-        }
-
-        // スライダーが選択されているとき、上下入力で操作を変更
-        if (volumeObject.activeSelf)
-        {
-            float horizontalInput = Input.GetAxis("Horizontal"); // 上下の入力
-
-            if (horizontalInput > 0.1f) // 上入力
-            {
-                volumeSlider.value += 0.01f; // 音量を増加
-            }
-            else if (horizontalInput < -0.1f) // 下入力
-            {
-                volumeSlider.value -= 0.01f; // 音量を減少
+                Continue(); // ゲームを再開する
             }
         }
     }
@@ -90,40 +51,28 @@ public class Pause : MonoBehaviour
     public void PauseGame()
     {
         pauseObject.SetActive(true);
-        Time.timeScale = 0f;
+        Time.timeScale = 0f; // ゲームの時間を停止
     }
 
     public void Continue()
     {
         pauseObject.SetActive(false);
-        Time.timeScale = 1f;
+        Time.timeScale = 1f; // ゲームを再開
     }
 
     public void Setting()
     {
-        settingObject.SetActive(true);
+        // ポーズ画面を閉じて設定パネルを開く
+        pauseObject.SetActive(false);
+        Time.timeScale = 1f;
 
-        continueButton.gameObject.SetActive(false);
-        settingButton.gameObject.SetActive(false);
-        titleButton.gameObject.SetActive(false);
-
-        volumeButton.Select();
+        // SettingクラスのOpenSettingPanelを呼び出して設定画面を開く
+        settingScript.OpenSettingPanel(true);
     }
 
     public void Title()
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene("Title");
-    }
-
-    public void Volume()
-    {
-        volumeObject.SetActive(true);
-        volumeButton.gameObject.SetActive(false);
-    }
-
-    public void ChangeVolume(float value)
-    {
-        AudioListener.volume = value;
     }
 }
