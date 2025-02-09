@@ -16,6 +16,8 @@ public class Pause : MonoBehaviour
     // Settingクラスのインスタンスを参照
     public Setting settingScript;
 
+    public static bool isPaused = false;
+
     void Start()
     {
         continueButton.onClick.AddListener(Continue);
@@ -46,17 +48,34 @@ public class Pause : MonoBehaviour
                 Continue(); // ゲームを再開する
             }
         }
+
+        // ★ボタンのフォーカスを強制的に維持する
+        if (pauseObject.activeSelf)
+        {
+            GameObject selectedObj = EventSystem.current.currentSelectedGameObject;
+
+            if (selectedObj == null || (selectedObj != continueButton.gameObject &&
+                                         selectedObj != settingButton.gameObject &&
+                                         selectedObj != titleButton.gameObject))
+            {
+                EventSystem.current.SetSelectedGameObject(continueButton.gameObject);
+            }
+        }
     }
 
     public void PauseGame()
     {
         pauseObject.SetActive(true);
         Time.timeScale = 0f; // ゲームの時間を停止
+
+        // ★ポーズを開いた時に必ず continueButton を選択する
+        EventSystem.current.SetSelectedGameObject(continueButton.gameObject);
     }
 
     public void Continue()
     {
         pauseObject.SetActive(false);
+        isPaused = false;
         Time.timeScale = 1f; // ゲームを再開
     }
 
@@ -64,6 +83,7 @@ public class Pause : MonoBehaviour
     {
         // ポーズ画面を閉じて設定パネルを開く
         pauseObject.SetActive(false);
+        isPaused = false;
         Time.timeScale = 1f;
 
         // SettingクラスのOpenSettingPanelを呼び出して設定画面を開く

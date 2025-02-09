@@ -18,7 +18,7 @@ public class Setting : MonoBehaviour
     public Text seText;
 
     public AudioSource bgmSource;
-    public AudioSource seSource;
+    public List<AudioSource> seSources;
 
     public List<Button> titleButtons; // タイトル画面のボタンをリストで取得
 
@@ -67,13 +67,13 @@ public class Setting : MonoBehaviour
 
         if (isSettingOpen)
         {
-            // 設定パネルが開いているときはVolumeボタンを選択
+            Time.timeScale = 0f; // ★設定画面を開いたらゲームを停止
             EventSystem.current.SetSelectedGameObject(volumeButton.gameObject);
         }
         else
         {
-            // 設定パネルを閉じるときに、タイトル画面の「Start」ボタンを選択
-            EventSystem.current.SetSelectedGameObject(titleButtons[0].gameObject); // Startボタン
+            Time.timeScale = 1f; // ★設定画面を閉じたらゲームを再開
+            EventSystem.current.SetSelectedGameObject(titleButtons[0].gameObject);
         }
     }
 
@@ -84,12 +84,14 @@ public class Setting : MonoBehaviour
 
         if (isVolumeOpen)
         {
+            Time.timeScale = 0f; // ★音量調節画面を開いたらゲームを停止
             currentIndex = 0;
             UpdateTextColors();
             EventSystem.current.SetSelectedGameObject(volumeOptions[currentIndex].gameObject);
         }
         else
         {
+            Time.timeScale = 1f; // ★音量調節画面を閉じたらゲームを再開
             ResetTextColors();
             EventSystem.current.SetSelectedGameObject(volumeButton.gameObject);
         }
@@ -97,62 +99,49 @@ public class Setting : MonoBehaviour
 
     void Update()
     {
-        // ESCキーまたはJoystickButton7で設定画面を閉じる
-        if (isSettingOpen && (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton7)))
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton7))
         {
-            OpenSettingPanel(false);
-            volumePanel.SetActive(false);
+            // ★ポーズ画面が開いている場合は、設定の処理をスキップ
+            if (Pause.isPaused) return;
 
-            // 設定パネルを閉じた後、次のボタンを選択できるように設定
-            EventSystem.current.SetSelectedGameObject(titleButtons[1].gameObject); // 次のボタン（例えばExit）を選択
+            if (isVolumeOpen)
+            {
+                isVolumeOpen = false;
+                volumePanel.SetActive(false);
+                ResetTextColors();
+                EventSystem.current.SetSelectedGameObject(volumeButton.gameObject);
+            }
+            else if (isSettingOpen)
+            {
+                OpenSettingPanel(false);
+                volumePanel.SetActive(false);
+                EventSystem.current.SetSelectedGameObject(titleButtons[1].gameObject);
+            }
             return;
         }
 
-        // その他の更新処理（音量の設定など）
-        if (isVolumeOpen && Time.time - lastSwitchTime > switchCooldown)
-        {
-            float vertical = Input.GetAxis("Vertical");
+        // ★スライダーの選択状態に応じてテキスト色を変更
+        GameObject selectedObj = EventSystem.current.currentSelectedGameObject;
 
-            if (vertical > 0.1f)
-            {
-                currentIndex = (currentIndex - 1 + volumeOptions.Length) % volumeOptions.Length;
-                UpdateTextColors();
-                EventSystem.current.SetSelectedGameObject(volumeOptions[currentIndex].gameObject);
-                lastSwitchTime = Time.time;
-            }
-            else if (vertical < -0.1f)
-            {
-                currentIndex = (currentIndex + 1) % volumeOptions.Length;
-                UpdateTextColors();
-                EventSystem.current.SetSelectedGameObject(volumeOptions[currentIndex].gameObject);
-                lastSwitchTime = Time.time;
-            }
+        if (selectedObj == bgmSlider.gameObject)
+        {
+            bgmText.color = Color.red;
+            seText.color = Color.white;
         }
-
-        if (isVolumeOpen)
+        else if (selectedObj == seSlider.gameObject)
         {
-            float horizontal = Input.GetAxis("Horizontal");
-
-            if (horizontal > 0.1f)
-            {
-                if (volumeOptions[currentIndex] is Slider slider)
-                {
-                    slider.value += 0.01f;
-                }
-            }
-            else if (horizontal < -0.1f)
-            {
-                if (volumeOptions[currentIndex] is Slider slider)
-                {
-                    slider.value -= 0.01f;
-                }
-            }
+            bgmText.color = Color.white;
+            seText.color = Color.red;
+        }
+        else
+        {
+            bgmText.color = Color.white;
+            seText.color = Color.white;
         }
     }
 
 
 
-    // 音量の設定
     public void SetBgmVolume(float volume)
     {
         bgmVolume = volume;
@@ -162,7 +151,12 @@ public class Setting : MonoBehaviour
     public void SetSeVolume(float volume)
     {
         seVolume = volume;
-        seSource.volume = seVolume;
+
+        // リスト内のすべてのSEの音量を調整
+        foreach (AudioSource se in seSources)
+        {
+            se.volume = seVolume;
+        }
     }
 
     private void UpdateTextColors()
