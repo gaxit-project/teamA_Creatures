@@ -17,4 +17,15 @@ public class JudgeManager : MonoBehaviour
         SceneManager.LoadScene("GameClear");
     }
 
+    void ChangeMainScene()
+    {
+        SceneManager.LoadScene("Main");
+    }
+
+    void ChangeTitleScene()
+    {
+        SceneManager.LoadScene("Title");
+    }
+
+
 }
