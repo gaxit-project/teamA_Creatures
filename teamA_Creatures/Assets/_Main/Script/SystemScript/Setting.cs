@@ -52,6 +52,7 @@ public class Setting : MonoBehaviour
         // 最初に音量を設定
         bgmSlider.value = bgmVolume;
         seSlider.value = seVolume;
+
     }
 
     public void OpenSettingPanel(bool open)
@@ -68,7 +69,7 @@ public class Setting : MonoBehaviour
         if (isSettingOpen)
         {
             Time.timeScale = 0f; // ★設定画面を開いたらゲームを停止
-            EventSystem.current.SetSelectedGameObject(volumeButton.gameObject);
+            StartCoroutine(SetFocusAfterFrame());
         }
         else
         {
@@ -173,5 +174,10 @@ public class Setting : MonoBehaviour
         {
             text.color = Color.white;
         }
+    }
+    private IEnumerator SetFocusAfterFrame()
+    {
+        yield return null; // 1フレーム待機
+        EventSystem.current.SetSelectedGameObject(volumeButton.gameObject);
     }
 }

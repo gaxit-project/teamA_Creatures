@@ -2626,7 +2626,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.6999999
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -2723,6 +2723,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slider: {fileID: 0}
+  tackleCamScript: {fileID: 0}
+  HitNow: 0
+  muteki: 0
 --- !u!1 &5450915333300059007
 GameObject:
   m_ObjectHideFlags: 0

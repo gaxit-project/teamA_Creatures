@@ -20,12 +20,11 @@ public class Pause : MonoBehaviour
 
     void Start()
     {
-        continueButton.onClick.AddListener(Continue);
-        settingButton.onClick.AddListener(Setting);
-        titleButton.onClick.AddListener(Title);
+        continueButton.onClick.AddListener(() => { Continue(); continueButton.Select(); });
+        settingButton.onClick.AddListener(() => { Setting(); settingButton.Select(); });
+        titleButton.onClick.AddListener(() => { Title(); titleButton.Select(); });
 
         pauseObject.SetActive(false);
-
         Time.timeScale = 1f;
     }
 
@@ -88,6 +87,9 @@ public class Pause : MonoBehaviour
 
         // SettingクラスのOpenSettingPanelを呼び出して設定画面を開く
         settingScript.OpenSettingPanel(true);
+
+        // ★設定パネルを開いた後にvolumeButtonを選択する
+        EventSystem.current.SetSelectedGameObject(settingScript.volumeButton.gameObject);
     }
 
     public void Title()
