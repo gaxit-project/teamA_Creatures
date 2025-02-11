@@ -43,10 +43,10 @@ public class EnemyHit2 : MonoBehaviour
                 PunchCreateCube();
 
             }
-            else
-            {
-                attackCube.SetActive(true);
-            }
+            //else
+            //{
+            //    attackCube.SetActive(true);
+            //}
             // キューブが生成済みかつオブジェクトが動いている場合、キューブを再生成
             // 前回位置を更新
 
@@ -74,10 +74,10 @@ public class EnemyHit2 : MonoBehaviour
                 HardPunchCreateCube();
 
             }
-            else
-            {
-                attackCube.SetActive(true);
-            }
+            //else
+            //{
+            //    attackCube.SetActive(true);
+            //}
 
         }
     }
@@ -101,10 +101,10 @@ public class EnemyHit2 : MonoBehaviour
                 TackleCreateCube();
 
             }
-            else
-            {
-                attackCube.SetActive(true);
-            }
+            //else
+            //{
+            //    attackCube.SetActive(true);
+            //}
 
         }
     }
@@ -114,7 +114,7 @@ public class EnemyHit2 : MonoBehaviour
         Vector3 spawnPosition = transform.position + transform.forward * offset.z;
         spawnPosition.y = transform.position.y + offset.y;
         attackCube = Instantiate(attackCubePrefab, spawnPosition, Quaternion.identity);
-        attackCube.transform.localScale = new Vector3(2f, 4, 1); // サイズ設定
+        attackCube.transform.localScale = new Vector3(3f, 4, 1); // サイズ設定
         attackCube.tag = "EnemyTackleAttack";
     }
 }
