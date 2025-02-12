@@ -7,22 +7,22 @@ using UnityEngine.SceneManagement;
 public class JudgeManager : MonoBehaviour
 {
 
-    void ChangeOverScene()
+    public void ChangeOverScene()
     {
         SceneManager.LoadScene("GameOver");
     }
 
-    void ChangeClearScene()
+    public void ChangeClearScene()
     {
         SceneManager.LoadScene("GameClear");
     }
 
-    void ChangeMainScene()
+    public void ChangeMainScene()
     {
         SceneManager.LoadScene("Main");
     }
 
-    void ChangeTitleScene()
+    public void ChangeTitleScene()
     {
         SceneManager.LoadScene("Title");
     }

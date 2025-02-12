@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class PlayerHP : MonoBehaviour
 {
     public static PlayerHP Instance;
+    public JudgeManager JM;
 
     public void Awake()
     {
@@ -37,6 +38,10 @@ public class PlayerHP : MonoBehaviour
 
     private void Update()
     {
+        if(playerHP <= 0)
+        {
+            JM.ChangeOverScene();
+        }
         slider.value = playerHP / playerMaxHP;
         if (Input.GetKeyDown(KeyCode.K))
         {
@@ -60,7 +65,6 @@ public class PlayerHP : MonoBehaviour
             if (other.gameObject.tag == "Enemy")
             {
                 playerHP = playerHP - 5;
-
             }
 
             if (other.gameObject.tag == "EnemyPunchAttack")
