@@ -41,7 +41,6 @@ public class MovePlayer2 : MonoBehaviour
             {
                 // スティックの移動を取得して動かす
                 velocity = input.PlatformAction.Move.ReadValue<Vector2>();
-
                 move.MoveHorizontal(-velocity.x, velocity.y);
                 jump.JumpVertical(velocity.y);
             }
