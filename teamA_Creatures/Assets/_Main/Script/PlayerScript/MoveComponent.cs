@@ -263,7 +263,7 @@ public class MoveComponent : MonoBehaviour
             left = false;
         }
 
-        Vector3 EnemyPosition = new Vector3(Enemy.transform.position.x, transform.position.y, Enemy.transform.position.z);
+        Vector3 EnemyPosition = new Vector3(Enemy.transform.position.x, transform.position.y, transform.position.z);
         transform.LookAt(EnemyPosition);
 
             if (moveF)
