@@ -49,10 +49,14 @@ public class Setting : MonoBehaviour
         bgmSlider.onValueChanged.AddListener(SetBgmVolume);
         seSlider.onValueChanged.AddListener(SetSeVolume);
 
+        bgmVolume = PlayerPrefs.GetFloat("BGMVolume", 1f);
+        seVolume = PlayerPrefs.GetFloat("SEVolume", 1f);
+
         // ç≈èâÇ…âπó Çê›íË
         bgmSlider.value = bgmVolume;
         seSlider.value = seVolume;
 
+        ApplyVolume();
     }
 
     public void OpenSettingPanel(bool open)
@@ -147,6 +151,7 @@ public class Setting : MonoBehaviour
     {
         bgmVolume = volume;
         bgmSource.volume = bgmVolume;
+        PlayerPrefs.SetFloat("BGMVolume", bgmVolume);
     }
 
     public void SetSeVolume(float volume)
@@ -158,6 +163,7 @@ public class Setting : MonoBehaviour
         {
             se.volume = seVolume;
         }
+        PlayerPrefs.SetFloat("SEVolume", seVolume);
     }
 
     private void UpdateTextColors()
@@ -179,5 +185,14 @@ public class Setting : MonoBehaviour
     {
         yield return null; // 1ÉtÉåÅ[ÉÄë“ã@
         EventSystem.current.SetSelectedGameObject(volumeButton.gameObject);
+    }
+
+    private void ApplyVolume()
+    {
+        bgmSource.volume = bgmVolume;
+        foreach (AudioSource se in seSources)
+        {
+            se.volume = seVolume;
+        }
     }
 }
