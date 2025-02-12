@@ -58,7 +58,10 @@ public class JumpComponent : MonoBehaviour
     {
         if (Jump > 0.7f && jumpFlag)
         {
+            Debug.Log("jump");
+
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+
             jumpFlag = false;
             animator.SetTrigger("Jump");
             //jumpAudioSource.PlayOneShot(jumpingSound);
@@ -70,17 +73,18 @@ public class JumpComponent : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground") && !isLanding)
         {
-            isLanding = true;
+            //isLanding = true;
             jumpFlag = true;
+
             //landingAudioSource.PlayOneShot(landingSound);
             AudioManager.GetInstance().PlaySE("playerMove", 2);
-            StartCoroutine(ResetLandingFlag());
+           // StartCoroutine(ResetLandingFlag());
         }
     }
 
     private IEnumerator ResetLandingFlag()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.01f);
         isLanding = false;
     }
 }

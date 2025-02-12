@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 
 public class MoveComponent : MonoBehaviour
@@ -16,6 +18,30 @@ public class MoveComponent : MonoBehaviour
     public bool runningNow;
     public float RunMWait;
     public float Runwait;
+
+    public GameObject Enemy;
+    public GameObject Player;
+
+    public Vector3 PlayerPosX;
+    public Vector3 EnemyPosX;
+    public float dis;
+    private float InDis;
+
+    public bool moveF;
+    public bool moveB;
+    public bool moveBNow;
+    public bool moveFNow;
+
+    public float moveFSpeed;
+    public float moveBSpeed;
+
+    public bool MoveRun;
+
+
+    public bool backStepReady = false;
+    private float lastBackInputTime = 0f;
+    private float backStepThreshold = 0.2f; // バックステップ発動猶予時間
+    public bool prevBackInput = false; // 前回の入力状態
     private void Awake()
     {
         if (Instance == null)
@@ -34,8 +60,9 @@ public class MoveComponent : MonoBehaviour
         left = false;
         ATFieldNow = false;
         runningNow = false;
-    }
 
+    }
+    public float Speed;
     /// <summary>
     /// DownよりSpeedの値が多ければ移動する
     /// </summary>
@@ -43,10 +70,43 @@ public class MoveComponent : MonoBehaviour
     /// <param name="Down"></param>
     public void MoveHorizontal(float Speed, float Down)
     {
+        bool isBackInput = (!left && Speed < 0) || (left && Speed > 0); // 後ろ入力判定
+
+        // バックステップ判定
+        if (isBackInput && !prevBackInput) // 後ろ入力を新しく押した瞬間
+        {
+            if (backStepReady && Time.time - lastBackInputTime <= backStepThreshold)
+            {
+                StartCoroutine(BackStep());
+                backStepReady = false;
+            }
+            lastBackInputTime = Time.time;
+        }
+        else if (!isBackInput && prevBackInput) // 後ろ入力を離した瞬間
+        {
+            backStepReady = true;
+        }
+
+        prevBackInput = isBackInput;
+
+        // バックステップ中は移動を受け付けない
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("BackStep"))
+        {
+            return;
+        }
+
+
+        Debug.Log(Speed);
         if (Mathf.Abs(Speed) > Mathf.Abs(Down)||Down>0)
         {
-            transform.Translate(transform.TransformDirection(new Vector2(Speed, 0) * moveSpeed * Time.deltaTime));
-
+            if (moveF||moveFNow)
+            {
+                transform.Translate(transform.TransformDirection(new Vector2(Speed, 0) * moveFSpeed * Time.deltaTime));
+            }
+            else if(moveB||moveBNow) 
+            {
+                transform.Translate(transform.TransformDirection(new Vector2(Speed, 0) * moveBSpeed * Time.deltaTime));
+            }
         }
         if (JumpComponent.Instance.jumpFlag&&(Speed!=0||Down!=0))
         {
@@ -57,9 +117,35 @@ public class MoveComponent : MonoBehaviour
                     StartCoroutine(RunNow());
                 }
 
-
-                Debug.Log("run");
-                animator.SetBool("run", true);
+                if (!left)
+                {
+                    if (Speed > 0)
+                    {
+                        moveF = true;
+                        moveB = false;
+                    }
+                    else if (Speed < 0)
+                    {
+                        moveF = false;
+                        moveB = true;
+                        //StartCoroutine(BackStep(Speed));
+                    }
+                }
+                else
+                {
+                    if (Speed > 0)
+                    {
+                        moveF = false;
+                        moveB = true;
+                        //StartCoroutine(BackStep(Speed));
+                    }
+                    else if (Speed < 0)
+                    {
+                        moveF = true;
+                        moveB = false;
+                    }
+                }
+                
                 //AudioManager.GetInstance().PlayLoopSE("playerMove",0);
                 ///<summary>
                 if (!audioSource.isPlaying)
@@ -76,9 +162,9 @@ public class MoveComponent : MonoBehaviour
             }
             else if ( Down < -0.4)
             {
-                Debug.Log("Shield");
                 animator.SetBool("Shield", true);
-                animator.SetBool("run", false);
+                moveF = false;
+                moveB = false;
                 runningNow = false;
                 if (audioSource.isPlaying)
                 {
@@ -93,7 +179,11 @@ public class MoveComponent : MonoBehaviour
         }
         else
         {
-            animator.SetBool("run", false);
+            moveF = false;
+            moveB = false;
+            moveFNow = true;
+            moveBNow = true;
+
             animator.SetBool("Shield", false);
             //AudioManager.GetInstance().StopLoopSE("playerMove");
             if (audioSource.isPlaying)
@@ -113,9 +203,8 @@ public class MoveComponent : MonoBehaviour
         if (Mathf.Abs(Speed)> 0.4)
         {
             Runwait = 0;
-            left = Speed > 0;
+            
         }
-        transform.rotation = Quaternion.Euler(0, left ? -90 : 90, 0);
 
         if (runningNow)
         {
@@ -127,6 +216,26 @@ public class MoveComponent : MonoBehaviour
         }
     }
 
+    public IEnumerator BackStep()
+    {
+        float backStepSpeed = 8f;
+        float backStepTime = 0.2f;
+
+        Vector3 backDir = !left ? Vector3.right : Vector3.left; // 方向決定
+        float moveDistance = backStepSpeed * backStepTime;
+
+        // Raycastで後ろ方向に障害物があるかチェック
+        if (!Physics.Raycast(transform.position, backDir, moveDistance))
+        {
+            float timer = 0f;
+            while (timer < backStepTime)
+            {
+                transform.Translate(backDir * backStepSpeed * Time.deltaTime, Space.World);
+                timer += Time.deltaTime;
+                yield return null;
+            }
+        }
+    }
     private IEnumerator RunNow()
     {
         runningNow = true;
@@ -141,4 +250,39 @@ public class MoveComponent : MonoBehaviour
         }
         runningNow = false;
     }
+
+    void Update()
+    {
+
+        if (Player.transform.position.x < Enemy.transform.position.x)
+        {
+            left = true;
+        }
+        else if (Player.transform.position.x > Enemy.transform.position.x)
+        {
+            left = false;
+        }
+
+        Vector3 EnemyPosition = new Vector3(Enemy.transform.position.x, transform.position.y, Enemy.transform.position.z);
+        transform.LookAt(EnemyPosition);
+
+            if (moveF)
+            {
+                animator.SetBool("run", true);
+                animator.SetBool("Buckrun", false);
+            }
+            else if (moveB)
+            {
+                animator.SetBool("run", false);
+                animator.SetBool("Buckrun", true);
+            }
+            else
+            {
+                animator.SetBool("run", false);
+                animator.SetBool("Buckrun", false);
+            }
+        
+
+    }
+
 }
