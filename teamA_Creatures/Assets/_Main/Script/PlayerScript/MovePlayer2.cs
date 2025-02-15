@@ -10,12 +10,15 @@ public class MovePlayer2 : MonoBehaviour
     [SerializeField] AttackComponent attack;
     public bool AttackButton;
     public Vector2 velocity;
+
+    Animator animator;
     // ƒCƒ“ƒvƒbƒg‚Ì“o˜^‚Æ”jŠü
     PlayerAct input;
 
     void Awake()
     {
         input = new PlayerAct();
+        animator = GetComponent<Animator>();
     }
     void OnDisable()
     {
@@ -35,7 +38,11 @@ public class MovePlayer2 : MonoBehaviour
 
     void Update()
     {
-        if (!PlayerHP.Instance.HitNow)
+        if (PlayerHP.Instance.HitNow)
+        {
+            animator.SetBool("Shield", false);
+        }
+        else if (!PlayerHP.Instance.HitNow)
         {
             if (!AttackComponent.Instance.attackNow)
             {
@@ -43,11 +50,13 @@ public class MovePlayer2 : MonoBehaviour
                 velocity = input.PlatformAction.Move.ReadValue<Vector2>();
                 move.MoveHorizontal(-velocity.x, velocity.y);
                 jump.JumpVertical(velocity.y);
-            }
 
+
+            }
 
             AttackButton = (input.PlatformAction.Attack.ReadValue<float>() >= InputSystem.settings.defaultButtonPressPoint);
             if (AttackButton) attack.Attack();
+
         }
 
     }

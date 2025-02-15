@@ -62,51 +62,60 @@ public class PlayerHP : MonoBehaviour
     {
         if (!MoveComponent.Instance.ATFieldNow&&!muteki)
         {
+
             if (other.gameObject.tag == "Enemy")
             {
                 playerHP = playerHP - 5;
             }
-
-            if (other.gameObject.tag == "EnemyPunchAttack")
+            else
             {
-                playerHP = playerHP - 10;
-                animator.SetTrigger("falter");
-                AudioManager.GetInstance().PlaySE("enemyAttack",3);
-                HitNow = true;
-                muteki = true;
-                //ãØÇﬁ
+                AttackComponent.Instance.attackNow = false;
+                animator.SetBool("Shield", false);
+                AttackComponent.Instance.ShieldOut();
+                AttackComponent.Instance.EndAttack();
+                if (other.gameObject.tag == "EnemyPunchAttack")
+                {
+                    playerHP = playerHP - 10;
+                    animator.SetTrigger("falter");
+                    AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+                    HitNow = true;
+                    muteki = true;
+                    //ãØÇﬁ
+                }
+
+                if (other.gameObject.tag == "EnemyChainAttack")
+                {
+                    playerHP = playerHP - 10;
+                    animator.SetTrigger("falter");
+                    HitNow = true;
+                    muteki = true;
+                    AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+                    //ãØÇﬁ
+                }
+
+                if (other.gameObject.tag == "EnemyTackleAttack")
+                {
+                    playerHP = playerHP - 20;
+                    animator.SetTrigger("EnemyTackleHit");
+                    HitNow = true;
+                    muteki = true;
+                    tackleCamScript.StartCoroutine("tackleCameraCor");
+                    AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+                    //êÅÇ¡îÚÇ‘
+                }
+
+                if (other.gameObject.tag == "EnemySmashAttack")
+                {
+                    playerHP = playerHP - 30;
+                    animator.SetTrigger("EnemyTackleHit");
+                    HitNow = true;
+                    muteki = true;
+                    AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+                    //êÅÇ¡îÚÇ‘
+
+                }
             }
 
-            if (other.gameObject.tag == "EnemyChainAttack")
-            {
-                playerHP = playerHP - 10;
-                animator.SetTrigger("falter");
-                HitNow = true;
-                muteki = true;
-                AudioManager.GetInstance().PlaySE("enemyAttack", 3);
-                //ãØÇﬁ
-            }
-
-            if (other.gameObject.tag == "EnemyTackleAttack")
-            {
-                playerHP = playerHP - 20;
-                animator.SetTrigger("EnemyTackleHit");
-                HitNow = true;
-                muteki = true;
-                tackleCamScript.StartCoroutine("tackleCameraCor");
-                AudioManager.GetInstance().PlaySE("enemyAttack", 3);
-                //êÅÇ¡îÚÇ‘
-            }
-
-            if (other.gameObject.tag == "EnemySmashAttack")
-            {
-                playerHP = playerHP - 30;
-                animator.SetTrigger("EnemyTackleHit");
-                HitNow = true;
-                muteki = true;
-                AudioManager.GetInstance().PlaySE("enemyAttack", 3);
-                //êÅÇ¡îÚÇ‘
-            }
         }
     }
     public void GetUpTime()

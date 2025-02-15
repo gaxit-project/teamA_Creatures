@@ -34,6 +34,8 @@ public class MoveComponent : MonoBehaviour
 
     public float moveFSpeed;
     public float moveBSpeed;
+    public float moveFJumpSpeed;
+    public float moveBJumpSpeed;
 
     public bool MoveRun;
 
@@ -99,13 +101,24 @@ public class MoveComponent : MonoBehaviour
         Debug.Log(Speed);
         if (Mathf.Abs(Speed) > Mathf.Abs(Down)||Down>0)
         {
-            if (moveF||moveFNow)
+            if ((moveF || moveFNow) && JumpComponent.Instance.jumpFlag)
             {
                 transform.Translate(transform.TransformDirection(new Vector2(Speed, 0) * moveFSpeed * Time.deltaTime));
+                Debug.Log("flont");
             }
-            else if(moveB||moveBNow) 
+            else if (moveB && JumpComponent.Instance.jumpFlag)
             {
                 transform.Translate(transform.TransformDirection(new Vector2(Speed, 0) * moveBSpeed * Time.deltaTime));
+                Debug.Log("Back");
+            }
+            else if (moveFNow && !JumpComponent.Instance.jumpFlag)
+            {
+                transform.Translate(transform.TransformDirection(new Vector2(Speed, 0) * moveFJumpSpeed * Time.deltaTime));
+
+            }
+            else if (moveBNow && !JumpComponent.Instance.jumpFlag)
+            {
+                transform.Translate(transform.TransformDirection(new Vector2(Speed, 0) * moveBJumpSpeed * Time.deltaTime));
             }
         }
         if (JumpComponent.Instance.jumpFlag&&(Speed!=0||Down!=0))
@@ -164,7 +177,7 @@ public class MoveComponent : MonoBehaviour
             {
                 animator.SetBool("Shield", true);
                 moveF = false;
-                moveB = false;
+                moveB = false; 
                 runningNow = false;
                 if (audioSource.isPlaying)
                 {
@@ -181,8 +194,35 @@ public class MoveComponent : MonoBehaviour
         {
             moveF = false;
             moveB = false;
-            moveFNow = true;
-            moveBNow = true;
+
+            if (!left)
+            {
+                if (Speed > 0)
+                {
+                    moveFNow = true;
+                    moveBNow = false;
+                }
+                else if (Speed < 0)
+                {
+                    moveFNow = false;
+                    moveBNow = true;
+                }
+            }
+            else
+            {
+                if (Speed > 0)
+                {
+                    moveFNow = false;
+                    moveBNow = true;
+                }
+                else if (Speed < 0)
+                {
+                    moveFNow = true;
+                    moveBNow = false;
+                }
+            }
+            
+
 
             animator.SetBool("Shield", false);
             //AudioManager.GetInstance().StopLoopSE("playerMove");
@@ -263,8 +303,12 @@ public class MoveComponent : MonoBehaviour
             left = false;
         }
 
-        Vector3 EnemyPosition = new Vector3(Enemy.transform.position.x, transform.position.y, transform.position.z);
-        transform.LookAt(EnemyPosition);
+        if (JumpComponent.Instance.jumpFlag)
+        {
+            Vector3 EnemyPosition = new Vector3(Enemy.transform.position.x, transform.position.y, transform.position.z);
+            transform.LookAt(EnemyPosition);
+        }
+
 
             if (moveF)
             {

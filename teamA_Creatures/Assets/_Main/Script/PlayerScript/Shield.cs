@@ -29,6 +29,8 @@ public class Shield : MonoBehaviour
             Debug.Log("1");
         }
     }
+
+
     public void OnShield()
     {
         if(ShieldInstance == null)

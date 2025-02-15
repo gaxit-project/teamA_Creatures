@@ -57,8 +57,10 @@ public class AttackComponent : MonoBehaviour
 
         switch (attackType)
         {
+
             case AttackType.attack:
-                if (JumpComponent.Instance.jumpFlag)
+
+                if (JumpComponent.Instance.jumpFlag&&!attackNow)
                 {
                     Debug.Log("çUåÇ");
                     animator.SetTrigger("Attack");
@@ -94,6 +96,7 @@ public class AttackComponent : MonoBehaviour
         animator.SetTrigger("EndAttack");
         animator.ResetTrigger("Attack");
         animator.ResetTrigger("Counter");
+        animator.SetBool("Shield", false);
         if (cubeController != null)
         {
             cubeController.HidePunchCube();
@@ -101,7 +104,6 @@ public class AttackComponent : MonoBehaviour
     }
     public void ShieldOut()
     {
-
         Shield.Instance.OffShield();
         CounterRange = false;
     }
