@@ -338,6 +338,7 @@ public class NewEnemyMove : MonoBehaviour
         }
     }
 #endregion
+
     #region 攻撃の処理たち
 
     /// <summary>
@@ -349,6 +350,7 @@ public class NewEnemyMove : MonoBehaviour
         _isCoroutineRunning = true;
         _enemyAnim.SetBool("RightPunch", true);
         _enemyAnim.CrossFade("RightPunch", 0.1f);
+        AudioManager.GetInstance().PlaySE("enemyAttack", 4);
         while (true)
         {
             // 現在のアニメーションステート情報を取得
@@ -382,6 +384,7 @@ public class NewEnemyMove : MonoBehaviour
         _isCoroutineRunning = true;
         _enemyAnim.SetBool("LeftPunch", true);
         _enemyAnim.CrossFade("LeftPunch", 0.1f);
+        AudioManager.GetInstance().PlaySE("enemyAttack", 4);
         while (true)
         {
             // 現在のアニメーションステート情報を取得
@@ -427,6 +430,7 @@ public class NewEnemyMove : MonoBehaviour
         _isAnimActive = true;
         _enemyAnim.SetBool("Smash", true);
         _enemyAnim.CrossFade("Smash", 0.1f);
+        AudioManager.GetInstance().PlaySE("enemyAttack", 4);
         while (true)
         {
             // 現在のアニメーションステート情報を取得
@@ -466,6 +470,7 @@ public class NewEnemyMove : MonoBehaviour
         _enemyAnim.SetBool("Tackle", true);
         _enemyAnim.CrossFade("Tackle", 0.1f);
         tackleSpeed = 5f;
+        AudioManager.GetInstance().PlayLoopSE("enemyMove", 0);
         // 現在のアニメーションが終了したかを確認
         while (true)
         {
@@ -488,6 +493,7 @@ public class NewEnemyMove : MonoBehaviour
             yield return null;
         }
         yield return null;
+        AudioManager.GetInstance().StopLoopSE("enemyMove");
         EnemyHit2.DestroyCube();
         _isTackle = false;
         _isWallFlag = false;
@@ -541,6 +547,7 @@ public class NewEnemyMove : MonoBehaviour
         Debug.Log("前ステップ");
         _enemyAnim.SetBool("ForwardStep", true);
         _enemyAnim.CrossFade("ForwardStep", 0.1f);
+        AudioManager.GetInstance().PlaySE("enemyAttack", 5);
         while (true)
         {
             switch(around)
@@ -584,6 +591,7 @@ public class NewEnemyMove : MonoBehaviour
         Debug.Log("前ステップ");
         _enemyAnim.SetBool("BackUpper", true);
         _enemyAnim.CrossFade("BackUpper", 0.1f);
+        AudioManager.GetInstance().PlayLoopSE("enemyMove", 0);
         while (true)
         {
             if (_isAtackEnd)
@@ -600,7 +608,13 @@ public class NewEnemyMove : MonoBehaviour
         _attackStiffnessMin = 0.5f;
         _attackStiffnessMax = 0.8f;
         _currentState = EnemyState.Idle;
+        AudioManager.GetInstance().StopLoopSE("enemyMove");
         yield return null;
+    }
+
+    void EnemyBackAttackSE(int num)
+    {
+        AudioManager.GetInstance().PlaySE("enemyAttack",num);
     }
 
 

@@ -570,6 +570,10 @@ PrefabInstance:
       value: 120
       objectReference: {fileID: 0}
     - target: {fileID: -7421469005544762758, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
+      propertyPath: JM
+      value: 
+      objectReference: {fileID: 221866028}
+    - target: {fileID: -7421469005544762758, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
       propertyPath: slider
       value: 
       objectReference: {fileID: 632973374}
@@ -678,8 +682,28 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 5642363805473325517, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
+      propertyPath: Enemy
+      value: 
+      objectReference: {fileID: 1661968426}
+    - target: {fileID: 5642363805473325517, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
+      propertyPath: Player
+      value: 
+      objectReference: {fileID: 851187281}
+    - target: {fileID: 5642363805473325517, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
+      propertyPath: moveBNow
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5642363805473325517, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
       propertyPath: moveSpeed
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5642363805473325517, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
+      propertyPath: moveBSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5642363805473325517, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
+      propertyPath: moveFSpeed
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9327,6 +9351,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1449503941269577616, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[4]
+      value: 
+      objectReference: {fileID: 8300000, guid: ea9fa844d2a2a0d46895875e68ef0153, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[5]
+      value: 
+      objectReference: {fileID: 8300000, guid: 560bf0d38ae9b2f43b6818d5a21005a0, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[6]
+      value: 
+      objectReference: {fileID: 8300000, guid: 23a8b4c30397f2548880d28a56bc3204, type: 3}
+    - target: {fileID: 5434118842909102825, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: m_Volume
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8911176697624600253, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
