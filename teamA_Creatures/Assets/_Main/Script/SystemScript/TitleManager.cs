@@ -6,10 +6,10 @@ using UnityEngine.UI;
 
 public class TitleManager : MonoBehaviour
 {
-    public Button startButton; // STARTボタン
-    public Button settingButton; // 設定ボタン
-    public Button endButton;   // ENDボタン
-    public Setting settingScript; // Settingスクリプトの参照
+    public Button startButton;
+    public Button settingButton;
+    public Button endButton;
+    public Setting settingScript;
 
     void Start()
     {
@@ -19,14 +19,10 @@ public class TitleManager : MonoBehaviour
         startButton.Select();
     }
 
-    void Update()
-    {
-    }
-
     public void StartGame()
     {
-        // メインシーンに遷移
-        SceneManager.LoadScene("Main");
+        // まずロードシーンへ遷移
+        SceneManager.LoadScene("Loading");
     }
 
     public void OpenSetting()
@@ -39,10 +35,9 @@ public class TitleManager : MonoBehaviour
 
     public void QuitGame()
     {
-        // ゲームを終了
         Application.Quit();
 #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false; // エディタ内での終了処理
+        UnityEditor.EditorApplication.isPlaying = false;
 #endif
     }
 }
