@@ -101,7 +101,7 @@ public class MoveComponent : MonoBehaviour
         Debug.Log(Speed);
         if (Mathf.Abs(Speed) > Mathf.Abs(Down)||Down>0)
         {
-            if ((moveF || moveFNow) && JumpComponent.Instance.jumpFlag)
+            if (moveF && JumpComponent.Instance.jumpFlag)
             {
                 transform.Translate(transform.TransformDirection(new Vector2(Speed, 0) * moveFSpeed * Time.deltaTime));
                 Debug.Log("flont");
