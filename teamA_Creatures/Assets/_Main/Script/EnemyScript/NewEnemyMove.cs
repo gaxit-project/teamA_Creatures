@@ -41,8 +41,6 @@ public class NewEnemyMove : MonoBehaviour
 
     Vector2 _directionX;
 
-    bool _isWallFlag = false;
-
 
     bool _isAtackEnd = false;
     private EnemyHit cubeController; // EnemyAttack スクリプトの参照
@@ -55,7 +53,7 @@ public class NewEnemyMove : MonoBehaviour
 
     public JudgeManager JM;
 
-    bool _isTackle = false;
+    public static bool _isTackle = false;
     bool _shortDistance = false;
 
     float _attackStiffnessMin = 0.3f;
@@ -85,6 +83,12 @@ public class NewEnemyMove : MonoBehaviour
     #region スタートたち
     void Start()
     {
+        isFollow = false;
+        _isTackle = false;
+        _isAtackEnd = false;
+        _shortDistance = false;
+        _isAnimActive = true;
+        _isCoroutineRunning = false;
         transform.position = new Vector3(4, 0, 0);
         _playerTr = GameObject.FindGameObjectWithTag("Player").transform;
         // リジットボディの設定
@@ -484,7 +488,7 @@ public class NewEnemyMove : MonoBehaviour
                 _tackleAcceleration = 0;
             }
             float _distancePtoE2 = Vector2.Distance(transform.position, _playerTr.position);
-            if (_distancePtoE2 <= shortDistance + 1f || _isWallFlag)
+            if (_distancePtoE2 <= shortDistance + 1f || EnemyRayCast.isTackleWall)
             {
                 tackleSpeed = 0f;
                 break;
@@ -495,8 +499,8 @@ public class NewEnemyMove : MonoBehaviour
         yield return null;
         AudioManager.GetInstance().StopLoopSE("enemyMove");
         EnemyHit2.DestroyCube();
+        EnemyRayCast.isTackleWall = false;
         _isTackle = false;
-        _isWallFlag = false;
         _enemyAnim.SetBool("Tackle", false);
         Debug.Log("タックル終了");
         // 攻撃硬直
@@ -651,14 +655,6 @@ public class NewEnemyMove : MonoBehaviour
             Debug.Log("プレイヤーの攻撃にあたった");
             ReduceEnemyHP(10);
             //_currentState = EnemyState.Guard; // 状態をガードに変更
-        }
-        if (collision.CompareTag("Wall"))
-        {
-            if (_isTackle)
-            {
-                Debug.Log("壁に当たった");
-                _isWallFlag = true;
-            }
         }
     }
     /// <summary>
