@@ -68,9 +68,12 @@ public class PlayerHP : MonoBehaviour
             }
 
             if (other.gameObject.tag == "EnemyPunchAttack")
-            {
+            { 
                 playerHP = playerHP - 10;
                 animator.SetTrigger("falter");
+                // ヒットストップ
+                animator.CrossFade("falter", 0f);
+                HitStopScript.Instance.StartHitStop(0.2f,"Player");
                 AudioManager.GetInstance().PlaySE("enemyAttack",3);
                 HitNow = true;
                 muteki = true;
@@ -90,7 +93,7 @@ public class PlayerHP : MonoBehaviour
             if (other.gameObject.tag == "EnemyTackleAttack")
             {
                 playerHP = playerHP - 20;
-                animator.SetTrigger("EnemyTackleHit");
+                animator.SetTrigger("falter");
                 HitNow = true;
                 muteki = true;
                 tackleCamScript.StartCoroutine("tackleCameraCor");
@@ -102,6 +105,9 @@ public class PlayerHP : MonoBehaviour
             {
                 playerHP = playerHP - 30;
                 animator.SetTrigger("EnemyTackleHit");
+                // ヒットストップ
+                animator.CrossFade("EnemyTackleHit", 0f);
+                HitStopScript.Instance.StartHitStop(0.5f, "Player");
                 HitNow = true;
                 muteki = true;
                 AudioManager.GetInstance().PlaySE("enemyAttack", 3);
@@ -112,11 +118,11 @@ public class PlayerHP : MonoBehaviour
     public void GetUpTime()
     {
         animator.SetTrigger("GetUp");
-        
     }
     public void Stand()
     {
         animator.SetTrigger("Stand");
+        animator.CrossFade("Stand", 0f);
         HitNow = false;
         StartCoroutine(Mmuteki());
     }

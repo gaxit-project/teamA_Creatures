@@ -107243,15 +107243,15 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 2.7333333
-    functionName: EnemyAtackEnd
+  - time: 2.5
+    functionName: DestroyCube
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 2.7333333
-    functionName: DestroyCube
+    functionName: EnemyAtackEnd
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 public class NewEnemyMove : MonoBehaviour
@@ -58,6 +59,8 @@ public class NewEnemyMove : MonoBehaviour
 
     float _attackStiffnessMin = 0.3f;
     float _attackStiffnessMax = 0.5f;
+
+    Coroutine currentCoroutine;
     /// <summary>
     /// エネミーの列挙型
     /// </summary>
@@ -78,6 +81,7 @@ public class NewEnemyMove : MonoBehaviour
         BackStep,         // 後ろステ
         ForwardStep,      // 前ステ
         BackAttack,       // バックアタック
+        HitStan,          // 攻撃ヒット時
         Stan
     }
     #region スタートたち
@@ -156,6 +160,12 @@ public class NewEnemyMove : MonoBehaviour
             case EnemyState.BackAttack:
                 HandleBackAttack();
                 break;
+            case EnemyState.HitStan:
+                HandleHitStan();
+                break;
+            case EnemyState.Stan:
+                HandleStan();
+                break;
         }
     }
     #endregion
@@ -164,27 +174,27 @@ public class NewEnemyMove : MonoBehaviour
     void HandleIdle()
     {
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
-        StartCoroutine(EnemyIdle());
+        currentCoroutine = StartCoroutine(EnemyIdle());
     }
     void HandleMiddleFollow()
     {
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
-        StartCoroutine(PlayerFollow(_targetDistance));
+        currentCoroutine = StartCoroutine(PlayerFollow(_targetDistance));
     }
     void HandleShortFollow()
     {
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
-        StartCoroutine(PlayerFollow(_targetDistance));
+        currentCoroutine = StartCoroutine(PlayerFollow(_targetDistance));
     }
     void HandleMiddleRetreat()
     {
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
-        StartCoroutine(PlayerRetreat(_targetDistance));
+        currentCoroutine = StartCoroutine(PlayerRetreat(_targetDistance));
     }
     void HandleLongRetreat()
     {
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
-        StartCoroutine(PlayerRetreat(_targetDistance));
+        currentCoroutine = StartCoroutine(PlayerRetreat(_targetDistance));
     }
     void HandleGuard()
     {
@@ -194,48 +204,62 @@ public class NewEnemyMove : MonoBehaviour
     void HandleRightPunch()
     {
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
-        StartCoroutine(EnemyRightPunch());
+        currentCoroutine = StartCoroutine(EnemyRightPunch());
         //_currentState = EnemyState.Idle;
     }
     void HandleLeftPunch()
     {
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
-        StartCoroutine(EnemyLeftPunch());
+        currentCoroutine = StartCoroutine(EnemyLeftPunch());
         //_currentState = EnemyState.Idle;
     }
     void HandleSmash()
     {
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
-        StartCoroutine(EnemySmash());
+        currentCoroutine = StartCoroutine(EnemySmash());
         //_currentState = EnemyState.Idle;
     }
     void HandleTackle()
     {
         Debug.Log("タックル呼び出し処理開始！！！");
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
-        StartCoroutine(EnemyTackle());
+        currentCoroutine = StartCoroutine(EnemyTackle());
         //_currentState = EnemyState.Idle;
     }
     void HandleChain()
     {
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
-        StartCoroutine(EnemyChain());
+        currentCoroutine = StartCoroutine(EnemyChain());
         //_currentState = EnemyState.Idle;
     }
     void HandleForwardStep()
     {
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
-        StartCoroutine(EnemyStep("forward"));
+        currentCoroutine = StartCoroutine(EnemyStep("forward"));
     }
     void HandleBackStep()
     {
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
-        StartCoroutine(EnemyStep("back"));
+        currentCoroutine = StartCoroutine(EnemyStep("back"));
     }
     void HandleBackAttack()
     {
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
-        StartCoroutine(EnemyBackAttack());
+        currentCoroutine = StartCoroutine(EnemyBackAttack());
+    }
+    void HandleHitStan()
+    {
+        StopCoroutine(currentCoroutine);
+        _isCoroutineRunning = false;
+        if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
+        currentCoroutine = StartCoroutine(EnemyIdle());
+    }
+    void HandleStan()
+    {
+        StopCoroutine(currentCoroutine);
+        _isCoroutineRunning = false;
+        if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
+        currentCoroutine = StartCoroutine(EnemyIdle());
     }
     /// <summary>
     /// 距離による状態遷移
@@ -653,6 +677,8 @@ public class NewEnemyMove : MonoBehaviour
         if (collision.CompareTag("PlayerJab"))
         {
             Debug.Log("プレイヤーの攻撃にあたった");
+            //_currentState = EnemyState.HitStan;
+            HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
             ReduceEnemyHP(10);
             //_currentState = EnemyState.Guard; // 状態をガードに変更
         }
