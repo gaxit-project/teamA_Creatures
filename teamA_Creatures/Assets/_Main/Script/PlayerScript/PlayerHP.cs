@@ -6,6 +6,7 @@ public class PlayerHP : MonoBehaviour
 {
     public static PlayerHP Instance;
     public JudgeManager JM;
+    public NewEnemyMove NewEnemyMove;
 
     public void Awake()
     {
@@ -75,6 +76,7 @@ public class PlayerHP : MonoBehaviour
                 animator.CrossFade("falter", 0f);
                 HitStopScript.Instance.StartHitStop(0.2f,"Player");
                 AudioManager.GetInstance().PlaySE("enemyAttack",3);
+                NewEnemyMove.EnemyBack();
                 HitNow = true;
                 muteki = true;
                 //ãØÇﬁ
@@ -87,6 +89,7 @@ public class PlayerHP : MonoBehaviour
                 HitNow = true;
                 muteki = true;
                 AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+                NewEnemyMove.EnemyBack();
                 //ãØÇﬁ
             }
 
@@ -98,6 +101,7 @@ public class PlayerHP : MonoBehaviour
                 muteki = true;
                 tackleCamScript.StartCoroutine("tackleCameraCor");
                 AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+                NewEnemyMove.EnemyBack();
                 //êÅÇ¡îÚÇ‘
             }
 
@@ -111,6 +115,7 @@ public class PlayerHP : MonoBehaviour
                 HitNow = true;
                 muteki = true;
                 AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+                NewEnemyMove.EnemyBack();
                 //êÅÇ¡îÚÇ‘
             }
         }

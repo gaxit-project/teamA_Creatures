@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.063576035, g: 0.052026946, b: 0.056728896, a: 1}
+  m_IndirectSpecularColor: {r: 0.06361822, g: 0.052069563, b: 0.056787517, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -582,6 +582,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8300000, guid: 700d33946a37910418f72012e58ec2d2, type: 3}
     - target: {fileID: -7421469005544762758, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
+      propertyPath: NewEnemyMove
+      value: 
+      objectReference: {fileID: 1661968452}
+    - target: {fileID: -7421469005544762758, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
       propertyPath: tackleCamScript
       value: 
       objectReference: {fileID: 913048304}
@@ -708,7 +712,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5355928461982673233, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 851187297}
   m_SourcePrefab: {fileID: 100100000, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
 --- !u!4 &102769843 stripped
 Transform:
@@ -3877,6 +3884,19 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 1729356930380212625, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
   m_PrefabInstance: {fileID: 73116117}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &851187297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 851187281}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0970e6fdbc0e2f245b03035b44751337, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerBackRayDistance: 4
 --- !u!4 &872285307 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4000010968662070, guid: 30b99e7dc1382e346a7f9789de00de5e, type: 3}
@@ -6852,10 +6872,10 @@ PrefabInstance:
       addedObject: {fileID: 1661968446}
     - targetCorrespondingSourceObject: {fileID: 1309486516299566, guid: d2c14aacbdf27be42b48ffbea05effac, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1661968450}
+      addedObject: {fileID: 1661968454}
     - targetCorrespondingSourceObject: {fileID: 1309486516299566, guid: d2c14aacbdf27be42b48ffbea05effac, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1661968454}
+      addedObject: {fileID: 1661968450}
   m_SourcePrefab: {fileID: 100100000, guid: d2c14aacbdf27be42b48ffbea05effac, type: 3}
 --- !u!1 &1661968426 stripped
 GameObject:
@@ -7138,6 +7158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rayDistance: 3
+  backRayDistance: 5
 --- !u!4 &1681607724 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4829872756800474, guid: d6fbdf6c39d58e64f97bf634c9af697e, type: 3}
