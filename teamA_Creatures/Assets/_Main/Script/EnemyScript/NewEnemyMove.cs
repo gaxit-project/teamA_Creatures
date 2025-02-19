@@ -64,6 +64,19 @@ public class NewEnemyMove : MonoBehaviour
     Coroutine currentCoroutine;
 
     bool isEnemyStan = false;
+
+    public static NewEnemyMove Instance;
+    public void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(Instance);
+        }
+    }
     /// <summary>
     /// エネミーの列挙型
     /// </summary>
