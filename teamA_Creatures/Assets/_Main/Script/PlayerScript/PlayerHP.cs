@@ -6,6 +6,7 @@ public class PlayerHP : MonoBehaviour
 {
     public static PlayerHP Instance;
     public JudgeManager JM;
+    public NewEnemyMove NewEnemyMove;
 
     public void Awake()
     {
@@ -73,6 +74,7 @@ public class PlayerHP : MonoBehaviour
                 animator.SetBool("Shield", false);
                 AttackComponent.Instance.ShieldOut();
                 AttackComponent.Instance.EndAttack();
+<<<<<<< HEAD
                 if (other.gameObject.tag == "EnemyPunchAttack")
                 {
                     playerHP = playerHP - 10;
@@ -116,16 +118,70 @@ public class PlayerHP : MonoBehaviour
                 }
             }
 
+=======
+
+                if (other.gameObject.tag == "EnemyPunchAttack")
+                {
+                    playerHP = playerHP - 10;
+                    animator.SetTrigger("falter");
+                    // ヒットストップ
+                    animator.CrossFade("falter", 0f);
+                    HitStopScript.Instance.StartHitStop(0.2f, "Player");
+                    AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+                    NewEnemyMove.EnemyBack();
+                    HitNow = true;
+                    muteki = true;
+                    //怯む
+                }
+
+                if (other.gameObject.tag == "EnemyChainAttack")
+                {
+                    playerHP = playerHP - 10;
+                    animator.SetTrigger("falter");
+                    HitNow = true;
+                    muteki = true;
+                    AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+                    NewEnemyMove.EnemyBack();
+                    //怯む
+                }
+
+                if (other.gameObject.tag == "EnemyTackleAttack")
+                {
+                    playerHP = playerHP - 20;
+                    animator.SetTrigger("falter");
+                    HitNow = true;
+                    muteki = true;
+                    tackleCamScript.StartCoroutine("tackleCameraCor");
+                    AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+                    NewEnemyMove.EnemyBack();
+                    //吹っ飛ぶ
+                }
+
+                if (other.gameObject.tag == "EnemySmashAttack")
+                {
+                    playerHP = playerHP - 30;
+                    animator.SetTrigger("EnemyTackleHit");
+                    // ヒットストップ
+                    animator.CrossFade("EnemyTackleHit", 0f);
+                    HitStopScript.Instance.StartHitStop(0.5f, "Player");
+                    HitNow = true;
+                    muteki = true;
+                    AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+                    NewEnemyMove.EnemyBack();
+                    //吹っ飛ぶ
+                }
+            }
+>>>>>>> develop
         }
     }
     public void GetUpTime()
     {
         animator.SetTrigger("GetUp");
-        
     }
     public void Stand()
     {
         animator.SetTrigger("Stand");
+        animator.CrossFade("Stand", 0f);
         HitNow = false;
         StartCoroutine(Mmuteki());
     }
