@@ -90,6 +90,9 @@ public class AttackComponent : MonoBehaviour
                 break;
         }
     }
+    public GameObject Cube;
+    public GameObject CountorCube;
+    public Vector3 CCube;
 
     public void EndAttack()
     {
@@ -107,6 +110,13 @@ public class AttackComponent : MonoBehaviour
     {
         Shield.Instance.OffShield();
         CounterRange = false;
+        CCube = MoveComponent.Instance.Player.transform.position + MoveComponent.Instance.Player.transform.forward * 2f + MoveComponent.Instance.Player.transform.up * 2f;
+        CountorCube = Instantiate(Cube, CCube, Quaternion.identity);
+
+    }
+    public void CounterOut()
+    {
+        Destroy(CountorCube);
     }
 
     private IEnumerator ResetSoundCooldown()

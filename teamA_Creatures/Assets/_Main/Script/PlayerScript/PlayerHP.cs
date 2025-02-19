@@ -63,6 +63,7 @@ public class PlayerHP : MonoBehaviour
     {
         if (!MoveComponent.Instance.ATFieldNow && !muteki)
         {
+            Destroy(AttackComponent.Instance.CountorCube);
             if (other.gameObject.tag == "Enemy")
             {
                 playerHP = playerHP - 5;

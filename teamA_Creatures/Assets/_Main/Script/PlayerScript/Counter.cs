@@ -7,6 +7,7 @@ public class Counter : MonoBehaviour
 {
     public static Counter Instance;
     Animator animator;
+
     public void Awake()
     {
         if (Instance == null)
@@ -19,22 +20,24 @@ public class Counter : MonoBehaviour
         }
         animator = GetComponent<Animator>();
     }
-    public void OnTriggerStay(Collider other)
+    public void OnTriggerEnter(Collider other)
     {
 
+        if (other.gameObject.tag == "Enemy" && AttackComponent.Instance.CounterRange)
+        {
+            
+        }
         if (other.gameObject.tag == "Enemy")
         {
             
             Debug.Log("Counter");
-        }
-        else
-        {
-
+            AttackComponent.Instance.Countered = true;
         }
 
         if (other.gameObject.tag == "EnemyPunchAttack")
         {
             Debug.Log("Counter");
+            NewEnemyMove.Instance.EnemyStanState();
             AttackComponent.Instance.Countered = true;
         }
 
@@ -42,12 +45,16 @@ public class Counter : MonoBehaviour
         {
             Debug.Log("Counter");
             AttackComponent.Instance.Countered = true;
+            NewEnemyMove.Instance.EnemyStanState();
+
         }
 
         if (other.gameObject.tag == "EnemyTackleAttack")
         {
             Debug.Log("Counter");
             AttackComponent.Instance.Countered = true;
+            NewEnemyMove.Instance.EnemyStanState();
+
         }
     }
 }

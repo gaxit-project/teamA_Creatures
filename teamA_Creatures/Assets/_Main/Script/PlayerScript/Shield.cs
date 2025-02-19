@@ -55,6 +55,7 @@ public class Shield : MonoBehaviour
     }
     private void Update()
     {
+
         if(ShieldInstance != null)
         {
             Vector3 ShieldPosition = transform.position + transform.forward * 2f+transform.up*2f;
