@@ -11,6 +11,7 @@ public class AttackComponent : MonoBehaviour
     AudioSource audioSource;
     public AudioClip attackSound;
     public float soundCooldownTime = 2.0f;
+    public TackleCamera counterCamScript;
 
     private bool canPlaySound = true;
 
@@ -83,6 +84,7 @@ public class AttackComponent : MonoBehaviour
                 Debug.Log("カウンター");
                 CounterRange = true;
                 animator.SetTrigger("Counter");
+                counterCamScript.StartCoroutine("tackleCameraCor");
                 attackNow = true;
                 break;
         }
