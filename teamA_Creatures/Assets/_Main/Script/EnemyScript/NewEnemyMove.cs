@@ -691,7 +691,9 @@ public class NewEnemyMove : MonoBehaviour
     // カウンター決められた時の処理
     public void EnemyStanState()
     {
-        _enemyAnim.CrossFade("Idle", 0f);
+        _rb.velocity = Vector3.zero;
+        _enemyAnim.SetBool("Stan", true);
+        _enemyAnim.CrossFade("Stan", 0f);
         isEnemyStan = true;
         _currentState = EnemyState.Stan;
     }
@@ -699,12 +701,7 @@ public class NewEnemyMove : MonoBehaviour
     {
         _isCoroutineRunning = true;
         float stanTime = 0f;
-        // 技の処理をすべて消す
-        EnemyAtackEnd();
-        _isAtackEnd = false;
-        EnemyRayCast.isTackleWall = false;
-        _isTackle = false;
-        EnemyHit2.DestroyCube();
+        EnemyCancel();
         while (true)
         {
             stanTime += Time.deltaTime;
@@ -716,6 +713,7 @@ public class NewEnemyMove : MonoBehaviour
             yield return null;
         }
         Debug.Log("スタン解除！！");
+        _enemyAnim.SetBool("Stan", false);
         _isCoroutineRunning = false;
         _currentState = EnemyState.Idle;
         yield return null;
@@ -876,6 +874,16 @@ public class NewEnemyMove : MonoBehaviour
     #endregion
 
     #region 終了処理とデバッグキー
+
+    void EnemyCancel()
+    {
+        // 技の処理をすべて消す
+        EnemyAtackEnd();
+        _isAtackEnd = false;
+        EnemyRayCast.isTackleWall = false;
+        _isTackle = false;
+        EnemyHit2.DestroyCube();
+    }
     void EnemyAtackEnd()
     {
         _enemyAnim.SetBool("Chain", false);
