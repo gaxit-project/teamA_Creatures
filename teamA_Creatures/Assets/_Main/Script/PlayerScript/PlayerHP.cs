@@ -10,11 +10,11 @@ public class PlayerHP : MonoBehaviour
 
     public void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
         }
-        else if(Instance != this)
+        else if (Instance != this)
         {
             Destroy(Instance);
         }
@@ -39,7 +39,7 @@ public class PlayerHP : MonoBehaviour
 
     private void Update()
     {
-        if(playerHP <= 0)
+        if (playerHP <= 0)
         {
             JM.ChangeOverScene();
         }
@@ -61,8 +61,9 @@ public class PlayerHP : MonoBehaviour
     }
     public void OnTriggerEnter(Collider other)
     {
-        if (!MoveComponent.Instance.ATFieldNow&&!muteki)
+        if (!MoveComponent.Instance.ATFieldNow && !muteki)
         {
+            Destroy(AttackComponent.Instance.CountorCube);
             if (other.gameObject.tag == "Enemy")
             {
                 playerHP = playerHP - 5;

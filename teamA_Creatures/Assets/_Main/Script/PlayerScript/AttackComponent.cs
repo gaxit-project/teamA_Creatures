@@ -57,13 +57,16 @@ public class AttackComponent : MonoBehaviour
 
         switch (attackType)
         {
+
             case AttackType.attack:
-                if (JumpComponent.Instance.jumpFlag)
+
+                if (JumpComponent.Instance.jumpFlag&&!attackNow)
                 {
                     Debug.Log("çUåÇ");
                     animator.SetTrigger("Attack");
                     attackNow = true;
-
+                    animator.SetBool("run", false);
+                    animator.SetBool("Back", false);
                     if(audioSource != null && attackSound != null && canPlaySound)
                     {
                         audioSource.PlayOneShot(attackSound);
@@ -87,6 +90,9 @@ public class AttackComponent : MonoBehaviour
                 break;
         }
     }
+    public GameObject Cube;
+    public GameObject CountorCube;
+    public Vector3 CCube;
 
     public void EndAttack()
     {
@@ -94,6 +100,7 @@ public class AttackComponent : MonoBehaviour
         animator.SetTrigger("EndAttack");
         animator.ResetTrigger("Attack");
         animator.ResetTrigger("Counter");
+        animator.SetBool("Shield", false);
         if (cubeController != null)
         {
             cubeController.HidePunchCube();
@@ -101,9 +108,15 @@ public class AttackComponent : MonoBehaviour
     }
     public void ShieldOut()
     {
-
         Shield.Instance.OffShield();
         CounterRange = false;
+        CCube = MoveComponent.Instance.Player.transform.position + MoveComponent.Instance.Player.transform.forward * 2f + MoveComponent.Instance.Player.transform.up * 2f;
+        CountorCube = Instantiate(Cube, CCube, Quaternion.identity);
+
+    }
+    public void CounterOut()
+    {
+        Destroy(CountorCube);
     }
 
     private IEnumerator ResetSoundCooldown()
