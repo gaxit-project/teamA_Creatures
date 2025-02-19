@@ -22,14 +22,14 @@ public class Counter : MonoBehaviour
     public void OnTriggerStay(Collider other)
     {
 
-        if (other.gameObject.tag == "Enemy" && AttackComponent.Instance.CounterRange) 
-        {
-        }
         if (other.gameObject.tag == "Enemy")
         {
             
             Debug.Log("Counter");
-            AttackComponent.Instance.Countered = true;
+        }
+        else
+        {
+
         }
 
         if (other.gameObject.tag == "EnemyPunchAttack")

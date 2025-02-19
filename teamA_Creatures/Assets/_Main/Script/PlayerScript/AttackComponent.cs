@@ -65,7 +65,8 @@ public class AttackComponent : MonoBehaviour
                     Debug.Log("çUåÇ");
                     animator.SetTrigger("Attack");
                     attackNow = true;
-
+                    animator.SetBool("run", false);
+                    animator.SetBool("Back", false);
                     if(audioSource != null && attackSound != null && canPlaySound)
                     {
                         audioSource.PlayOneShot(attackSound);
