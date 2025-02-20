@@ -44,6 +44,12 @@ public class MoveComponent : MonoBehaviour
     private float lastBackInputTime = 0f;
     private float backStepThreshold = 0.2f; // バックステップ発動猶予時間
     public bool prevBackInput = false; // 前回の入力状態
+
+    public bool FrontStepReady = false;
+    private float lastFrontInputTime = 0f;
+    private float FrontStepThreshold = 0.2f;
+    public bool prevFrontInput = false;
+
     private void Awake()
     {
         if (Instance == null)
@@ -91,11 +97,28 @@ public class MoveComponent : MonoBehaviour
 
         prevBackInput = isBackInput;
 
+
+        bool isFrontInput = (left && Speed < 0)||(!left&&Speed>0);
+
+        if (isFrontInput && !prevFrontInput)
+        {
+            if (FrontStepReady && Time.time - lastFrontInputTime <= FrontStepThreshold)
+            {
+                StartCoroutine(FrontStep());
+                FrontStepReady = false;
+            }
+            lastFrontInputTime = Time.time;
+        }
+        else if (!isFrontInput && prevFrontInput)
+        {
+            FrontStepReady = true;
+        }
+        prevFrontInput = isFrontInput;
         // バックステップ中は移動を受け付けない
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("BackStep"))
+        /*if (animator.GetCurrentAnimatorStateInfo(0).IsName("BackStep"))
         {
             return;
-        }
+        }*/
 
 
         Debug.Log(Speed);
@@ -271,6 +294,26 @@ public class MoveComponent : MonoBehaviour
             while (timer < backStepTime)
             {
                 transform.Translate(backDir * backStepSpeed * Time.deltaTime, Space.World);
+                timer += Time.deltaTime;
+                yield return null;
+            }
+        }
+    }
+
+    public IEnumerator FrontStep()
+    {
+        float frontStepSpeed = 8f;
+        float frontStepTime = 0.2f;
+
+        Vector3 frontDir = !left ? Vector3.left : Vector3.right;
+        float moveDistance = frontStepSpeed * frontStepTime;
+
+        if (!Physics.Raycast(transform.position, frontDir, moveDistance))
+        {
+            float timer = 0f;
+            while (timer < frontStepTime)
+            {
+                transform.Translate(frontDir * frontStepSpeed*Time.deltaTime, Space.World);
                 timer += Time.deltaTime;
                 yield return null;
             }
