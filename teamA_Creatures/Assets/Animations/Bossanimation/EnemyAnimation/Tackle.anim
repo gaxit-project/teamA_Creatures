@@ -27227,7 +27227,7 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 0
-    functionName: TrueTackleEffect
+    functionName: TackleEffect
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

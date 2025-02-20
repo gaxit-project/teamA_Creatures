@@ -6,7 +6,7 @@ using UnityEngine;
 public class NewEnemyMove : MonoBehaviour
 {
     // 敵のステータス関連
-    public float enemyHP = 10f; // 敵のHP
+    public float enemyHP = 2000f; // 敵のHP
     int _enemyGaurd;
     [Header("Enemyステータス")]
     [SerializeField] float speed = 1; // 敵の動くスピード
@@ -64,6 +64,7 @@ public class NewEnemyMove : MonoBehaviour
     Coroutine currentCoroutine;
 
     bool isEnemyStan = false;
+    public static bool isEnemyStanFlag = false;
 
     public static NewEnemyMove Instance;
     public void Awake()
@@ -738,6 +739,7 @@ public class NewEnemyMove : MonoBehaviour
         _rb.velocity = Vector3.zero;
         _enemyAnim.SetBool("Stan", true);
         _enemyAnim.CrossFade("Stan", 0f);
+        isEnemyStanFlag = true;
         isEnemyStan = true;
         _currentState = EnemyState.Stan;
     }
@@ -759,6 +761,7 @@ public class NewEnemyMove : MonoBehaviour
         Debug.Log("スタン解除！！");
         _enemyAnim.SetBool("Stan", false);
         _isCoroutineRunning = false;
+        isEnemyStanFlag = false;
         _currentState = EnemyState.Idle;
         yield return null;
     }
@@ -798,11 +801,20 @@ public class NewEnemyMove : MonoBehaviour
     {
         if (collision.CompareTag("PlayerJab"))
         {
+            int damege = 10;
             Debug.Log("プレイヤーの攻撃にあたった");
             //_currentState = EnemyState.HitStan;
-            EnemyHitStanState();
+            if(!isEnemyStanFlag)
+            {
+                EnemyHitStanState();
+            }
+            else
+            {
+                // スタン中は攻撃力アップ
+                damege += 5;
+            }
             HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
-            ReduceEnemyHP(10);
+            ReduceEnemyHP(damege);
             //_currentState = EnemyState.Guard; // 状態をガードに変更
         }
     }
