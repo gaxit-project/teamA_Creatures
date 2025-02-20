@@ -681,6 +681,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5219820467901307863, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
+      propertyPath: Cube
+      value: 
+      objectReference: {fileID: 3701994309552735916, guid: cb9324f7e6d979749acf342372c35497, type: 3}
     - target: {fileID: 5355928461982673233, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
       propertyPath: m_Name
       value: Player
@@ -703,12 +707,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5642363805473325517, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
       propertyPath: moveBSpeed
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5642363805473325517, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
       propertyPath: moveFSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5642363805473325517, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
+      propertyPath: moveBJumpSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5642363805473325517, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
+      propertyPath: moveFJumpSpeed
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 9062071706495866414, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
+      propertyPath: ShieldObject
+      value: 
+      objectReference: {fileID: 6355284357238028309, guid: 6ce2ff1ba3e25d44fa7b80d8ea9ae6d5, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
