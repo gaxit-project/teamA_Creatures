@@ -69,6 +69,7 @@ public class MoveComponent : MonoBehaviour
         ATFieldNow = false;
         runningNow = false;
 
+
     }
     public float Speed;
     /// <summary>
@@ -78,6 +79,8 @@ public class MoveComponent : MonoBehaviour
     /// <param name="Down"></param>
     public void MoveHorizontal(float Speed, float Down)
     {
+        
+
         bool isBackInput = (!left && Speed < 0) || (left && Speed > 0); // 後ろ入力判定
 
         // バックステップ判定
@@ -98,7 +101,7 @@ public class MoveComponent : MonoBehaviour
         prevBackInput = isBackInput;
 
 
-        bool isFrontInput = (left && Speed < 0)||(!left&&Speed>0);
+       /* bool isFrontInput = (left && Speed < 0)||(!left&&Speed>0);
 
         if (isFrontInput && !prevFrontInput)
         {
@@ -113,12 +116,7 @@ public class MoveComponent : MonoBehaviour
         {
             FrontStepReady = true;
         }
-        prevFrontInput = isFrontInput;
-        // バックステップ中は移動を受け付けない
-        /*if (animator.GetCurrentAnimatorStateInfo(0).IsName("BackStep"))
-        {
-            return;
-        }*/
+        prevFrontInput = isFrontInput;*/
 
 
         Debug.Log(Speed);
@@ -300,7 +298,7 @@ public class MoveComponent : MonoBehaviour
         }
     }
 
-    public IEnumerator FrontStep()
+    /*public IEnumerator FrontStep()
     {
         float frontStepSpeed = 8f;
         float frontStepTime = 0.2f;
@@ -318,7 +316,7 @@ public class MoveComponent : MonoBehaviour
                 yield return null;
             }
         }
-    }
+    }*/
     private IEnumerator RunNow()
     {
         runningNow = true;

@@ -41,6 +41,9 @@ public class MovePlayer2 : MonoBehaviour
         if (PlayerHP.Instance.HitNow)
         {
             animator.SetBool("Shield", false);
+            AttackComponent.Instance.EndAttack();
+            animator.SetBool("run", false);
+            animator.SetBool("Buckrun", false);
         }
         else if (!PlayerHP.Instance.HitNow)
         {
@@ -52,10 +55,10 @@ public class MovePlayer2 : MonoBehaviour
                 jump.JumpVertical(velocity.y);
 
 
+                AttackButton = (input.PlatformAction.Attack.ReadValue<float>() >= InputSystem.settings.defaultButtonPressPoint);
+                if (AttackButton) attack.Attack();
             }
 
-            AttackButton = (input.PlatformAction.Attack.ReadValue<float>() >= InputSystem.settings.defaultButtonPressPoint);
-            if (AttackButton) attack.Attack();
 
         }
 
