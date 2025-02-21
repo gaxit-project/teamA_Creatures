@@ -10,7 +10,7 @@ public class AttackComponent : MonoBehaviour
     Animator animator;
     AudioSource audioSource;
     public AudioClip attackSound;
-    public float soundCooldownTime = 2.0f;
+    public float soundCooldownTime = 0.5f;
 
     private bool canPlaySound = true;
 
@@ -88,7 +88,7 @@ public class AttackComponent : MonoBehaviour
                     if (audioSource != null && attackSound != null && canPlaySound)
                     {
                         audioSource.PlayOneShot(attackSound);
-                        canPlaySound = false;
+                        //canPlaySound = false;
                         StartCoroutine(ResetSoundCooldown());
                     }
 
