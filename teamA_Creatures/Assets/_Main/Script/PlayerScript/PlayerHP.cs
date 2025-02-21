@@ -8,6 +8,7 @@ public class PlayerHP : MonoBehaviour
     public JudgeManager JM;
     public NewEnemyMove NewEnemyMove;
     public EnemyEffect EE;
+    public PlayerEffect PE;
 
     public void Awake()
     {
@@ -80,6 +81,7 @@ public class PlayerHP : MonoBehaviour
                 {
                     playerHP = playerHP - 10;
                     EE.PunchEffect();
+                    PE.DamageEffect();
                     animator.SetTrigger("falter");
                     // ヒットストップ
                     animator.CrossFade("falter", 0f);
@@ -109,6 +111,7 @@ public class PlayerHP : MonoBehaviour
                 if (other.gameObject.tag == "EnemyTackleAttack")
                 {
                     playerHP = playerHP - 20;
+                    PE.TackleDamageEffect();
                     animator.SetTrigger("falter");
                     HitNow = true;
                     muteki = true;
@@ -124,6 +127,7 @@ public class PlayerHP : MonoBehaviour
                 {
                     playerHP = playerHP - 30;
                     EE.SmashEffect();
+                    PE.DamageEffect();
                     animator.SetTrigger("EnemyTackleHit");
                     // ヒットストップ
                     animator.CrossFade("EnemyTackleHit", 0f);
