@@ -7,7 +7,7 @@ public class NewEnemyMove : MonoBehaviour
 {
     // 敵のステータス関連
     public float enemyHP; // 敵のHP
-    public float enemyInitialHP = 2000f; // 敵のHP
+    public float enemyInitialHP = 100f; // 敵のHP
     int _enemyGaurd;
     [Header("Enemyステータス")]
     [SerializeField] float speed = 1; // 敵の動くスピード
@@ -69,7 +69,7 @@ public class NewEnemyMove : MonoBehaviour
 
     public static NewEnemyMove Instance;
 
-    bool isBeastMode = false;
+    bool isBeastMode = true;
     bool isBMJudge = false;
 
     float StanMaxTime = 10f;
@@ -859,7 +859,17 @@ public class NewEnemyMove : MonoBehaviour
     }
     IEnumerator EnemyDown()
     {
-        Debug.Log("ビーストモード！！！！");
+        Debug.Log("ダウン！！");
+        if (_directionX.x > 0)
+        {
+            transform.rotation = Quaternion.Euler(0, 90, 0);
+            Debug.Log("プレイヤーは右側にいます");
+        }
+        else if (_directionX.x < 0)
+        {
+            transform.rotation = Quaternion.Euler(0, -90, 0);
+            Debug.Log("プレイヤーは左側にいます");
+        }
         _isCoroutineRunning = true;
         float downTime = 0f;
         EnemyCancel();
