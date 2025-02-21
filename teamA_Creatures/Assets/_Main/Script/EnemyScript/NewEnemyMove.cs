@@ -6,7 +6,8 @@ using UnityEngine;
 public class NewEnemyMove : MonoBehaviour
 {
     // 敵のステータス関連
-    public float enemyHP = 2000f; // 敵のHP
+    public float enemyHP; // 敵のHP
+    public float enemyInitialHP = 2000f; // 敵のHP
     int _enemyGaurd;
     [Header("Enemyステータス")]
     [SerializeField] float speed = 1; // 敵の動くスピード
@@ -63,10 +64,15 @@ public class NewEnemyMove : MonoBehaviour
 
     Coroutine currentCoroutine;
 
-    bool isEnemyStan = false;
+    bool isCoroutineStop = false;
     public static bool isEnemyStanFlag = false;
 
     public static NewEnemyMove Instance;
+
+    bool isBeastMode = false;
+    bool isBMJudge = false;
+
+    float StanMaxTime = 10f;
     public void Awake()
     {
         if (Instance == null)
@@ -99,11 +105,14 @@ public class NewEnemyMove : MonoBehaviour
         ForwardStep,      // 前ステ
         BackAttack,       // バックアタック
         HitStan,          // 攻撃ヒット時
-        Stan
+        Stan,             // カウンター時のスタン
+        BeastMode,        // ビーストモード
+        Down              // 敵死亡時
     }
     #region スタートたち
     void Start()
     {
+        enemyHP = enemyInitialHP;
         isFollow = false;
         _isTackle = false;
         _isAtackEnd = false;
@@ -127,7 +136,8 @@ public class NewEnemyMove : MonoBehaviour
     {
         if(Input.GetKey(KeyCode.P))
         {
-            EnemyStanState();
+            _currentState = EnemyState.Down;
+            isCoroutineStop = true;
         }
         // 互いの距離計測 + 敵の向き交換
         _distancePtoE = Vector2.Distance(transform.position, _playerTr.position);
@@ -186,6 +196,12 @@ public class NewEnemyMove : MonoBehaviour
                 break;
             case EnemyState.Stan:
                 HandleStan();
+                break;
+            case EnemyState.BeastMode:
+                HandleBeastMode();
+                break;
+            case EnemyState.Down:
+                HandleDown();
                 break;
         }
     }
@@ -270,9 +286,9 @@ public class NewEnemyMove : MonoBehaviour
     }
     void HandleHitStan()
     {
-        if (isEnemyStan)
+        if (isCoroutineStop)
         {
-            isEnemyStan = false;
+            isCoroutineStop = false;
             StopCoroutine(currentCoroutine);
             _isCoroutineRunning = false;
         }
@@ -281,14 +297,36 @@ public class NewEnemyMove : MonoBehaviour
     }
     void HandleStan()
     {
-        if(isEnemyStan)
+        if(isCoroutineStop)
         {
-            isEnemyStan = false;
+            isCoroutineStop = false;
             StopCoroutine(currentCoroutine);
             _isCoroutineRunning = false;
         }
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
         currentCoroutine = StartCoroutine(EnemyStan());
+    }
+    void HandleBeastMode()
+    {
+        if (isCoroutineStop)
+        {
+            isCoroutineStop = false;
+            StopCoroutine(currentCoroutine);
+            _isCoroutineRunning = false;
+        }
+        if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
+        currentCoroutine = StartCoroutine(EnemyBeastMode());
+    }
+    void HandleDown()
+    {
+        if (isCoroutineStop)
+        {
+            isCoroutineStop = false;
+            StopCoroutine(currentCoroutine);
+            _isCoroutineRunning = false;
+        }
+        if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
+        currentCoroutine = StartCoroutine(EnemyDown());
     }
     /// <summary>
     /// 距離による状態遷移
@@ -709,7 +747,7 @@ public class NewEnemyMove : MonoBehaviour
         _rb.velocity = Vector3.zero;
         _enemyAnim.SetBool("HitStan", true);
         _enemyAnim.CrossFade("HitStan", 0f);
-        isEnemyStan = true;
+        isCoroutineStop = true;
         _currentState = EnemyState.HitStan;
     }
     IEnumerator EnemyHitStan()
@@ -740,7 +778,7 @@ public class NewEnemyMove : MonoBehaviour
         _enemyAnim.SetBool("Stan", true);
         _enemyAnim.CrossFade("Stan", 0f);
         isEnemyStanFlag = true;
-        isEnemyStan = true;
+        isCoroutineStop = true;
         _currentState = EnemyState.Stan;
     }
     IEnumerator EnemyStan()
@@ -752,7 +790,7 @@ public class NewEnemyMove : MonoBehaviour
         {
             stanTime += Time.deltaTime;
             Debug.Log("スタン中です！！！！");
-            if (stanTime >= 10f)
+            if (stanTime >= StanMaxTime)
             {
                 break;
             }
@@ -790,7 +828,62 @@ public class NewEnemyMove : MonoBehaviour
             }
         }
     }
-
+    /// <summary>
+    /// ビーストモードの処理
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator EnemyBeastMode()
+    {
+        Debug.Log("ビーストモード！！！！");
+        _isCoroutineRunning = true;
+        StanMaxTime = 20f;
+        isBMJudge = true;
+        float BeastModeTime = 0f;
+        EnemyCancel();
+        _enemyAnim.SetBool("BeastMode", true);
+        _enemyAnim.CrossFade("BeastMode", 0f);
+        yield return null;
+        while (true)
+        {
+            Debug.Log("ビーストモードtyuudaze！！！！");
+            BeastModeTime += Time.deltaTime;
+            if(BeastModeTime >= 20)
+            {
+                break;
+            }
+            yield return null;
+        }
+        StanMaxTime = 10f;
+        isBMJudge = false;
+        yield return null;
+    }
+    IEnumerator EnemyDown()
+    {
+        Debug.Log("ビーストモード！！！！");
+        _isCoroutineRunning = true;
+        float downTime = 0f;
+        EnemyCancel();
+        _enemyAnim.SetBool("Down", true);
+        _enemyAnim.CrossFade("Down", 0.1f , 0 , 0.35f);
+        yield return null;
+        _enemyAnim.SetBool("Down", false); 
+        while(true)
+        {
+            downTime += Time.deltaTime; 
+            if(downTime >= 6f)
+            {
+                break;
+            }
+            yield return null;
+        }
+        JM.ChangeClearScene();
+    }
+    void EnemyBeastModeEnd()
+    {
+        _enemyAnim.SetBool("BeastMode", false);
+        _currentState = EnemyState.Idle;
+        _isCoroutineRunning = false;
+    }
     #endregion
 
     #region 当たり判定とHP
@@ -804,7 +897,7 @@ public class NewEnemyMove : MonoBehaviour
             int damege = 10;
             Debug.Log("プレイヤーの攻撃にあたった");
             //_currentState = EnemyState.HitStan;
-            if(!isEnemyStanFlag)
+            if(!isEnemyStanFlag && !isBMJudge)
             {
                 EnemyHitStanState();
             }
@@ -828,7 +921,15 @@ public class NewEnemyMove : MonoBehaviour
         if(enemyHP <= 0)
         {
             // ゲームクリアに移行
-            JM.ChangeClearScene();
+            _currentState = EnemyState.Down;
+            isCoroutineStop = true;
+            //JM.ChangeClearScene();
+        }
+        else if (enemyHP <= enemyInitialHP * 0.4 && isBeastMode)
+        {
+            isCoroutineStop = true;
+            isBeastMode = false;
+            _currentState = EnemyState.BeastMode;
         }
     }
     #endregion
