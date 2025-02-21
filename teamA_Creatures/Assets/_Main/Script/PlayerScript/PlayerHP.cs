@@ -68,13 +68,13 @@ public class PlayerHP : MonoBehaviour
             if (other.gameObject.tag == "Enemy")
             {
                 playerHP = playerHP - 5;
+                Destroy(AttackComponent.Instance.CountorCube);
+
             }
             else
             {
                 AttackComponent.Instance.attackNow = false;
                 animator.SetBool("Shield", false);
-                AttackComponent.Instance.ShieldOut();
-                AttackComponent.Instance.EndAttack();
 
                 if (other.gameObject.tag == "EnemyPunchAttack")
                 {
@@ -89,6 +89,8 @@ public class PlayerHP : MonoBehaviour
                     HitNow = true;
                     muteki = true;
                     //ãØÇﬁ
+                    Destroy(AttackComponent.Instance.CountorCube);
+
                 }
 
                 if (other.gameObject.tag == "EnemyChainAttack")
@@ -100,6 +102,8 @@ public class PlayerHP : MonoBehaviour
                     AudioManager.GetInstance().PlaySE("enemyAttack", 3);
                     NewEnemyMove.EnemyBack();
                     //ãØÇﬁ
+                    Destroy(AttackComponent.Instance.CountorCube);
+
                 }
 
                 if (other.gameObject.tag == "EnemyTackleAttack")
@@ -112,6 +116,8 @@ public class PlayerHP : MonoBehaviour
                     AudioManager.GetInstance().PlaySE("enemyAttack", 3);
                     NewEnemyMove.EnemyBack();
                     //êÅÇ¡îÚÇ‘
+                    Destroy(AttackComponent.Instance.CountorCube);
+
                 }
 
                 if (other.gameObject.tag == "EnemySmashAttack")
@@ -127,7 +133,9 @@ public class PlayerHP : MonoBehaviour
                     AudioManager.GetInstance().PlaySE("enemyAttack", 3);
                     NewEnemyMove.EnemyBack();
                     //êÅÇ¡îÚÇ‘
+                    Destroy(AttackComponent.Instance.CountorCube);
                 }
+
             }
         }
     }
