@@ -10,6 +10,8 @@ public class PlayerHP : MonoBehaviour
     public EnemyEffect EE;
     public PlayerEffect PE;
 
+    public static float BeastModeHP = 0f;
+
     public void Awake()
     {
         if (Instance == null)
@@ -32,10 +34,7 @@ public class PlayerHP : MonoBehaviour
     public bool muteki;
     void Start()
     {
-<<<<<<< HEAD
-=======
         BeastModeHP = 1f;
->>>>>>> origin/develop
         playerMaxHP = 100;
         playerHP = playerMaxHP;
         animator = GetComponent<Animator>();
@@ -83,7 +82,7 @@ public class PlayerHP : MonoBehaviour
 
                 if (other.gameObject.tag == "EnemyPunchAttack")
                 {
-                    playerHP = playerHP - 10;
+                    playerHP = playerHP - (10 * BeastModeHP);
                     EE.PunchEffect();
                     PE.DamageEffect();
                     animator.SetTrigger("falter");
@@ -101,7 +100,7 @@ public class PlayerHP : MonoBehaviour
 
                 if (other.gameObject.tag == "EnemyChainAttack")
                 {
-                    playerHP = playerHP - 10;
+                    playerHP = playerHP - (10 * BeastModeHP);
                     animator.SetTrigger("falter");
                     HitNow = true;
                     muteki = true;
@@ -114,7 +113,7 @@ public class PlayerHP : MonoBehaviour
 
                 if (other.gameObject.tag == "EnemyTackleAttack")
                 {
-                    playerHP = playerHP - 20;
+                    playerHP = playerHP - (20 * BeastModeHP);
                     PE.TackleDamageEffect();
                     animator.SetTrigger("falter");
                     HitNow = true;
@@ -129,7 +128,7 @@ public class PlayerHP : MonoBehaviour
 
                 if (other.gameObject.tag == "EnemySmashAttack")
                 {
-                    playerHP = playerHP - 30;
+                    playerHP = playerHP - (30 * BeastModeHP);
                     EE.SmashEffect();
                     PE.DamageEffect();
                     animator.SetTrigger("EnemyTackleHit");

@@ -837,6 +837,7 @@ public class NewEnemyMove : MonoBehaviour
     {
         Debug.Log("ビーストモード！！！！");
         _isCoroutineRunning = true;
+        PlayerHP.BeastModeHP = 1.5f;
         StanMaxTime = 20f;
         isBMJudge = true;
         float BeastModeTime = 0f;
@@ -854,10 +855,7 @@ public class NewEnemyMove : MonoBehaviour
             }
             yield return null;
         }
-<<<<<<< HEAD
-=======
         PlayerHP.BeastModeHP = 1f;
->>>>>>> origin/develop
         StanMaxTime = 10f;
         isBMJudge = false;
         yield return null;
