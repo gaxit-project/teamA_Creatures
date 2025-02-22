@@ -17,6 +17,7 @@ public class AttackComponent : MonoBehaviour
     public bool attackNow;
     public bool CounterRange;
     private Hit cubeController;
+    public TackleCamera counterCamScript;
     public void Awake()
     {
         if (Instance == null)
@@ -115,6 +116,7 @@ public class AttackComponent : MonoBehaviour
                 CounterRange = true;
                 animator.SetTrigger("Counter");
                 attackNow = true;
+                counterCamScript.StartCoroutine("tackleCameraCor");
                 StartCoroutine(AttackTimeout(32f/60f));
                 lastAttackTime = Time.time;
                 break;
