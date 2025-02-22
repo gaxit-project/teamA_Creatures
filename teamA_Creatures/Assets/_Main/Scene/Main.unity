@@ -3545,6 +3545,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 109825837483040383, guid: bb4524b76e156a84ebc8335170bd2573, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 109825837483040383, guid: bb4524b76e156a84ebc8335170bd2573, type: 3}
       propertyPath: InitialModule.startLifetime.scalar
       value: 0.6
       objectReference: {fileID: 0}
@@ -5506,6 +5510,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5773337549707506732, guid: 149a2e9aa888d9f4fa12b34d12d59893, type: 3}
       propertyPath: looping
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5773337549707506732, guid: 149a2e9aa888d9f4fa12b34d12d59893, type: 3}
+      propertyPath: playOnAwake
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5773337549707506732, guid: 149a2e9aa888d9f4fa12b34d12d59893, type: 3}
