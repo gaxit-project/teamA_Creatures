@@ -72,11 +72,22 @@ public class TitleManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        GameObject selectedObj = EventSystem.current.currentSelectedGameObject;
+
+        if (selectedObj == null)
+        {
+            startButton.Select();
+        }
+    }
+
     public void QuitGame()
     {
-        Application.Quit();
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
 #endif
     }
 }
