@@ -45,16 +45,19 @@ public class AttackComponent : MonoBehaviour
     }
     AttackType attackType;
 
-    public float attackCooldown = 1.0f;
+    public float attackCooldown;
     private float lastAttackTime = -Mathf.Infinity;
-    public float counterCooldown = 1.0f;
+    public float counterCooldown;
     private float lastCounterTime = -Mathf.Infinity;
-    private int maxCombo = 1;
+    public int maxCombo;
     private int currentCombo = 0;
+
+    public bool isCooldown;
+    public bool isCounterCooldown;
     public void Attack()
     {
-        bool isCooldown = Time.time < lastAttackTime + attackCooldown;
-        bool isCounterCooldown = Time.time < lastAttackTime + counterCooldown;
+        isCooldown = Time.time < lastAttackTime + attackCooldown;
+        isCounterCooldown = Time.time < lastCounterTime + counterCooldown;
 
 
         if (attackNow) return;
@@ -75,6 +78,7 @@ public class AttackComponent : MonoBehaviour
             case AttackType.attack:
                 if (isCooldown && currentCombo == 0)
                 {
+                    Debug.Log("パンチ");
                     return;
                 }
 
@@ -112,16 +116,17 @@ public class AttackComponent : MonoBehaviour
                 {
                     return;
                 }
+
                 Debug.Log("カウンター");
                 CounterRange = true;
                 animator.SetTrigger("Counter");
                 attackNow = true;
-                counterCamScript.StartCoroutine("tackleCameraCor");
                 StartCoroutine(AttackTimeout(32f/60f));
-                lastAttackTime = Time.time;
+                lastCounterTime = Time.time;
                 break;
         }
     }
+    public bool start = false;
     public GameObject Cube;
     public GameObject CountorCube;
     public Vector3 CCube;
@@ -166,5 +171,10 @@ public class AttackComponent : MonoBehaviour
             Debug.Log("Attackタイムアウトにより強制終了");
             EndAttack();
         }
+    }
+
+    public void Update()
+    {
+
     }
 }

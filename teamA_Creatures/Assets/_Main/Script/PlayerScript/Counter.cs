@@ -8,6 +8,8 @@ public class Counter : MonoBehaviour
     public static Counter Instance;
     Animator animator;
 
+
+
     public void Awake()
     {
         if (Instance == null)
@@ -29,9 +31,7 @@ public class Counter : MonoBehaviour
         }
         if (other.gameObject.tag == "Enemy")
         {
-            
-            Debug.Log("Counter");
-            AttackComponent.Instance.Countered = true;
+
         }
 
         if (other.gameObject.tag == "EnemyPunchAttack")
@@ -39,6 +39,8 @@ public class Counter : MonoBehaviour
             Debug.Log("Counter");
             NewEnemyMove.Instance.EnemyStanState();
             AttackComponent.Instance.Countered = true;
+            AttackComponent.Instance.counterCamScript.StartCoroutine("tackleCameraCor");
+
         }
 
         if (other.gameObject.tag == "EnemyChainAttack")
@@ -46,6 +48,8 @@ public class Counter : MonoBehaviour
             Debug.Log("Counter");
             AttackComponent.Instance.Countered = true;
             NewEnemyMove.Instance.EnemyStanState();
+            AttackComponent.Instance.counterCamScript.StartCoroutine("tackleCameraCor");
+
 
         }
 
@@ -54,6 +58,8 @@ public class Counter : MonoBehaviour
             Debug.Log("Counter");
             AttackComponent.Instance.Countered = true;
             NewEnemyMove.Instance.EnemyStanState();
+            AttackComponent.Instance.counterCamScript.StartCoroutine("tackleCameraCor");
+
 
         }
     }
