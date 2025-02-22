@@ -34,7 +34,7 @@ public class PlayerHP : MonoBehaviour
     public bool muteki;
     void Start()
     {
-        BeastModeHP = 0f;
+        BeastModeHP = 1f;
         playerMaxHP = 100;
         playerHP = playerMaxHP;
         animator = GetComponent<Animator>();

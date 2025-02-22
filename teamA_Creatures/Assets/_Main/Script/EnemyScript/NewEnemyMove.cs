@@ -855,7 +855,7 @@ public class NewEnemyMove : MonoBehaviour
             }
             yield return null;
         }
-        PlayerHP.BeastModeHP = 0f;
+        PlayerHP.BeastModeHP = 1f;
         StanMaxTime = 10f;
         isBMJudge = false;
         yield return null;
