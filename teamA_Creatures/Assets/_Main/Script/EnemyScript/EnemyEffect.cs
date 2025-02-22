@@ -11,7 +11,7 @@ public class EnemyEffect : MonoBehaviour
     public float spawnDistance = 1.0f; // キャラクターの前方距離
     public float heightOffset = 3.0f; // 高さのオフセット
 
-    
+
 
     /// <summary>
     /// パンチエフェクト
@@ -27,7 +27,8 @@ public class EnemyEffect : MonoBehaviour
 
             PunchEff.transform.position = spawnPos;
 
-            
+            PunchEff.transform.rotation = transform.rotation;
+
             Debug.Log("出した");
             // パーティクルを再生
             PunchEff.Stop();
@@ -46,6 +47,9 @@ public class EnemyEffect : MonoBehaviour
             spawnPos.y += heightOffset;
 
             TackleEff.transform.position = spawnPos;
+
+            
+            TackleEff.transform.rotation = Quaternion.LookRotation(-transform.forward);
 
             Debug.Log("出した");
             // パーティクルを再生
@@ -79,15 +83,4 @@ public class EnemyEffect : MonoBehaviour
             Debug.Log("出た");
         }
     }
-
-
-
-
-
-
-
-
-
-
-
 }

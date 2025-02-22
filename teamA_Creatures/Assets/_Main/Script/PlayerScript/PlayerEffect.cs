@@ -50,9 +50,11 @@ public class PlayerEffect : MonoBehaviour
             // ?L?????N?^?[??O?????v?Z
             Vector3 spawnPos = transform.position + transform.forward * spawnDistance;
 
-            spawnPos.y += 2.0f;
+            spawnPos.y += 2.5f;
 
             PunchEff.transform.position = spawnPos;
+
+            PunchEff.transform.rotation = transform.rotation;
 
             // パーティクルを再生
             PunchEff.Play();
