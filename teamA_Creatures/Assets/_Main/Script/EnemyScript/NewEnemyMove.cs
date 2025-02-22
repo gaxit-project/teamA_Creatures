@@ -835,6 +835,7 @@ public class NewEnemyMove : MonoBehaviour
     /// <returns></returns>
     IEnumerator EnemyBeastMode()
     {
+        PlayerHP.BeastModeHP = 1.5f;
         Debug.Log("ビーストモード！！！！");
         _isCoroutineRunning = true;
         StanMaxTime = 20f;
@@ -854,6 +855,7 @@ public class NewEnemyMove : MonoBehaviour
             }
             yield return null;
         }
+        PlayerHP.BeastModeHP = 1f;
         StanMaxTime = 10f;
         isBMJudge = false;
         yield return null;
