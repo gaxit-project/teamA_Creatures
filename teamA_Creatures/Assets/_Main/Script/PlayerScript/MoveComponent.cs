@@ -101,7 +101,7 @@ public class MoveComponent : MonoBehaviour
         prevBackInput = isBackInput;
 
 
-       /* bool isFrontInput = (left && Speed < 0)||(!left&&Speed>0);
+       bool isFrontInput = (left && Speed < 0)||(!left&&Speed>0);
 
         if (isFrontInput && !prevFrontInput)
         {
@@ -116,7 +116,7 @@ public class MoveComponent : MonoBehaviour
         {
             FrontStepReady = true;
         }
-        prevFrontInput = isFrontInput;*/
+        prevFrontInput = isFrontInput;
 
 
         Debug.Log(Speed);
@@ -298,7 +298,7 @@ public class MoveComponent : MonoBehaviour
         }
     }
 
-    /*public IEnumerator FrontStep()
+    public IEnumerator FrontStep()
     {
         float frontStepSpeed = 8f;
         float frontStepTime = 0.2f;
@@ -316,7 +316,7 @@ public class MoveComponent : MonoBehaviour
                 yield return null;
             }
         }
-    }*/
+    }
     private IEnumerator RunNow()
     {
         runningNow = true;
