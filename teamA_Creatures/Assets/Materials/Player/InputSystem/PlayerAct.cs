@@ -38,7 +38,7 @@ public partial class @PlayerAct: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Attack"",
-                    ""type"": ""Value"",
+                    ""type"": ""Button"",
                     ""id"": ""e85c58a1-aff7-4616-bffe-450d4c30234d"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
