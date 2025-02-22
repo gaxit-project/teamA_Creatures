@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class resulutButton : MonoBehaviour
@@ -21,5 +22,15 @@ public class resulutButton : MonoBehaviour
     public void GoToRetry()
     {
         JM.ChangeMainScene();
+    }
+
+    private void Update()
+    {
+        GameObject selectedObj = EventSystem.current.currentSelectedGameObject;
+
+        if (selectedObj == null)
+        {
+            retryButton.Select();
+        }
     }
 }
