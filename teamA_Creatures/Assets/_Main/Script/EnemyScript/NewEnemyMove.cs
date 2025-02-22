@@ -55,6 +55,7 @@ public class NewEnemyMove : MonoBehaviour
     public EnemyHit2 EnemyHit2;
 
     public JudgeManager JM;
+    public PlayerEffect PE;
 
     public static bool _isTackle = false;
     bool _shortDistance = false;
@@ -927,6 +928,7 @@ public class NewEnemyMove : MonoBehaviour
     void ReduceEnemyHP(int _lostHP)
     {
         enemyHP -= _lostHP;
+        PE.PunchEffect();
         Debug.Log("HPÇ™å∏Ç¡ÇΩÇµÇ‹Ç¡ÇΩÅIåªç›ÇÃHPÅF" + enemyHP);
         if(enemyHP <= 0)
         {
