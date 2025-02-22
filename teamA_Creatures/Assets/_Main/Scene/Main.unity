@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.063576035, g: 0.052026946, b: 0.056728896, a: 1}
+  m_IndirectSpecularColor: {r: 0.06361731, g: 0.052071244, b: 0.056788962, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7793,6 +7793,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHP: 300
+  enemyInitialHP: 100
   speed: 1
   backSpeed: 2
   isFollow: 0
@@ -7802,6 +7803,7 @@ MonoBehaviour:
   Chain: {fileID: 1661968440}
   EnemyHit2: {fileID: 1661968446}
   JM: {fileID: 221866028}
+  PE: {fileID: 851187298}
 --- !u!95 &1661968453 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: -8922236586830351099, guid: d2c14aacbdf27be42b48ffbea05effac, type: 3}
