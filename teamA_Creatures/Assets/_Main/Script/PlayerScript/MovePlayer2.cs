@@ -55,7 +55,7 @@ public class MovePlayer2 : MonoBehaviour
                 jump.JumpVertical(velocity.y);
 
 
-                AttackButton = (input.PlatformAction.Attack.ReadValue<float>() >= InputSystem.settings.defaultButtonPressPoint);
+                AttackButton = input.PlatformAction.Attack.triggered;
                 if (AttackButton) attack.Attack();
             }
 

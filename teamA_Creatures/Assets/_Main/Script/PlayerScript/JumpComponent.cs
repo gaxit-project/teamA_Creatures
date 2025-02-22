@@ -14,6 +14,7 @@ public class JumpComponent : MonoBehaviour
 
     public float jumpForce = 10f;
     public bool jumpFlag;
+    public bool GroundFlag;
     public AudioClip jumpingSound;
     public AudioClip landingSound;
 
@@ -42,6 +43,7 @@ public class JumpComponent : MonoBehaviour
         rb.useGravity = false;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         jumpFlag = true;
+        GroundFlag = true;
     }
 
     private void FixedUpdate()
@@ -56,13 +58,14 @@ public class JumpComponent : MonoBehaviour
 
     public void JumpVertical(float Jump)
     {
-        if (Jump > 0.7f && jumpFlag)
+        if (Jump > 0.7f && jumpFlag&&GroundFlag)
         {
             Debug.Log("jump");
 
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
             jumpFlag = false;
+            GroundFlag = false;
             animator.SetTrigger("Jump");
             //jumpAudioSource.PlayOneShot(jumpingSound);
             AudioManager.GetInstance().PlaySE("playerMove", 1);
@@ -75,11 +78,18 @@ public class JumpComponent : MonoBehaviour
         {
             //isLanding = true;
             jumpFlag = true;
+            StartCoroutine(tyakuti());
 
             //landingAudioSource.PlayOneShot(landingSound);
             AudioManager.GetInstance().PlaySE("playerMove", 2);
            // StartCoroutine(ResetLandingFlag());
         }
+    }
+
+    IEnumerator tyakuti()
+    {
+        yield return new WaitForSeconds(0.1f);
+        GroundFlag = true;
     }
 
     private IEnumerator ResetLandingFlag()
