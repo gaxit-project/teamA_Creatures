@@ -4,31 +4,58 @@ using UnityEngine;
 
 public class PlayerEffect : MonoBehaviour
 {
-    [SerializeField] GameObject DamageEff;
+    public ParticleSystem DamageEff;
+    public ParticleSystem PunchEff; // シーン内のパーティクル
 
-    private GameObject DamageEf;
+    public float spawnDistance = 1.0f; // キャラクターの前方距離
 
-    private Vector3 offset = new Vector3(0, 2.0f, 1.5f); // キューブの初期オフセット位置
 
-    public void Damage()
+    public void DamageEffect()
     {
         if (DamageEff != null)
         {
+            Vector3 spawnPos = transform.position;
 
-            if (DamageEf == null)
-            {
+            spawnPos.y += 2.0f;
+            spawnPos.z += -0.5f;
 
-                DamageEffect();
+            DamageEff.transform.position = spawnPos;
+            DamageEff.transform.parent = transform; // キャラに追従
 
-            }
-
+            // パーティクルを再生
+            DamageEff.Play();
         }
     }
 
-    private void DamageEffect()
+    public void TackleDamageEffect()
     {
-        Vector3 spawnPosition = transform.position;
-        spawnPosition.y = transform.position.y + offset.y;
-        DamageEf = Instantiate(DamageEff, spawnPosition, Quaternion.identity);
+        if (DamageEff != null)
+        {
+            Vector3 spawnPos = transform.position;
+
+            spawnPos.y += 2.0f;
+
+            DamageEff.transform.position = spawnPos;
+            DamageEff.transform.parent = transform; // キャラに追従
+
+            // パーティクルを再生
+            DamageEff.Play();
+        }
+    }
+
+    public void PunchEffect()
+    {
+        if (PunchEff != null)
+        {
+            // ?L?????N?^?[??O?????v?Z
+            Vector3 spawnPos = transform.position + transform.forward * spawnDistance;
+
+            spawnPos.y += 2.0f;
+
+            PunchEff.transform.position = spawnPos;
+
+            // パーティクルを再生
+            PunchEff.Play();
+        }
     }
 }
