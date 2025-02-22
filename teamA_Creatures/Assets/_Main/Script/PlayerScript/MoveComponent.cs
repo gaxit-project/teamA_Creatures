@@ -34,6 +34,8 @@ public class MoveComponent : MonoBehaviour
 
     public float moveFSpeed;
     public float moveBSpeed;
+    public float moveFJumpSpeed;
+    public float moveBJumpSpeed;
 
     public bool MoveRun;
 
@@ -42,6 +44,12 @@ public class MoveComponent : MonoBehaviour
     private float lastBackInputTime = 0f;
     private float backStepThreshold = 0.2f; // バックステップ発動猶予時間
     public bool prevBackInput = false; // 前回の入力状態
+
+    public bool FrontStepReady = false;
+    private float lastFrontInputTime = 0f;
+    private float FrontStepThreshold = 0.2f;
+    public bool prevFrontInput = false;
+
     private void Awake()
     {
         if (Instance == null)
@@ -61,6 +69,7 @@ public class MoveComponent : MonoBehaviour
         ATFieldNow = false;
         runningNow = false;
 
+
     }
     public float Speed;
     /// <summary>
@@ -70,6 +79,8 @@ public class MoveComponent : MonoBehaviour
     /// <param name="Down"></param>
     public void MoveHorizontal(float Speed, float Down)
     {
+        
+
         bool isBackInput = (!left && Speed < 0) || (left && Speed > 0); // 後ろ入力判定
 
         // バックステップ判定
@@ -89,23 +100,46 @@ public class MoveComponent : MonoBehaviour
 
         prevBackInput = isBackInput;
 
-        // バックステップ中は移動を受け付けない
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("BackStep"))
+
+       /* bool isFrontInput = (left && Speed < 0)||(!left&&Speed>0);
+
+        if (isFrontInput && !prevFrontInput)
         {
-            return;
+            if (FrontStepReady && Time.time - lastFrontInputTime <= FrontStepThreshold)
+            {
+                StartCoroutine(FrontStep());
+                FrontStepReady = false;
+            }
+            lastFrontInputTime = Time.time;
         }
+        else if (!isFrontInput && prevFrontInput)
+        {
+            FrontStepReady = true;
+        }
+        prevFrontInput = isFrontInput;*/
 
 
         Debug.Log(Speed);
         if (Mathf.Abs(Speed) > Mathf.Abs(Down)||Down>0)
         {
-            if (moveF||moveFNow)
+            if (moveF && JumpComponent.Instance.jumpFlag)
             {
                 transform.Translate(transform.TransformDirection(new Vector2(Speed, 0) * moveFSpeed * Time.deltaTime));
+                Debug.Log("flont");
             }
-            else if(moveB||moveBNow) 
+            else if (moveB && JumpComponent.Instance.jumpFlag)
             {
                 transform.Translate(transform.TransformDirection(new Vector2(Speed, 0) * moveBSpeed * Time.deltaTime));
+                Debug.Log("Back");
+            }
+            else if (moveFNow && !JumpComponent.Instance.jumpFlag)
+            {
+                transform.Translate(transform.TransformDirection(new Vector2(Speed, 0) * moveFJumpSpeed * Time.deltaTime));
+
+            }
+            else if (moveBNow && !JumpComponent.Instance.jumpFlag)
+            {
+                transform.Translate(transform.TransformDirection(new Vector2(Speed, 0) * moveBJumpSpeed * Time.deltaTime));
             }
         }
         if (JumpComponent.Instance.jumpFlag&&(Speed!=0||Down!=0))
@@ -164,7 +198,7 @@ public class MoveComponent : MonoBehaviour
             {
                 animator.SetBool("Shield", true);
                 moveF = false;
-                moveB = false;
+                moveB = false; 
                 runningNow = false;
                 if (audioSource.isPlaying)
                 {
@@ -181,8 +215,35 @@ public class MoveComponent : MonoBehaviour
         {
             moveF = false;
             moveB = false;
-            moveFNow = true;
-            moveBNow = true;
+
+            if (!left)
+            {
+                if (Speed > 0)
+                {
+                    moveFNow = true;
+                    moveBNow = false;
+                }
+                else if (Speed < 0)
+                {
+                    moveFNow = false;
+                    moveBNow = true;
+                }
+            }
+            else
+            {
+                if (Speed > 0)
+                {
+                    moveFNow = false;
+                    moveBNow = true;
+                }
+                else if (Speed < 0)
+                {
+                    moveFNow = true;
+                    moveBNow = false;
+                }
+            }
+            
+
 
             animator.SetBool("Shield", false);
             //AudioManager.GetInstance().StopLoopSE("playerMove");
@@ -236,6 +297,26 @@ public class MoveComponent : MonoBehaviour
             }
         }
     }
+
+    /*public IEnumerator FrontStep()
+    {
+        float frontStepSpeed = 8f;
+        float frontStepTime = 0.2f;
+
+        Vector3 frontDir = !left ? Vector3.left : Vector3.right;
+        float moveDistance = frontStepSpeed * frontStepTime;
+
+        if (!Physics.Raycast(transform.position, frontDir, moveDistance))
+        {
+            float timer = 0f;
+            while (timer < frontStepTime)
+            {
+                transform.Translate(frontDir * frontStepSpeed*Time.deltaTime, Space.World);
+                timer += Time.deltaTime;
+                yield return null;
+            }
+        }
+    }*/
     private IEnumerator RunNow()
     {
         runningNow = true;
@@ -263,8 +344,12 @@ public class MoveComponent : MonoBehaviour
             left = false;
         }
 
-        Vector3 EnemyPosition = new Vector3(Enemy.transform.position.x, transform.position.y, transform.position.z);
-        transform.LookAt(EnemyPosition);
+        if (JumpComponent.Instance.jumpFlag)
+        {
+            Vector3 EnemyPosition = new Vector3(Enemy.transform.position.x, transform.position.y, transform.position.z);
+            transform.LookAt(EnemyPosition);
+        }
+
 
             if (moveF)
             {

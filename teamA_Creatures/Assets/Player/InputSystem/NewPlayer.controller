@@ -7,7 +7,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: mixamo_com
+  m_Name: back
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -124,7 +124,7 @@ AnimatorStateMachine:
     m_Position: {x: 90, y: 260, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6973848199071419403}
-    m_Position: {x: 170, y: 1360, z: 0}
+    m_Position: {x: 170, y: 1530, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 8464413350889654688}
     m_Position: {x: 660, y: 520, z: 0}
@@ -133,7 +133,7 @@ AnimatorStateMachine:
     m_Position: {x: -190, y: 610, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3996996511983730440}
-    m_Position: {x: -380, y: 1010, z: 0}
+    m_Position: {x: -610, y: 950, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3775865229570118830}
     m_Position: {x: -350, y: 360, z: 0}
@@ -172,6 +172,9 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 2
     m_ConditionEvent: Buckrun
+    m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: run
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -3097234950560252773}
@@ -375,7 +378,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: falter
+    m_ConditionEvent: Attack
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -3996996511983730440}
@@ -775,6 +778,9 @@ AnimatorStateTransition:
   - m_ConditionMode: 2
     m_ConditionEvent: run
     m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: Buckrun
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -3097234950560252773}
   m_Solo: 0
@@ -1042,7 +1048,7 @@ AnimatorStateTransition:
   m_TransitionDuration: 0.25
   m_TransitionOffset: 0
   m_ExitTime: 0.8
-  m_HasExitTime: 0
+  m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1

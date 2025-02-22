@@ -6,7 +6,7 @@ using UnityEngine;
 public class NewEnemyMove : MonoBehaviour
 {
     // 敵のステータス関連
-    public float enemyHP = 10f; // 敵のHP
+    public float enemyHP = 2000f; // 敵のHP
     int _enemyGaurd;
     [Header("Enemyステータス")]
     [SerializeField] float speed = 1; // 敵の動くスピード
@@ -64,6 +64,20 @@ public class NewEnemyMove : MonoBehaviour
     Coroutine currentCoroutine;
 
     bool isEnemyStan = false;
+    public static bool isEnemyStanFlag = false;
+
+    public static NewEnemyMove Instance;
+    public void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(Instance);
+        }
+    }
     /// <summary>
     /// エネミーの列挙型
     /// </summary>
@@ -263,7 +277,7 @@ public class NewEnemyMove : MonoBehaviour
             _isCoroutineRunning = false;
         }
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
-        currentCoroutine = StartCoroutine(EnemyIdle());
+        currentCoroutine = StartCoroutine(EnemyHitStan());
     }
     void HandleStan()
     {
@@ -688,12 +702,44 @@ public class NewEnemyMove : MonoBehaviour
         UpdateState();
         Debug.Log("アイドル状態になりました");
     }
+
+    // ひるみの処理
+    public void EnemyHitStanState()
+    {
+        _rb.velocity = Vector3.zero;
+        _enemyAnim.SetBool("HitStan", true);
+        _enemyAnim.CrossFade("HitStan", 0f);
+        isEnemyStan = true;
+        _currentState = EnemyState.HitStan;
+    }
+    IEnumerator EnemyHitStan()
+    {
+        _isCoroutineRunning = true;
+        float stanTime = 0f;
+        EnemyCancel();
+        while (true)
+        {
+            stanTime += Time.deltaTime;
+            Debug.Log("スタン中です！！！！");
+            if (stanTime >= 0.4f)
+            {
+                break;
+            }
+            yield return null;
+        }
+        Debug.Log("スタン解除！！");
+        _enemyAnim.SetBool("HitStan", false);
+        _isCoroutineRunning = false;
+        _currentState = EnemyState.Idle;
+        yield return null;
+    }
     // カウンター決められた時の処理
     public void EnemyStanState()
     {
         _rb.velocity = Vector3.zero;
         _enemyAnim.SetBool("Stan", true);
         _enemyAnim.CrossFade("Stan", 0f);
+        isEnemyStanFlag = true;
         isEnemyStan = true;
         _currentState = EnemyState.Stan;
     }
@@ -715,6 +761,7 @@ public class NewEnemyMove : MonoBehaviour
         Debug.Log("スタン解除！！");
         _enemyAnim.SetBool("Stan", false);
         _isCoroutineRunning = false;
+        isEnemyStanFlag = false;
         _currentState = EnemyState.Idle;
         yield return null;
     }
@@ -754,10 +801,20 @@ public class NewEnemyMove : MonoBehaviour
     {
         if (collision.CompareTag("PlayerJab"))
         {
+            int damege = 10;
             Debug.Log("プレイヤーの攻撃にあたった");
             //_currentState = EnemyState.HitStan;
+            if(!isEnemyStanFlag)
+            {
+                EnemyHitStanState();
+            }
+            else
+            {
+                // スタン中は攻撃力アップ
+                damege += 5;
+            }
             HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
-            ReduceEnemyHP(10);
+            ReduceEnemyHP(damege);
             //_currentState = EnemyState.Guard; // 状態をガードに変更
         }
     }

@@ -7,14 +7,16 @@ public class PlayerHP : MonoBehaviour
     public static PlayerHP Instance;
     public JudgeManager JM;
     public NewEnemyMove NewEnemyMove;
+    public EnemyEffect EE;
+    public PlayerEffect PE;
 
     public void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
         }
-        else if(Instance != this)
+        else if (Instance != this)
         {
             Destroy(Instance);
         }
@@ -39,7 +41,7 @@ public class PlayerHP : MonoBehaviour
 
     private void Update()
     {
-        if(playerHP <= 0)
+        if (playerHP <= 0)
         {
             JM.ChangeOverScene();
         }
@@ -61,22 +63,25 @@ public class PlayerHP : MonoBehaviour
     }
     public void OnTriggerEnter(Collider other)
     {
-        if (!MoveComponent.Instance.ATFieldNow&&!muteki)
+        if (!MoveComponent.Instance.ATFieldNow && !muteki)
         {
+            Destroy(AttackComponent.Instance.CountorCube);
             if (other.gameObject.tag == "Enemy")
             {
                 playerHP = playerHP - 5;
+                Destroy(AttackComponent.Instance.CountorCube);
+
             }
             else
             {
                 AttackComponent.Instance.attackNow = false;
                 animator.SetBool("Shield", false);
-                AttackComponent.Instance.ShieldOut();
-                AttackComponent.Instance.EndAttack();
 
                 if (other.gameObject.tag == "EnemyPunchAttack")
                 {
                     playerHP = playerHP - 10;
+                    EE.PunchEffect();
+                    PE.DamageEffect();
                     animator.SetTrigger("falter");
                     // ヒットストップ
                     animator.CrossFade("falter", 0f);
@@ -86,6 +91,8 @@ public class PlayerHP : MonoBehaviour
                     HitNow = true;
                     muteki = true;
                     //怯む
+                    Destroy(AttackComponent.Instance.CountorCube);
+
                 }
 
                 if (other.gameObject.tag == "EnemyChainAttack")
@@ -97,11 +104,14 @@ public class PlayerHP : MonoBehaviour
                     AudioManager.GetInstance().PlaySE("enemyAttack", 3);
                     NewEnemyMove.EnemyBack();
                     //怯む
+                    Destroy(AttackComponent.Instance.CountorCube);
+
                 }
 
                 if (other.gameObject.tag == "EnemyTackleAttack")
                 {
                     playerHP = playerHP - 20;
+                    PE.TackleDamageEffect();
                     animator.SetTrigger("falter");
                     HitNow = true;
                     muteki = true;
@@ -109,11 +119,15 @@ public class PlayerHP : MonoBehaviour
                     AudioManager.GetInstance().PlaySE("enemyAttack", 3);
                     NewEnemyMove.EnemyBack();
                     //吹っ飛ぶ
+                    Destroy(AttackComponent.Instance.CountorCube);
+
                 }
 
                 if (other.gameObject.tag == "EnemySmashAttack")
                 {
                     playerHP = playerHP - 30;
+                    EE.SmashEffect();
+                    PE.DamageEffect();
                     animator.SetTrigger("EnemyTackleHit");
                     // ヒットストップ
                     animator.CrossFade("EnemyTackleHit", 0f);
@@ -123,7 +137,9 @@ public class PlayerHP : MonoBehaviour
                     AudioManager.GetInstance().PlaySE("enemyAttack", 3);
                     NewEnemyMove.EnemyBack();
                     //吹っ飛ぶ
+                    Destroy(AttackComponent.Instance.CountorCube);
                 }
+
             }
         }
     }

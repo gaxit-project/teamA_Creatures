@@ -6,12 +6,11 @@ public class AttackComponent : MonoBehaviour
 {
     public static AttackComponent Instance;
     public bool Countered;
-    
+
     Animator animator;
     AudioSource audioSource;
     public AudioClip attackSound;
-    public float soundCooldownTime = 2.0f;
-    public TackleCamera counterCamScript;
+    public float soundCooldownTime = 0.5f;
 
     private bool canPlaySound = true;
 
@@ -20,10 +19,11 @@ public class AttackComponent : MonoBehaviour
     private Hit cubeController;
     public void Awake()
     {
-        if(Instance == null)
+        if (Instance == null)
         {
             Instance = this;
-        }else if(Instance != this)
+        }
+        else if (Instance != this)
         {
             Destroy(gameObject);
         }
@@ -38,13 +38,25 @@ public class AttackComponent : MonoBehaviour
         CounterRange = false;
     }
     enum AttackType
-        {
-            attack,
-            counterNow
-        }
+    {
+        attack,
+        counterNow
+    }
     AttackType attackType;
+
+    public float attackCooldown = 1.0f;
+    private float lastAttackTime = -Mathf.Infinity;
+    public float counterCooldown = 1.0f;
+    private float lastCounterTime = -Mathf.Infinity;
+    private int maxCombo = 1;
+    private int currentCombo = 0;
     public void Attack()
     {
+        bool isCooldown = Time.time < lastAttackTime + attackCooldown;
+        bool isCounterCooldown = Time.time < lastAttackTime + counterCooldown;
+
+
+        if (attackNow) return;
         if (MoveComponent.Instance.ATFieldNow)
         {
             attackType = AttackType.counterNow;
@@ -58,17 +70,25 @@ public class AttackComponent : MonoBehaviour
 
         switch (attackType)
         {
+
             case AttackType.attack:
-                if (JumpComponent.Instance.jumpFlag)
+                if (isCooldown && currentCombo == 0)
+                {
+                    return;
+                }
+
+                if (JumpComponent.Instance.jumpFlag && !attackNow)
                 {
                     Debug.Log("攻撃");
                     animator.SetTrigger("Attack");
                     attackNow = true;
-
-                    if(audioSource != null && attackSound != null && canPlaySound)
+                    animator.SetBool("run", false);
+                    animator.SetBool("Back", false);
+                    StartCoroutine(AttackTimeout(21f / 60f)); 
+                    if (audioSource != null && attackSound != null && canPlaySound)
                     {
                         audioSource.PlayOneShot(attackSound);
-                        canPlaySound = false;
+                        //canPlaySound = false;
                         StartCoroutine(ResetSoundCooldown());
                     }
 
@@ -76,19 +96,33 @@ public class AttackComponent : MonoBehaviour
                     {
                         cubeController.ShowPunchCube();
                     }
+                    currentCombo++;
+                    if (currentCombo >= maxCombo)
+                    {
+                        lastAttackTime = Time.time;
+                        currentCombo = 0;
+                    }
                 }
 
                 break;
 
             case AttackType.counterNow:
+                if (isCounterCooldown)
+                {
+                    return;
+                }
                 Debug.Log("カウンター");
                 CounterRange = true;
                 animator.SetTrigger("Counter");
-                counterCamScript.StartCoroutine("tackleCameraCor");
                 attackNow = true;
+                StartCoroutine(AttackTimeout(32f/60f));
+                lastAttackTime = Time.time;
                 break;
         }
     }
+    public GameObject Cube;
+    public GameObject CountorCube;
+    public Vector3 CCube;
 
     public void EndAttack()
     {
@@ -96,6 +130,7 @@ public class AttackComponent : MonoBehaviour
         animator.SetTrigger("EndAttack");
         animator.ResetTrigger("Attack");
         animator.ResetTrigger("Counter");
+        animator.SetBool("Shield", false);
         if (cubeController != null)
         {
             cubeController.HidePunchCube();
@@ -103,14 +138,31 @@ public class AttackComponent : MonoBehaviour
     }
     public void ShieldOut()
     {
-
         Shield.Instance.OffShield();
         CounterRange = false;
+        CCube = MoveComponent.Instance.Player.transform.position + MoveComponent.Instance.Player.transform.forward * 1.3f + MoveComponent.Instance.Player.transform.up * 2.3f;
+        CountorCube = Instantiate(Cube, CCube, Quaternion.identity);
+
+    }
+    public void CounterOut()
+    {
+        Destroy(CountorCube);
     }
 
     private IEnumerator ResetSoundCooldown()
     {
         yield return new WaitForSeconds(soundCooldownTime);
         canPlaySound = true;
+    }
+
+
+    private IEnumerator AttackTimeout(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        if (attackNow)
+        {
+            Debug.Log("Attackタイムアウトにより強制終了");
+            EndAttack();
+        }
     }
 }
