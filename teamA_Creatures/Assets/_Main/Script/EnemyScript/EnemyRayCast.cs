@@ -61,7 +61,7 @@ public class EnemyRayCast : MonoBehaviour
 
 
         RaycastHit pushBackward;
-        if (Physics.Raycast(transform.position, -transform.forward, out hitBackward, pushRayDistance))
+        if (Physics.Raycast(transform.position, -transform.forward, out pushBackward, pushRayDistance))
         {
             if (hitBackward.collider.CompareTag("Wall"))
             {

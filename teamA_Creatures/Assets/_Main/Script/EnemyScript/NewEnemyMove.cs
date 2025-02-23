@@ -79,7 +79,6 @@ public class NewEnemyMove : MonoBehaviour
     // ふっとばし攻撃関連
     public float smashForce = 50f; // 吹っ飛ばす力
     public Vector3 blowDirection = new Vector3(1, 1, 0);
-    bool isPushFlag = false;
     public bool isPushWall = false;
 
     float StanMaxTime = 10f;
@@ -778,6 +777,12 @@ public class NewEnemyMove : MonoBehaviour
 
     IEnumerator EnemyPush()
     {
+        _rb.isKinematic = false;
+        yield return null;
+        float backTime = 0f;
+        _isCoroutineRunning = true;
+        _enemyAnim.SetBool("Fly", true);
+        _enemyAnim.CrossFade("Fly", 0.1f);
         if (_directionX.x > 0)
         {
             blowDirection = new Vector3(-1, 1, 0);
@@ -786,19 +791,14 @@ public class NewEnemyMove : MonoBehaviour
         {
             blowDirection = new Vector3(1, 1, 0);
         }
-        isPushFlag = true;
-        _rb.isKinematic = false;
-        float backTime = 0f;
-        _isCoroutineRunning = true;
         _rb.AddForce(blowDirection.normalized * smashForce, ForceMode.Impulse);
         while (true)
         {
             backTime += Time.deltaTime;
-            Debug.Log("ふきとばし！！！");
-            _rb.AddForce(blowDirection.normalized * smashForce, ForceMode.Acceleration);
             yield return null;
             if (backTime >= 2f || isPushWall)
             {
+                isPushWall = false;
                 break;
             }
         }
@@ -813,9 +813,10 @@ public class NewEnemyMove : MonoBehaviour
                 break;
             }
         }
+        _enemyAnim.SetBool("Fly", false);
         _isCoroutineRunning = false;
         _rb.isKinematic = true;
-        isPushFlag = false;
+        isPushWall = false;
         _currentState = EnemyState.Idle;
     }
 
