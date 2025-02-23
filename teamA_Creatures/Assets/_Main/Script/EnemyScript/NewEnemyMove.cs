@@ -73,6 +73,8 @@ public class NewEnemyMove : MonoBehaviour
     bool isBeastMode = true;
     bool isBMJudge = false;
 
+    bool isGameOverFlag = false;
+
     float StanMaxTime = 10f;
     public void Awake()
     {
@@ -760,7 +762,7 @@ public class NewEnemyMove : MonoBehaviour
         {
             stanTime += Time.deltaTime;
             Debug.Log("スタン中です！！！！");
-            if (stanTime >= 0.4f)
+            if (stanTime >= 0.1f)
             {
                 break;
             }
@@ -907,21 +909,24 @@ public class NewEnemyMove : MonoBehaviour
     {
         if (collision.CompareTag("PlayerJab"))
         {
-            int damege = 10;
-            Debug.Log("プレイヤーの攻撃にあたった");
-            //_currentState = EnemyState.HitStan;
-            if(!isEnemyStanFlag && !isBMJudge)
+            if(!isGameOverFlag)
             {
-                EnemyHitStanState();
+                int damege = 10;
+                Debug.Log("プレイヤーの攻撃にあたった");
+                //_currentState = EnemyState.HitStan;
+                if (!isEnemyStanFlag && !isBMJudge)
+                {
+                    EnemyHitStanState();
+                }
+                else
+                {
+                    // スタン中は攻撃力アップ
+                    damege += 5;
+                }
+                HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
+                ReduceEnemyHP(damege);
+                //_currentState = EnemyState.Guard; // 状態をガードに変更
             }
-            else
-            {
-                // スタン中は攻撃力アップ
-                damege += 5;
-            }
-            HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
-            ReduceEnemyHP(damege);
-            //_currentState = EnemyState.Guard; // 状態をガードに変更
         }
     }
     /// <summary>
@@ -937,6 +942,7 @@ public class NewEnemyMove : MonoBehaviour
             // ゲームクリアに移行
             _currentState = EnemyState.Down;
             isCoroutineStop = true;
+            isGameOverFlag = true;
             //JM.ChangeClearScene();
         }
         else if (enemyHP <= enemyInitialHP * 0.4 && isBeastMode)
