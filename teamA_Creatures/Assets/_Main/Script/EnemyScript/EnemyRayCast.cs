@@ -6,6 +6,7 @@ public class EnemyRayCast : MonoBehaviour
 {
     public float rayDistance = 3f; // レイの長さ
     public float backRayDistance = 5f; // レイの長さ
+    public float pushRayDistance = 3f; // レイの長さ
     public static bool isTackleWall = false;
     public static bool isBackWallSmash = false;
     public static bool isBackWall = false;
@@ -58,8 +59,18 @@ public class EnemyRayCast : MonoBehaviour
             }
         }
 
-        // デバッグ用のレイの可視化
-        Debug.DrawRay(transform.position, transform.forward * rayDistance, Color.red);  // 前方（赤）
+
+        RaycastHit pushBackward;
+        if (Physics.Raycast(transform.position, -transform.forward, out hitBackward, pushRayDistance))
+        {
+            if (hitBackward.collider.CompareTag("Wall"))
+            {
+                NewEnemyMove.Instance.isPushWall = true;
+            }
+        }
+
+                // デバッグ用のレイの可視化
+                Debug.DrawRay(transform.position, transform.forward * rayDistance, Color.red);  // 前方（赤）
         Debug.DrawRay(transform.position, -transform.forward * backRayDistance, Color.blue); // 後方（青）
     }
 }
