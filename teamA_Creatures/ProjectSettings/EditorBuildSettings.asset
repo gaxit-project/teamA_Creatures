@@ -21,4 +21,4 @@ EditorBuildSettings:
     path: Assets/Scenes/GameClear.unity
     guid: e1090fd543ca689468c49bcbdd487d82
   m_configObjects:
-    com.unity.input.settings: {fileID: 11400000, guid: f03a0d4c582956f42854e04376f6d573, type: 2}
+    com.unity.input.settings: {fileID: 11400000, guid: 9e7be553448fa2546aea5752021cbcf7, type: 2}
