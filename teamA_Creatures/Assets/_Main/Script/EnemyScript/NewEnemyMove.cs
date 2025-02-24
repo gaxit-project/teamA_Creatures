@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
+
 public class NewEnemyMove : MonoBehaviour
 {
     // 敵のステータス関連
-    public float enemyHP; // 敵のHP
-    public float enemyInitialHP = 100f; // 敵のHP
+    float enemyHP; // 敵のHP
+    public float enemyInitialHP = 500f; // 敵のHP
     int _enemyGaurd;
     [Header("Enemyステータス")]
     [SerializeField] float speed = 1; // 敵の動くスピード
@@ -73,7 +75,16 @@ public class NewEnemyMove : MonoBehaviour
     bool isBeastMode = true;
     bool isBMJudge = false;
 
+    bool isGameOverFlag = false;
+
+
+    // ふっとばし攻撃関連
+    public float smashForce = 50f; // 吹っ飛ばす力
+    public Vector3 blowDirection = new Vector3(1, 1, 0);
+    public bool isPushWall = false;
+
     float StanMaxTime = 10f;
+
     public void Awake()
     {
         if (Instance == null)
@@ -108,7 +119,8 @@ public class NewEnemyMove : MonoBehaviour
         HitStan,          // 攻撃ヒット時
         Stan,             // カウンター時のスタン
         BeastMode,        // ビーストモード
-        Down              // 敵死亡時
+        Down,             // 敵死亡時
+        Push              // 吹き飛ばし処理  
     }
     #region スタートたち
     void Start()
@@ -124,7 +136,7 @@ public class NewEnemyMove : MonoBehaviour
         _playerTr = GameObject.FindGameObjectWithTag("Player").transform;
         // リジットボディの設定
         _rb = GetComponent<Rigidbody>();
-        _rb.constraints = RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+        _rb.constraints = RigidbodyConstraints.FreezePositionZ  | RigidbodyConstraints.FreezeRotation;
         // エネミーとプレイヤーの距離計測
         _distancePtoE = Vector2.Distance(transform.position, _playerTr.position);
         _enemyAnim = GetComponent<Animator>(); // Animatorを取得
@@ -135,7 +147,12 @@ public class NewEnemyMove : MonoBehaviour
     #region アップデートたち
     void Update()
     {
-        if(Input.GetKey(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            _currentState = EnemyState.Push;
+            isCoroutineStop = true;
+        }
+        if (Input.GetKey(KeyCode.P))
         {
             _currentState = EnemyState.Down;
             isCoroutineStop = true;
@@ -203,6 +220,9 @@ public class NewEnemyMove : MonoBehaviour
                 break;
             case EnemyState.Down:
                 HandleDown();
+                break;
+            case EnemyState.Push:
+                HandlePush();
                 break;
         }
     }
@@ -328,6 +348,17 @@ public class NewEnemyMove : MonoBehaviour
         }
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
         currentCoroutine = StartCoroutine(EnemyDown());
+    }
+    void HandlePush()
+    {
+        if (isCoroutineStop)
+        {
+            isCoroutineStop = false;
+            StopCoroutine(currentCoroutine);
+            _isCoroutineRunning = false;
+        }
+        if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
+        currentCoroutine = StartCoroutine(EnemyPush());
     }
     /// <summary>
     /// 距離による状態遷移
@@ -720,18 +751,95 @@ public class NewEnemyMove : MonoBehaviour
         AudioManager.GetInstance().PlaySE("enemyAttack",num);
     }
 
+   
+    // プレイヤーが壁際の時に攻撃後後ろに下がる
+    public void EnemyBack()
+    {
+        if(PlayerRayCast.isPlayerBackWall)
+        {
+            PlayerRayCast.isPlayerBackWall = false;
+            StartCoroutine(EnemyBackWall());
+        }
+    }
+    IEnumerator EnemyBackWall()
+    {
+        float backTime = 0f;
+        while(true)
+        {
+            Debug.Log("敵を後退させる");
+            backTime += Time.deltaTime;
+            // 敵を後退させる
+            transform.position -= transform.forward * backWallSpeed * Time.deltaTime;
+            yield return null;
+            if(backTime >= 0.5f)
+            {
+                break;
+            }
+        }
+    }
 
+    IEnumerator EnemyPush()
+    {
+        _rb.isKinematic = false;
+        yield return null;
+        float backTime = 0f;
+        _isCoroutineRunning = true;
+        _enemyAnim.SetBool("Fly", true);
+        _enemyAnim.CrossFade("Fly", 0.1f);
+        if (_directionX.x > 0)
+        {
+            blowDirection = new Vector3(-1, 1, 0);
+        }
+        else if (_directionX.x < 0)
+        {
+            blowDirection = new Vector3(1, 1, 0);
+        }
+        _rb.AddForce(blowDirection.normalized * smashForce, ForceMode.Impulse);
+        while (true)
+        {
+            backTime += Time.deltaTime;
+            yield return null;
+            if (backTime >= 2f || isPushWall)
+            {
+                isPushWall = false;
+                break;
+            }
+        }
+        _rb.velocity = Vector3.zero;
+        backTime = 0f;
+        while (true)
+        {
+            backTime += Time.deltaTime;
+            yield return null;
+            if (EnemyRayCast.isGround)
+            {
+                break;
+            }
+        }
+        yield return new WaitForSeconds(1f);
+        _enemyAnim.SetBool("Fly", false);
+        _isCoroutineRunning = false;
+        _rb.isKinematic = true;
+        isPushWall = false;
+        _currentState = EnemyState.Idle;
+    }
+
+    #endregion
+
+    #region 敵の行動＋特殊演出関連
     IEnumerator EnemyIdle()
     {
         _isCoroutineRunning = true;
         if (_directionX.x > 0)
         {
             transform.rotation = Quaternion.Euler(0, 90, 0);
+            _enemyAnim.SetBool("Mirror", false);
             Debug.Log("プレイヤーは右側にいます");
         }
         else if (_directionX.x < 0)
         {
             transform.rotation = Quaternion.Euler(0, -90, 0);
+            _enemyAnim.SetBool("Mirror", true);
             Debug.Log("プレイヤーは左側にいます");
         }
         float _IdleRnd = Random.Range(_attackStiffnessMin, _attackStiffnessMax);
@@ -760,7 +868,7 @@ public class NewEnemyMove : MonoBehaviour
         {
             stanTime += Time.deltaTime;
             Debug.Log("スタン中です！！！！");
-            if (stanTime >= 0.4f)
+            if (stanTime >= 0.1f)
             {
                 break;
             }
@@ -804,31 +912,7 @@ public class NewEnemyMove : MonoBehaviour
         _currentState = EnemyState.Idle;
         yield return null;
     }
-    // プレイヤーが壁際の時に攻撃後後ろに下がる
-    public void EnemyBack()
-    {
-        if(PlayerRayCast.isPlayerBackWall)
-        {
-            PlayerRayCast.isPlayerBackWall = false;
-            StartCoroutine(EnemyBackWall());
-        }
-    }
-    IEnumerator EnemyBackWall()
-    {
-        float backTime = 0f;
-        while(true)
-        {
-            Debug.Log("敵を後退させる");
-            backTime += Time.deltaTime;
-            // 敵を後退させる
-            transform.position -= transform.forward * backWallSpeed * Time.deltaTime;
-            yield return null;
-            if(backTime >= 0.5f)
-            {
-                break;
-            }
-        }
-    }
+
     /// <summary>
     /// ビーストモードの処理
     /// </summary>
@@ -849,7 +933,7 @@ public class NewEnemyMove : MonoBehaviour
         {
             Debug.Log("ビーストモードtyuudaze！！！！");
             BeastModeTime += Time.deltaTime;
-            if(BeastModeTime >= 20)
+            if (BeastModeTime >= 20)
             {
                 break;
             }
@@ -877,13 +961,13 @@ public class NewEnemyMove : MonoBehaviour
         float downTime = 0f;
         EnemyCancel();
         _enemyAnim.SetBool("Down", true);
-        _enemyAnim.CrossFade("Down", 0.1f , 0 , 0.35f);
+        _enemyAnim.CrossFade("Down", 0.1f, 0, 0.35f);
         yield return null;
-        _enemyAnim.SetBool("Down", false); 
-        while(true)
+        _enemyAnim.SetBool("Down", false);
+        while (true)
         {
-            downTime += Time.deltaTime; 
-            if(downTime >= 6f)
+            downTime += Time.deltaTime;
+            if (downTime >= 6f)
             {
                 break;
             }
@@ -897,6 +981,7 @@ public class NewEnemyMove : MonoBehaviour
         _currentState = EnemyState.Idle;
         _isCoroutineRunning = false;
     }
+
     #endregion
 
     #region 当たり判定とHP
@@ -907,21 +992,25 @@ public class NewEnemyMove : MonoBehaviour
     {
         if (collision.CompareTag("PlayerJab"))
         {
-            int damege = 10;
-            Debug.Log("プレイヤーの攻撃にあたった");
-            //_currentState = EnemyState.HitStan;
-            if(!isEnemyStanFlag && !isBMJudge)
+            if (!isGameOverFlag)
             {
-                EnemyHitStanState();
+                int damege = 10;
+                Debug.Log("プレイヤーの攻撃にあたった");
+                //_currentState = EnemyState.HitStan;
+                if (!isEnemyStanFlag && !isBMJudge)
+                {
+                    EnemyHitStanState();
+                }
+                else
+                {
+                    // スタン中は攻撃力アップ
+                    damege += 5;
+                }
+                DriveGauge.Instance.DriveGaugeUP();
+                HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
+                ReduceEnemyHP(damege);
+                //_currentState = EnemyState.Guard; // 状態をガードに変更
             }
-            else
-            {
-                // スタン中は攻撃力アップ
-                damege += 5;
-            }
-            HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
-            ReduceEnemyHP(damege);
-            //_currentState = EnemyState.Guard; // 状態をガードに変更
         }
     }
     /// <summary>
@@ -937,6 +1026,7 @@ public class NewEnemyMove : MonoBehaviour
             // ゲームクリアに移行
             _currentState = EnemyState.Down;
             isCoroutineStop = true;
+            isGameOverFlag = true;
             //JM.ChangeClearScene();
         }
         else if (enemyHP <= enemyInitialHP * 0.4 && isBeastMode)
