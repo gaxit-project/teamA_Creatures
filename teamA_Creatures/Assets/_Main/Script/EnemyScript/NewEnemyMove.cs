@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem.XR;
+
 public class NewEnemyMove : MonoBehaviour
 {
     // 敵のステータス関連
@@ -82,6 +84,7 @@ public class NewEnemyMove : MonoBehaviour
     public bool isPushWall = false;
 
     float StanMaxTime = 10f;
+
     public void Awake()
     {
         if (Instance == null)
@@ -808,11 +811,12 @@ public class NewEnemyMove : MonoBehaviour
         {
             backTime += Time.deltaTime;
             yield return null;
-            if (backTime >= 2f)
+            if (EnemyRayCast.isGround)
             {
                 break;
             }
         }
+        yield return new WaitForSeconds(1f);
         _enemyAnim.SetBool("Fly", false);
         _isCoroutineRunning = false;
         _rb.isKinematic = true;
@@ -829,11 +833,13 @@ public class NewEnemyMove : MonoBehaviour
         if (_directionX.x > 0)
         {
             transform.rotation = Quaternion.Euler(0, 90, 0);
+            _enemyAnim.SetBool("Mirror", false);
             Debug.Log("プレイヤーは右側にいます");
         }
         else if (_directionX.x < 0)
         {
             transform.rotation = Quaternion.Euler(0, -90, 0);
+            _enemyAnim.SetBool("Mirror", true);
             Debug.Log("プレイヤーは左側にいます");
         }
         float _IdleRnd = Random.Range(_attackStiffnessMin, _attackStiffnessMax);
