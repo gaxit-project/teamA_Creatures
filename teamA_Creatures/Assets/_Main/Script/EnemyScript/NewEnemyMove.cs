@@ -8,8 +8,8 @@ using UnityEngine.InputSystem.XR;
 public class NewEnemyMove : MonoBehaviour
 {
     // 敵のステータス関連
-    float enemyHP; // 敵のHP
-    public float enemyInitialHP = 500f; // 敵のHP
+    public static float enemyHP; // 敵のHP
+    public static float enemyInitialHP = 500f; // 敵のHP
     int _enemyGaurd;
     [Header("Enemyステータス")]
     [SerializeField] float speed = 1; // 敵の動くスピード
@@ -84,6 +84,8 @@ public class NewEnemyMove : MonoBehaviour
     public bool isPushWall = false;
 
     float StanMaxTime = 10f;
+
+    public static int damege = 10;
 
     public void Awake()
     {
@@ -994,7 +996,7 @@ public class NewEnemyMove : MonoBehaviour
         {
             if (!isGameOverFlag)
             {
-                int damege = 10;
+                damege = 10;
                 Debug.Log("プレイヤーの攻撃にあたった");
                 //_currentState = EnemyState.HitStan;
                 if (!isEnemyStanFlag && !isBMJudge)
@@ -1016,9 +1018,10 @@ public class NewEnemyMove : MonoBehaviour
     /// <summary>
     /// 敵のHPを減らしたりする
     /// </summary>
-    void ReduceEnemyHP(int _lostHP)
+    public void ReduceEnemyHP(int _lostHP)
     {
         enemyHP -= _lostHP;
+        EnemyHP.Instance.TakeDamage(_lostHP);
         PE.PunchEffect();
         Debug.Log("HPが減ったしまった！現在のHP：" + enemyHP);
         if(enemyHP <= 0)

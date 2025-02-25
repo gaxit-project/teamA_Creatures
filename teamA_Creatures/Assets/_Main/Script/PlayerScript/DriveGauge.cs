@@ -31,12 +31,12 @@ public class DriveGauge : MonoBehaviour
     void Start()
     {
         driveCnt = 0f;
-        driveGauge[0] = GameObject.Find("DriveGauge1").GetComponent<Image>();
-        driveGauge[1] = GameObject.Find("DriveGauge2").GetComponent<Image>();
-        driveGauge[2] = GameObject.Find("DriveGauge3").GetComponent<Image>();
-        driveGauge[3] = GameObject.Find("DriveGauge4").GetComponent<Image>();
-        driveGauge[4] = GameObject.Find("DriveGauge5").GetComponent<Image>();
-        driveGauge[5] = GameObject.Find("DriveGauge6").GetComponent<Image>();
+        driveGauge[0] = GameObject.Find("PlayerDriveGauge1").GetComponent<Image>();
+        driveGauge[1] = GameObject.Find("PlayerDriveGauge2").GetComponent<Image>();
+        driveGauge[2] = GameObject.Find("PlayerDriveGauge3").GetComponent<Image>();
+        driveGauge[3] = GameObject.Find("PlayerDriveGauge4").GetComponent<Image>();
+        driveGauge[4] = GameObject.Find("PlayerDriveGauge5").GetComponent<Image>();
+        driveGauge[5] = GameObject.Find("PlayerDriveGauge6").GetComponent<Image>();
 
     }
     private void Update()
