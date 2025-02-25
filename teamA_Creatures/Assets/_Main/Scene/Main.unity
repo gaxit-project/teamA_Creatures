@@ -10135,6 +10135,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1309486516299566, guid: d2c14aacbdf27be42b48ffbea05effac, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1661968456}
+    - targetCorrespondingSourceObject: {fileID: 1309486516299566, guid: d2c14aacbdf27be42b48ffbea05effac, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1661968457}
   m_SourcePrefab: {fileID: 100100000, guid: d2c14aacbdf27be42b48ffbea05effac, type: 3}
 --- !u!1 &1661968426 stripped
 GameObject:
@@ -10466,6 +10469,26 @@ MonoBehaviour:
   - {fileID: 1048243755}
   - {fileID: 576105473}
   segmentMaxHP: []
+--- !u!114 &1661968457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1661968426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc8b6f04050c37c4c83c951dad3891c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyDriveGauge:
+  - {fileID: 762110378}
+  - {fileID: 1241727130}
+  - {fileID: 329184274}
+  - {fileID: 1384002003}
+  - {fileID: 847945810}
+  - {fileID: 2014587419}
+  gaugeDownSpeed: 0.5
 --- !u!1 &1673579635
 GameObject:
   m_ObjectHideFlags: 0
