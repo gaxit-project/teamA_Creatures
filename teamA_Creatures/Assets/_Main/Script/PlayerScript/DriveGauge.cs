@@ -12,7 +12,7 @@ public class DriveGauge : MonoBehaviour
     bool isDGMax = false;
     bool isDriveGaugeUP = false;
 
-    public static bool isDriveGaugeMax = false;
+    public  bool isDriveGaugeMax = false;
     public static bool isDBAttack = false;
 
     public static DriveGauge Instance;
@@ -38,13 +38,19 @@ public class DriveGauge : MonoBehaviour
         driveGauge[4] = GameObject.Find("PlayerDriveGauge5").GetComponent<Image>();
         driveGauge[5] = GameObject.Find("PlayerDriveGauge6").GetComponent<Image>();
 
+
+            for (int j = 0; j < driveGauge.Length; j++)
+            {
+                driveGauge[j].fillAmount = 6f;
+            }
+        
     }
     private void Update()
     {
         if (isDGMax)
         {
             driveCnt += Time.deltaTime;
-            if (driveCnt >= 2f)
+            if (driveCnt >= 200f)
             {
                 driveCnt = 0f;
                 isDGMax = false;
@@ -108,6 +114,7 @@ public class DriveGauge : MonoBehaviour
             {
                 AudioManager.GetInstance().PlaySE("playerAttack", 8);
                 isDriveGaugeMax = true;
+                Debug.Log("nanfa");
             }
             else
             {
@@ -147,7 +154,7 @@ public class DriveGauge : MonoBehaviour
     }
     public void DriveGaugeMaxDown()
     {
-        for(int j = 0; j < 0; j++)
+        for(int j = 0; j < driveGauge.Length; j++)
         {
             driveGauge[j].fillAmount = 0f;
         }

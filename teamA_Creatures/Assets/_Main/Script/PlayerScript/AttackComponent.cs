@@ -68,6 +68,7 @@ public class AttackComponent : MonoBehaviour
     {
 
         if (attackNow) return;
+
         if (MoveComponent.Instance.ATFieldNow)
         {
             attackType = AttackType.counterNow;
@@ -84,98 +85,112 @@ public class AttackComponent : MonoBehaviour
 
             case AttackType.attack:
 
-
-                if (isCooldown && currentCombo == 0)
+                if (DriveGauge.Instance.isDriveGaugeMax)
                 {
-                    return;
+                    Debug.Log("òAë≈");
+                    //Ç±Ç±Ç≈ñ≥ìGÇÃîªíËÇì¸ÇÍÇƒÇ®Ç≠
+                    DriveGauge.Instance.DriveGaugeMaxDown();
+
+                    animator.SetBool("Rush", true);
+                    attackNow = true;
+
                 }
-                if (!isComboNow&&ComboStart)
+                else if (!DriveGauge.Instance.isDriveGaugeMax)
                 {
-                    currentCombo = 0;
-                    lastComboTime = Time.time;
-                    ComboStart = false;
-                }
-
-                if (JumpComponent.Instance.jumpFlag && !attackNow)
-                {
-                    if (currentCombo == 0)
+                    if (isCooldown && currentCombo == 0)
                     {
-                        Debug.Log("çUåÇ0");
-                        animator.SetTrigger("Attack");
-                        attackNow = true;
-                        animator.SetBool("run", false);
-                        animator.SetBool("Back", false);
-                        StartCoroutine(AttackTimeout(21f / 60f));
-                        if (audioSource != null && attackSound != null && canPlaySound)
-                        {
-                            audioSource.PlayOneShot(attackSound);
-                            //canPlaySound = false;
-                            StartCoroutine(ResetSoundCooldown());
-                        }
-
-                        if (cubeController != null)
-                        {
-                            cubeController.ShowPunchCube();
-                        }
-                        ComboStart = true;
-                        lastComboTime = Time.time;
-                        lastAttackTime = Time.time;
-
+                        return;
                     }
-
-                    if (currentCombo == 1)
+                    if (!isComboNow && ComboStart)
                     {
-                        Debug.Log("çUåÇ1");
-                        animator.SetTrigger("Attack");
-                        attackNow = true;
-                        animator.SetBool("run", false);
-                        animator.SetBool("Back", false);
-                        StartCoroutine(AttackTimeout(21f / 60f));
-                        if (audioSource != null && attackSound != null && canPlaySound)
-                        {
-                            audioSource.PlayOneShot(attackSound);
-                            //canPlaySound = false;
-                            StartCoroutine(ResetSoundCooldown());
-                        }
-
-                        if (cubeController != null)
-                        {
-                            cubeController.ShowPunchCube();
-                        }
-                        lastComboTime = Time.time;
-                        lastAttackTime = Time.time;
-
-                    }
-                    if (currentCombo == 2)
-                    {
-                        Debug.Log("çUåÇ2");
-                        animator.SetTrigger("Attack");
-                        attackNow = true;
-                        animator.SetBool("run", false);
-                        animator.SetBool("Back", false);
-                        StartCoroutine(AttackTimeout(21f / 60f));
-                        if (audioSource != null && attackSound != null && canPlaySound)
-                        {
-                            audioSource.PlayOneShot(attackSound);
-                            //canPlaySound = false;
-                            StartCoroutine(ResetSoundCooldown());
-                        }
-
-                        if (cubeController != null)
-                        {
-                            cubeController.ShowPunchCube();
-                        }
-                        lastComboTime = Time.time;
-                        lastAttackTime = Time.time;
-
-                    }
-                    currentCombo++;
-                    if (currentCombo >= maxCombo)
-                    {
-                        lastAttackTime = Time.time;
                         currentCombo = 0;
+                        lastComboTime = Time.time;
+                        ComboStart = false;
+                    }
+
+                    if (JumpComponent.Instance.jumpFlag && !attackNow)
+                    {
+                        if (currentCombo == 0)
+                        {
+                            Debug.Log("çUåÇ0");
+                            animator.SetTrigger("Attack");
+                            attackNow = true;
+                            animator.SetBool("run", false);
+                            animator.SetBool("Back", false);
+                            StartCoroutine(AttackTimeout(0.5f));
+                            if (audioSource != null && attackSound != null && canPlaySound)
+                            {
+                                audioSource.PlayOneShot(attackSound);
+                                //canPlaySound = false;
+                                StartCoroutine(ResetSoundCooldown());
+                            }
+
+                            if (cubeController != null)
+                            {
+                                cubeController.ShowPunchCube();
+                            }
+                            ComboStart = true;
+                            lastComboTime = Time.time;
+                            lastAttackTime = Time.time;
+
+                        }
+
+                        if (currentCombo == 1)
+                        {
+                            Debug.Log("çUåÇ1");
+                            animator.SetTrigger("Attack");
+                            attackNow = true;
+                            animator.SetBool("run", false);
+                            animator.SetBool("Back", false);
+                            StartCoroutine(AttackTimeout(0.5f));
+                            if (audioSource != null && attackSound != null && canPlaySound)
+                            {
+                                audioSource.PlayOneShot(attackSound);
+                                //canPlaySound = false;
+                                StartCoroutine(ResetSoundCooldown());
+                            }
+
+                            if (cubeController != null)
+                            {
+                                cubeController.ShowPunchCube();
+                            }
+                            lastComboTime = Time.time;
+                            lastAttackTime = Time.time;
+
+                        }
+                        if (currentCombo == 2)
+                        {
+                            Debug.Log("çUåÇ2");
+                            animator.SetTrigger("Smash");
+                            attackNow = true;
+                            animator.SetBool("run", false);
+                            animator.SetBool("Back", false);
+                            StartCoroutine(AttackTimeout(0.5f));
+                            if (audioSource != null && attackSound != null && canPlaySound)
+                            {
+                                audioSource.PlayOneShot(attackSound);
+                                //canPlaySound = false;
+                                StartCoroutine(ResetSoundCooldown());
+                            }
+
+                            if (cubeController != null)
+                            {
+                                cubeController.ShowPunchCube();
+                            }
+                            lastComboTime = Time.time;
+                            lastAttackTime = Time.time;
+
+                        }
+                        currentCombo++;
+                        if (currentCombo >= maxCombo)
+                        {
+                            lastAttackTime = Time.time;
+                            currentCombo = 0;
+                        }
                     }
                 }
+
+
 
                 break;
 
@@ -199,12 +214,33 @@ public class AttackComponent : MonoBehaviour
     public GameObject CountorCube;
     public Vector3 CCube;
 
+    public void RastPanch()
+    {
+        animator.SetBool("Rush", false);
+        animator.SetBool("RastPanch", true);
+    }
+
+    public IEnumerator Tame()
+    {
+        animator.speed = 0f;
+        yield return new WaitForSeconds(2);
+        animator.speed = 1f;
+    }
+
+    public void nan()
+    {
+        // çUåÇèIóπå„ÇÃÉtÉbÉgã¥
+        NewEnemyMove.Instance.EnemyPushFanction();
+        animator.SetBool("RastPanch", false);
+        attackNow = false;
+    }
     public void EndAttack()
     {
         attackNow = false;
         animator.SetTrigger("EndAttack");
         animator.ResetTrigger("Attack");
         animator.ResetTrigger("Counter");
+        animator.ResetTrigger("Smash");
         animator.SetBool("Shield", false);
         if (cubeController != null)
         {
@@ -234,11 +270,9 @@ public class AttackComponent : MonoBehaviour
     private IEnumerator AttackTimeout(float duration)
     {
         yield return new WaitForSeconds(duration);
-        if (attackNow)
-        {
-            Debug.Log("AttackÉ^ÉCÉÄÉAÉEÉgÇ…ÇÊÇËã≠êßèIóπ");
+            Debug.Log("EndAttack");
             EndAttack();
-        }
+
     }
 
     public void Update()
