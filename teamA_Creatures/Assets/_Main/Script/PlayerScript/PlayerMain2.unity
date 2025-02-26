@@ -624,7 +624,7 @@ PrefabInstance:
     - target: {fileID: 1729356930380212625, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: ebfd66b2ee5f8d340a04052e6ee98583, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 1729356930380212625, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
       propertyPath: m_ApplyRootMotion
       value: 0
@@ -641,6 +641,14 @@ PrefabInstance:
       propertyPath: attack
       value: 
       objectReference: {fileID: 496420109}
+    - target: {fileID: 2815612108028901286, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
+      propertyPath: MirrorC
+      value: 
+      objectReference: {fileID: 9100000, guid: 7b9e9ba43d3971a41b6079f3319a1302, type: 2}
+    - target: {fileID: 2815612108028901286, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
+      propertyPath: controller
+      value: 
+      objectReference: {fileID: 9100000, guid: ebfd66b2ee5f8d340a04052e6ee98583, type: 2}
     - target: {fileID: 4692684994304406507, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
       propertyPath: m_LocalScale.x
       value: 2
@@ -7562,6 +7570,7 @@ MonoBehaviour:
   - {fileID: 1661968453}
   - {fileID: 851187290}
   PlayerHP: {fileID: 851187284}
+  isEnemyCounter: 0
 --- !u!1001 &1661968425
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7933,8 +7942,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ef5af97618fd2f4680e474907af8477, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyHP: 300
-  enemyInitialHP: 100
   speed: 1
   backSpeed: 2
   isFollow: 0
@@ -7945,6 +7952,9 @@ MonoBehaviour:
   EnemyHit2: {fileID: 1661968446}
   JM: {fileID: 221866028}
   PE: {fileID: 851187298}
+  smashForce: 50
+  blowDirection: {x: 1, y: 1, z: 0}
+  isPushWall: 0
 --- !u!95 &1661968453 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: -8922236586830351099, guid: d2c14aacbdf27be42b48ffbea05effac, type: 3}
@@ -7964,6 +7974,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rayDistance: 3
   backRayDistance: 5
+  pushRayDistance: 3
 --- !u!114 &1661968455
 MonoBehaviour:
   m_ObjectHideFlags: 0
