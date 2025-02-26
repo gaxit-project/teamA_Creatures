@@ -38,7 +38,7 @@ public class PlayerHP : MonoBehaviour
     void Start()
     {
         BeastModeHP = 1f;
-        playerMaxHP = 10000;
+        playerMaxHP = 300;
         playerHP = playerMaxHP;
         animator = GetComponent<Animator>();
         HitNow = false;
