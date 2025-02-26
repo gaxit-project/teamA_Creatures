@@ -122,7 +122,8 @@ public class NewEnemyMove : MonoBehaviour
         Stan,             // カウンター時のスタン
         BeastMode,        // ビーストモード
         Down,             // 敵死亡時
-        Push              // 吹き飛ばし処理  
+        Push,             // 吹き飛ばし処理  
+        Counter           // カウンター処理
     }
     #region スタートたち
     void Start()
@@ -225,6 +226,9 @@ public class NewEnemyMove : MonoBehaviour
                 break;
             case EnemyState.Push:
                 HandlePush();
+                break;
+            case EnemyState.Counter:
+                HandleCounter();
                 break;
         }
     }
@@ -361,6 +365,18 @@ public class NewEnemyMove : MonoBehaviour
         }
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
         currentCoroutine = StartCoroutine(EnemyPush());
+    }
+
+    void HandleCounter()
+    {
+        if (isCoroutineStop)
+        {
+            isCoroutineStop = false;
+            StopCoroutine(currentCoroutine);
+            _isCoroutineRunning = false;
+        }
+        if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
+        currentCoroutine = StartCoroutine(EnemyCounter());
     }
     /// <summary>
     /// 距離による状態遷移
@@ -984,6 +1000,29 @@ public class NewEnemyMove : MonoBehaviour
         _isCoroutineRunning = false;
     }
 
+
+    IEnumerator EnemyCounter()
+    {
+        _isCoroutineRunning = true;
+        EnemyCancel();
+        _enemyAnim.SetBool("Counter", true);
+        _enemyAnim.CrossFade("Counter", 0f);
+        HitStopScript.Instance.StartHitStop(0.5f);
+        while(true)
+        {
+            if(HitStopScript.Instance.isEnemyCounter)
+            {
+                HitStopScript.Instance.isEnemyCounter = false;
+                break;
+            }
+            yield return null;
+        }
+        _isCoroutineRunning = false;
+        _enemyAnim.SetBool("Counter", false);
+        _currentState = EnemyState.RightPunch;
+        yield return null;
+    }
+
     #endregion
 
     #region 当たり判定とHP
@@ -997,9 +1036,17 @@ public class NewEnemyMove : MonoBehaviour
             if (!isGameOverFlag)
             {
                 damege = 10;
+                int RndCounter = Random.Range(1, 101);
                 Debug.Log("プレイヤーの攻撃にあたった");
                 //_currentState = EnemyState.HitStan;
-                if (!isEnemyStanFlag && !isBMJudge)
+                if(EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 70)
+                {
+                    // 敵のカウンター攻撃！！！！！
+                    Debug.Log("敵のカウンター攻撃！！！！！！！");
+                    isCoroutineStop = true;
+                    _currentState = EnemyState.Counter;
+                }
+                else if (!isEnemyStanFlag && !isBMJudge)
                 {
                     EnemyHitStanState();
                 }
@@ -1023,7 +1070,6 @@ public class NewEnemyMove : MonoBehaviour
         enemyHP -= _lostHP;
         EnemyHP.Instance.TakeDamage(_lostHP);
         PE.PunchEffect();
-        Debug.Log("HPが減ったしまった！現在のHP：" + enemyHP);
         if(enemyHP <= 0)
         {
             // ゲームクリアに移行
@@ -1032,7 +1078,7 @@ public class NewEnemyMove : MonoBehaviour
             isGameOverFlag = true;
             //JM.ChangeClearScene();
         }
-        else if (enemyHP <= enemyInitialHP * 0.4 && isBeastMode)
+        else if (enemyHP <= enemyInitialHP * 0.33 && isBeastMode)
         {
             isCoroutineStop = true;
             isBeastMode = false;

@@ -7,7 +7,7 @@ public class DriveGauge : MonoBehaviour
 {
     float driveCnt = 0f;
     [SerializeField] Image[] driveGauge;
-    public float gaugeDownSpeed = 0.5f;
+    public float gaugeDownSpeed = 0.1f;
 
     bool isDGMax = false;
     bool isDriveGaugeUP = false;

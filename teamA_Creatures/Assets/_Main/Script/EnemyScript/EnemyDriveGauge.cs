@@ -7,13 +7,15 @@ public class EnemyDriveGauge : MonoBehaviour
 {
     float driveCnt = 0f;
     [SerializeField] Image[] enemyDriveGauge;
-    public float gaugeDownSpeed = 0.5f;
+    public float gaugeDownSpeed = 0.1f;
 
     bool isDGMax = false;
     bool isDriveGaugeUP = false;
 
-    public static bool isDriveGaugeMax = false;
-    public static bool isDBAttack = false;
+    public bool isEnemyDriveGaugeMax = false;
+    public bool isEnemyDBAttack = false;
+
+    public float stopGauge = 2f;
 
     public static EnemyDriveGauge Instance;
     public void Awake()
@@ -44,12 +46,13 @@ public class EnemyDriveGauge : MonoBehaviour
         if (isDGMax)
         {
             driveCnt += Time.deltaTime;
-            if (driveCnt >= 2f)
+            if (driveCnt >= stopGauge)
             {
+                stopGauge = 2f;
                 driveCnt = 0f;
                 isDGMax = false;
                 isDriveGaugeUP = false;
-                isDriveGaugeMax = false;
+                isEnemyDriveGaugeMax = false;
             }
         }
         else if (isDriveGaugeUP)
@@ -62,52 +65,53 @@ public class EnemyDriveGauge : MonoBehaviour
                 isDriveGaugeUP = false;
             }
         }
-        else if (!isDBAttack)
+        else if (!isEnemyDBAttack)
         {
             DriveGaugeDown();
         }
     }
 
     #region ÉQÅ[ÉWÇè„Ç∞ÇÈ
-    public void DriveGaugeUP()
+    public void DriveGaugeUP(float num)
     {
         isDriveGaugeUP = true;
         driveCnt = 0f;
         if (enemyDriveGauge[0].fillAmount < 1f)
         {
-            DriveGaugeSetting(0);
+            DriveGaugeSetting(0, num);
         }
         else if (enemyDriveGauge[1].fillAmount < 1f)
         {
-            DriveGaugeSetting(1);
+            DriveGaugeSetting(1, num);
         }
         else if (enemyDriveGauge[2].fillAmount < 1f)
         {
-            DriveGaugeSetting(2);
+            DriveGaugeSetting(2, num);
         }
         else if (enemyDriveGauge[3].fillAmount < 1f)
         {
-            DriveGaugeSetting(3);
+            DriveGaugeSetting(3, num);
         }
         else if (enemyDriveGauge[4].fillAmount < 1f)
         {
-            DriveGaugeSetting(4);
+            DriveGaugeSetting(4, num);
         }
         else if (enemyDriveGauge[5].fillAmount < 1f)
         {
-            DriveGaugeSetting(5);
+            DriveGaugeSetting(5, num);
         }
     }
-    void DriveGaugeSetting(int i)
+    void DriveGaugeSetting(int i, float num)
     {
-        enemyDriveGauge[i].fillAmount += 0.5f;
+        enemyDriveGauge[i].fillAmount += num;
         if (enemyDriveGauge[i].fillAmount >= 1f)
         {
             isDGMax = true;
             if (i == 5)
             {
                 AudioManager.GetInstance().PlaySE("playerAttack", 8);
-                isDriveGaugeMax = true;
+                isEnemyDriveGaugeMax = true;
+                stopGauge = 5f;
             }
             else
             {

@@ -9,8 +9,11 @@ public class PlayerHP : MonoBehaviour
     public NewEnemyMove NewEnemyMove;
     public EnemyEffect EE;
     public PlayerEffect PE;
+    [SerializeField] Image playerHPGauge;
+    [SerializeField] Image playerSmoothHPGauge;
 
     public static float BeastModeHP = 0f;
+    public static bool isPlayerDown;
 
     public void Awake()
     {
@@ -35,7 +38,7 @@ public class PlayerHP : MonoBehaviour
     void Start()
     {
         BeastModeHP = 1f;
-        playerMaxHP = 100;
+        playerMaxHP = 300;
         playerHP = playerMaxHP;
         animator = GetComponent<Animator>();
         HitNow = false;
@@ -46,9 +49,11 @@ public class PlayerHP : MonoBehaviour
     {
         if (playerHP <= 0)
         {
-            JM.ChangeOverScene();
+            StartCoroutine(PlayerDown());
+            //JM.ChangeOverScene();
         }
-        slider.value = playerHP / playerMaxHP;
+        //slider.value = playerHP / playerMaxHP;
+        playerHPGauge.fillAmount = playerHP / playerMaxHP;
         if (Input.GetKeyDown(KeyCode.K))
         {
             animator.SetTrigger("EnemyTackleHit");
@@ -60,6 +65,7 @@ public class PlayerHP : MonoBehaviour
             HitNow = true;
         }
     }
+    
     public void Button()
     {
         playerHP = playerHP - 7;
@@ -91,6 +97,8 @@ public class PlayerHP : MonoBehaviour
                     HitStopScript.Instance.StartHitStop(0.2f, "Player");
                     AudioManager.GetInstance().PlaySE("enemyAttack", 3);
                     NewEnemyMove.EnemyBack();
+                    EnemyDriveGauge.Instance.DriveGaugeUP(0.5f);
+                    StartCoroutine(SmoothHPBar());
                     HitNow = true;
                     muteki = true;
                     //怯む
@@ -106,6 +114,8 @@ public class PlayerHP : MonoBehaviour
                     muteki = true;
                     AudioManager.GetInstance().PlaySE("enemyAttack", 3);
                     NewEnemyMove.EnemyBack();
+                    EnemyDriveGauge.Instance.DriveGaugeUP(1f);
+                    StartCoroutine(SmoothHPBar());
                     //怯む
                     Destroy(AttackComponent.Instance.CountorCube);
 
@@ -118,9 +128,11 @@ public class PlayerHP : MonoBehaviour
                     animator.SetTrigger("falter");
                     HitNow = true;
                     muteki = true;
-                    tackleCamScript.StartCoroutine("tackleCameraCor");
+                    //tackleCamScript.StartCoroutine("tackleCameraCor");
                     AudioManager.GetInstance().PlaySE("enemyAttack", 3);
                     NewEnemyMove.EnemyBack();
+                    EnemyDriveGauge.Instance.DriveGaugeUP(1f);
+                    StartCoroutine(SmoothHPBar());
                     //吹っ飛ぶ
                     Destroy(AttackComponent.Instance.CountorCube);
 
@@ -129,6 +141,7 @@ public class PlayerHP : MonoBehaviour
                 if (other.gameObject.tag == "EnemySmashAttack")
                 {
                     playerHP = playerHP - (30 * BeastModeHP);
+                    isPlayerDown = true;
                     EE.SmashEffect();
                     PE.DamageEffect();
                     animator.SetTrigger("EnemyTackleHit");
@@ -139,6 +152,8 @@ public class PlayerHP : MonoBehaviour
                     muteki = true;
                     AudioManager.GetInstance().PlaySE("enemyAttack", 3);
                     NewEnemyMove.EnemyBack();
+                    EnemyDriveGauge.Instance.DriveGaugeUP(1f);
+                    StartCoroutine(SmoothHPBar());
                     //吹っ飛ぶ
                     Destroy(AttackComponent.Instance.CountorCube);
                 }
@@ -149,6 +164,7 @@ public class PlayerHP : MonoBehaviour
     public void GetUpTime()
     {
         animator.SetTrigger("GetUp");
+        isPlayerDown = false;
     }
     public void Stand()
     {
@@ -159,7 +175,51 @@ public class PlayerHP : MonoBehaviour
     }
     public IEnumerator Mmuteki()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(0.2f);
         muteki = false;
     }
+
+    /// <summary>
+    /// ゲームオーバー関連
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator PlayerDown()
+    {
+        float downTime = 0f;
+        // 向きを変えるやつを入れる
+        // ダウンアニメーション再生
+        animator.SetTrigger("EnemyTackleHit"); // これ仮置き
+        // アニメーター.CrossFade("Down", 0.1f, 0, 0.35f);
+        while (true)
+        {
+            downTime += Time.deltaTime;
+            if (/*アニメーション終了フラグ &&*/ downTime >= 1.8f)
+            {
+                break;
+            }
+            yield return null;
+        }
+        yield return new WaitForSeconds(1f);
+        JM.ChangeOverScene();
+    }
+
+    IEnumerator SmoothHPBar()
+    {
+        float startFill = playerSmoothHPGauge.fillAmount;
+        float elapsedTime = 0f;
+        float endFill = playerHP / playerMaxHP;
+        float smoothSpeed = 0.2f;
+
+        while (elapsedTime < smoothSpeed)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = elapsedTime / smoothSpeed;
+
+            // fillAmountを滑らかに変化
+            playerSmoothHPGauge.fillAmount = Mathf.Lerp(startFill, endFill, progress);
+
+            yield return null;
+        }
+    }
+
 }
