@@ -144,6 +144,7 @@ public class NewEnemyMove : MonoBehaviour
         _isAnimActive = true;
         _isCoroutineRunning = false;
         isGameOverCoroutineFlag = false;
+        isEnemyStanFlag = false;
         isBMJudge = false;
         isBeastMode = true;
         transform.position = new Vector3(4, 0, 0);
@@ -1101,7 +1102,6 @@ public class NewEnemyMove : MonoBehaviour
         }
         PlayerHP.BeastModeHP = 1f;
         StanMaxTime = 10f;
-        isBMJudge = false;
         yield return null;
     }
     IEnumerator EnemyDown()
