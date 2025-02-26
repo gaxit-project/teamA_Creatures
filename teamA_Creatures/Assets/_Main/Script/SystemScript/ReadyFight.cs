@@ -1,18 +1,53 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ReadyFight : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public Text readyText;
+    public Text fightText;
+
     void Start()
     {
-        
+        // 最初は非表示
+        readyText.enabled = false;
+        fightText.enabled = false;
+
+        StartCoroutine(ShowReadyFight());
     }
 
-    // Update is called once per frame
-    void Update()
+    IEnumerator ShowReadyFight()
     {
-        
+        // Ready? を表示
+        readyText.enabled = true;
+        yield return new WaitForSeconds(1f);
+
+        // フェードアウト
+        StartCoroutine(FadeOutText(readyText));
+
+        yield return new WaitForSeconds(0.5f);
+
+        // Fight! を表示
+        fightText.enabled = true;
+        yield return new WaitForSeconds(1f);
+
+        // フェードアウト
+        StartCoroutine(FadeOutText(fightText));
+    }
+
+    IEnumerator FadeOutText(Text text)
+    {
+        float duration = 0.5f;
+        float elapsed = 0f;
+        Color originalColor = text.color;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            text.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1 - (elapsed / duration));
+            yield return null;
+        }
+
+        text.enabled = false;
     }
 }
