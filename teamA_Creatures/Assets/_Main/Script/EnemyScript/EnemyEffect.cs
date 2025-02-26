@@ -5,8 +5,10 @@ using UnityEngine;
 public class EnemyEffect : MonoBehaviour
 {
     public ParticleSystem PunchEff; // シーン内のパーティクル
+    public ParticleSystem PunchFireEff; // シーン内のパーティクル
     public ParticleSystem TackleEff; // シーン内のパーティクル
     public ParticleSystem SmashEff; // シーン内のパーティクル
+    public ParticleSystem BurstEff; // シーン内のパーティクル
 
     public float spawnDistance = 1.0f; // キャラクターの前方距離
     public float heightOffset = 3.0f; // 高さのオフセット
@@ -23,7 +25,7 @@ public class EnemyEffect : MonoBehaviour
             // �L�����N�^�[�̑O�����v�Z
             Vector3 spawnPos = transform.position + transform.forward * spawnDistance;
 
-            spawnPos.y += 4.5f;
+            spawnPos.y += 3.0f;
 
             PunchEff.transform.position = spawnPos;
 
@@ -33,6 +35,27 @@ public class EnemyEffect : MonoBehaviour
             // パーティクルを再生
             PunchEff.Stop();
             PunchEff.Play();
+            Debug.Log("出た");
+        }
+    }
+
+    public void PunchFireEffect()
+    {
+        if (PunchFireEff != null)
+        {
+            // �L�����N�^�[�̑O�����v�Z
+            Vector3 spawnPos = transform.position + transform.forward * spawnDistance;
+
+            spawnPos.y += 4.5f;
+
+            PunchFireEff.transform.position = spawnPos;
+
+            PunchFireEff.transform.rotation = transform.rotation;
+
+            Debug.Log("出した");
+            // パーティクルを再生
+            PunchFireEff.Stop();
+            PunchFireEff.Play();
             Debug.Log("出た");
         }
     }
@@ -81,6 +104,16 @@ public class EnemyEffect : MonoBehaviour
             SmashEff.Stop();
             SmashEff.Play();
             Debug.Log("出た");
+        }
+    }
+
+    public void BurstEffect()
+    {
+        if (BurstEff != null)
+        {
+        
+            
+            BurstEff.Play();
         }
     }
 }

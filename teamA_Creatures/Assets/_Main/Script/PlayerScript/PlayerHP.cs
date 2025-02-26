@@ -143,6 +143,7 @@ public class PlayerHP : MonoBehaviour
                     playerHP = playerHP - (30 * BeastModeHP);
                     isPlayerDown = true;
                     EE.SmashEffect();
+                    EE.BurstEffect();
                     PE.DamageEffect();
                     animator.SetTrigger("EnemyTackleHit");
                     // ヒットストップ
