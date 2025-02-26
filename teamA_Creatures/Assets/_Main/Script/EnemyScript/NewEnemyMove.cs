@@ -796,6 +796,11 @@ public class NewEnemyMove : MonoBehaviour
         }
     }
 
+    public void EnemyPushFanction()
+    {
+        _currentState = EnemyState.Push;
+        isCoroutineStop = true;
+    }
     IEnumerator EnemyPush()
     {
         _rb.isKinematic = false;
