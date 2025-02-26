@@ -18,6 +18,7 @@ public class AttackComponent : MonoBehaviour
     public bool CounterRange;
     private Hit cubeController;
     public TackleCamera counterCamScript;
+    public bool isRush;
     public void Awake()
     {
         if (Instance == null)
@@ -92,8 +93,9 @@ public class AttackComponent : MonoBehaviour
                     DriveGauge.Instance.DriveGaugeMaxDown();
 
                     animator.SetBool("Rush", true);
+                    isRush = true;
                     attackNow = true;
-
+                    NewEnemyMove.Instance.EnemyPushFanction();
                 }
                 else if (!DriveGauge.Instance.isDriveGaugeMax)
                 {
@@ -158,6 +160,7 @@ public class AttackComponent : MonoBehaviour
                             lastAttackTime = Time.time;
 
                         }
+                        // ストレート
                         if (currentCombo == 2)
                         {
                             Debug.Log("攻撃2");
@@ -166,16 +169,12 @@ public class AttackComponent : MonoBehaviour
                             animator.SetBool("run", false);
                             animator.SetBool("Back", false);
                             StartCoroutine(AttackTimeout(0.5f));
+                            cubeController.ShowStreatCube();
                             if (audioSource != null && attackSound != null && canPlaySound)
                             {
                                 audioSource.PlayOneShot(attackSound);
                                 //canPlaySound = false;
                                 StartCoroutine(ResetSoundCooldown());
-                            }
-
-                            if (cubeController != null)
-                            {
-                                cubeController.ShowPunchCube();
                             }
                             lastComboTime = Time.time;
                             lastAttackTime = Time.time;
@@ -223,6 +222,7 @@ public class AttackComponent : MonoBehaviour
     public IEnumerator Tame()
     {
         animator.speed = 0f;
+        DriveGauge.Instance.isDriveGaugeMax = false;
         yield return new WaitForSeconds(2);
         animator.speed = 1f;
     }
@@ -230,7 +230,7 @@ public class AttackComponent : MonoBehaviour
     public void nan()
     {
         // 攻撃終了後のフット橋
-        NewEnemyMove.Instance.EnemyPushFanction();
+        isRush = false;
         animator.SetBool("RastPanch", false);
         attackNow = false;
     }

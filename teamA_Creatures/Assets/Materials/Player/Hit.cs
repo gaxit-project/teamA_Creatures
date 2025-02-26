@@ -17,12 +17,15 @@ public class Hit : MonoBehaviour
                 // プレイヤーの前方にCubeを生成
                 Vector3 spawnPosition = transform.position + transform.forward * 1.5f; // 前方に1.5f
                 spawnPosition.y += 2.2f; // Y座標を2上げる
+                hitJudgmentPrefab.tag = "PlayerJab";
+                Debug.Log(hitJudgmentPrefab.tag);
                 activeCube = Instantiate(hitJudgmentPrefab, spawnPosition, Quaternion.identity);
-
                 SetupHitDetection(); // 当たり判定をセットアップ
             }
             else
             {
+                hitJudgmentPrefab.tag = "PlayerJab";
+                Debug.Log(hitJudgmentPrefab.tag);
                 activeCube.SetActive(true);
                 Vector3 updatedPosition = transform.position + transform.forward * 1.5f; // 前方に1.5f
                 updatedPosition.y += 2.2f; // Y座標を2上げる
@@ -31,13 +34,40 @@ public class Hit : MonoBehaviour
         }
     }
 
+    public void ShowStreatCube()
+    {
+        if (hitJudgmentPrefab != null)
+        {
+            if (activeCube == null)
+            {
+                // プレイヤーの前方にCubeを生成
+                Vector3 spawnPosition = transform.position + transform.forward * 1.5f; // 前方に1.5f
+                spawnPosition.y += 2.2f; // Y座標を2上げる
+                
+                activeCube = Instantiate(hitJudgmentPrefab, spawnPosition, Quaternion.identity);
+                hitJudgmentPrefab.tag = "PlayerStreat";
+                Debug.Log(hitJudgmentPrefab.tag);
+                SetupHitDetection(); // 当たり判定をセットアップ
+            }
+            else
+            {
+                
+                activeCube.SetActive(true);
+                hitJudgmentPrefab.tag = "PlayerStreat";
+                Debug.Log(hitJudgmentPrefab.tag);
+                Vector3 updatedPosition = transform.position + transform.forward * 1.5f; // 前方に1.5f
+                updatedPosition.y += 2.2f; // Y座標を2上げる
+                activeCube.transform.position = updatedPosition;
+            }
+        }
+    }
 
     // Cubeを非表示
     public void HidePunchCube()
     {
         if (activeCube != null)
         {
-            activeCube.SetActive(false);
+            Destroy(activeCube);
         }
     }
 

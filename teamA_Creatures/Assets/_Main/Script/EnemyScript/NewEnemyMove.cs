@@ -807,6 +807,14 @@ public class NewEnemyMove : MonoBehaviour
         yield return null;
         float backTime = 0f;
         _isCoroutineRunning = true;
+        while(true)
+        {
+            if(!AttackComponent.Instance.isRush)
+            {
+                break;
+            }
+            yield return null;
+        }
         _enemyAnim.SetBool("Fly", true);
         _enemyAnim.CrossFade("Fly", 0.1f);
         if (_directionX.x > 0)

@@ -12,7 +12,7 @@ public class DriveGauge : MonoBehaviour
     bool isDGMax = false;
     bool isDriveGaugeUP = false;
 
-    public  bool isDriveGaugeMax = false;
+    public bool isDriveGaugeMax = false;
     public static bool isDBAttack = false;
 
     public static DriveGauge Instance;
@@ -50,7 +50,7 @@ public class DriveGauge : MonoBehaviour
         if (isDGMax)
         {
             driveCnt += Time.deltaTime;
-            if (driveCnt >= 200f)
+            if (driveCnt >= 2f)
             {
                 driveCnt = 0f;
                 isDGMax = false;
