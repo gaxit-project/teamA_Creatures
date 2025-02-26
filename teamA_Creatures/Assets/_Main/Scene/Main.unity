@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.06361822, g: 0.052069563, b: 0.056787517, a: 1}
+  m_IndirectSpecularColor: {r: 0.063576035, g: 0.052026946, b: 0.056728896, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -10044,6 +10044,7 @@ MonoBehaviour:
   - {fileID: 1661968453}
   - {fileID: 851187290}
   PlayerHP: {fileID: 851187284}
+  isEnemyCounter: 0
 --- !u!1001 &1661968425
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10514,6 +10515,9 @@ MonoBehaviour:
   - {fileID: 847945810}
   - {fileID: 2014587419}
   gaugeDownSpeed: 0.1
+  isEnemyDriveGaugeMax: 0
+  isEnemyDBAttack: 0
+  stopGauge: 2
 --- !u!1 &1673579635
 GameObject:
   m_ObjectHideFlags: 0
@@ -10594,6 +10598,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4829872756800474, guid: d6fbdf6c39d58e64f97bf634c9af697e, type: 3}
   m_PrefabInstance: {fileID: 603794558}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1721809924
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1721809925}
+  m_Layer: 0
+  m_Name: GameStartManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1721809925
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1721809924}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 100, y: 25, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1741436611
 GameObject:
   m_ObjectHideFlags: 0
@@ -13550,3 +13585,4 @@ SceneRoots:
   - {fileID: 294611346}
   - {fileID: 1067728494}
   - {fileID: 1136344511}
+  - {fileID: 1721809925}
