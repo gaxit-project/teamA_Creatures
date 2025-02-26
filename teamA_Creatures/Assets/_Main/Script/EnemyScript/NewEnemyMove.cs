@@ -144,6 +144,8 @@ public class NewEnemyMove : MonoBehaviour
         _isAnimActive = true;
         _isCoroutineRunning = false;
         isGameOverCoroutineFlag = false;
+        isBMJudge = false;
+        isBeastMode = true;
         transform.position = new Vector3(4, 0, 0);
         transform.rotation = Quaternion.Euler(0, -90, 0);
         // リジットボディの設定
@@ -161,7 +163,7 @@ public class NewEnemyMove : MonoBehaviour
     #region アップデートたち
     void Update()
     {
-        if(!Pause.isPaused && !ReadyFight.isStartCutIn)
+        if(!Pause.isPaused /*&& !ReadyFight.isStartCutIn*/)
         {
             if (Input.GetKeyDown(KeyCode.L))
             {
