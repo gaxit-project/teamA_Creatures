@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.063576035, g: 0.052026946, b: 0.056728896, a: 1}
+  m_IndirectSpecularColor: {r: 0.06361822, g: 0.052069563, b: 0.056787517, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1028,7 +1028,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &131774915
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1301,7 +1301,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &225776590
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2693,7 +2693,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &406665619
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3896,7 +3896,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &568830700
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6307,6 +6307,7 @@ MonoBehaviour:
   - {fileID: 1185106979}
   - {fileID: 457006162}
   gaugeDownSpeed: 0.1
+  isDriveGaugeMax: 0
 --- !u!4 &872285307 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4000010968662070, guid: 30b99e7dc1382e346a7f9789de00de5e, type: 3}
@@ -9969,7 +9970,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1449848314
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10423,7 +10424,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1584799604
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11212,6 +11213,7 @@ MonoBehaviour:
   EnemyHit2: {fileID: 1661968446}
   JM: {fileID: 221866028}
   PE: {fileID: 851187298}
+  streatSmashForce: 10
   smashForce: 50
   blowDirection: {x: 1, y: 1, z: 0}
   isPushWall: 0
@@ -11267,16 +11269,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hpBars:
-  - {fileID: 1584799605}
-  - {fileID: 406665620}
-  - {fileID: 131774916}
   - {fileID: 1327791608}
   - {fileID: 566718184}
   - {fileID: 1253688889}
   hpMoveBars:
-  - {fileID: 225776591}
-  - {fileID: 568830701}
-  - {fileID: 1449848315}
   - {fileID: 456420859}
   - {fileID: 1048243755}
   - {fileID: 576105473}

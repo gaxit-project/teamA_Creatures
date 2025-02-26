@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
+using UnityEngine.SceneManagement;
 
 public class NewEnemyMove : MonoBehaviour
 {
@@ -76,9 +77,13 @@ public class NewEnemyMove : MonoBehaviour
     bool isBMJudge = false;
 
     bool isGameOverFlag = false;
+    bool isGameOverCoroutineFlag = false;
+
+    bool isPushFlag = true;
 
 
     // ふっとばし攻撃関連
+    public float streatSmashForce = 10f; // 吹っ飛ばす力
     public float smashForce = 50f; // 吹っ飛ばす力
     public Vector3 blowDirection = new Vector3(1, 1, 0);
     public bool isPushWall = false;
@@ -122,115 +127,145 @@ public class NewEnemyMove : MonoBehaviour
         Stan,             // カウンター時のスタン
         BeastMode,        // ビーストモード
         Down,             // 敵死亡時
-        Push,             // 吹き飛ばし処理  
+        Push,             // 吹き飛ばし
+        StreatPush,       // ストレートの吹き飛ばし
         Counter           // カウンター処理
     }
     #region スタートたち
     void Start()
     {
+        _playerTr = GameObject.FindGameObjectWithTag("Player").transform;
         enemyHP = enemyInitialHP;
         isFollow = false;
+        isPushFlag = false;
         _isTackle = false;
         _isAtackEnd = false;
         _shortDistance = false;
         _isAnimActive = true;
         _isCoroutineRunning = false;
+        isGameOverCoroutineFlag = false;
         transform.position = new Vector3(4, 0, 0);
-        _playerTr = GameObject.FindGameObjectWithTag("Player").transform;
+        transform.rotation = Quaternion.Euler(0, -90, 0);
         // リジットボディの設定
         _rb = GetComponent<Rigidbody>();
         _rb.constraints = RigidbodyConstraints.FreezePositionZ  | RigidbodyConstraints.FreezeRotation;
         // エネミーとプレイヤーの距離計測
         _distancePtoE = Vector2.Distance(transform.position, _playerTr.position);
         _enemyAnim = GetComponent<Animator>(); // Animatorを取得
+        _enemyAnim.SetBool("Mirror", true);
         cubeController = GetComponent<EnemyHit>();
+        _rb.isKinematic = true;
     }
     #endregion
 
     #region アップデートたち
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.L))
+        if(!Pause.isPaused && !ReadyFight.isStartCutIn)
         {
-            _currentState = EnemyState.Push;
-            isCoroutineStop = true;
-        }
-        if (Input.GetKey(KeyCode.P))
-        {
-            _currentState = EnemyState.Down;
-            isCoroutineStop = true;
-        }
-        // 互いの距離計測 + 敵の向き交換
-        _distancePtoE = Vector2.Distance(transform.position, _playerTr.position);
-        Debug.Log("距離計測中");
-        _directionX = _playerTr.position - transform.position;
+            if (Input.GetKeyDown(KeyCode.L))
+            {
+                _currentState = EnemyState.Push;
+                isCoroutineStop = true;
+            }
+            if (Input.GetKey(KeyCode.P))
+            {
+                _currentState = EnemyState.Down;
+                isCoroutineStop = true;
+            }
+            // HPが0であるかどうか
+            if (enemyHP <= 0)
+            {
+                if(!isPushFlag)
+                {
+                    // ゲームクリアに移行
+                    _currentState = EnemyState.Down;
+                }
+                isGameOverFlag = true;
+                //JM.ChangeClearScene();
+            }
+            else if (enemyHP <= enemyInitialHP * 0.33 && isBeastMode && !isPushFlag)
+            {
+                isCoroutineStop = true;
+                isBeastMode = false;
+                _currentState = EnemyState.BeastMode;
+            }
+            // 互いの距離計測 + 敵の向き交換
+            _distancePtoE = Vector2.Distance(transform.position, _playerTr.position);
+            Debug.Log("距離計測中");
+            _directionX = _playerTr.position - transform.position;
 
-        //DebugKey();
-        StateTime();
-        switch (_currentState)
-        {
-            case EnemyState.Idle:
-                Debug.Log("アイドルだよ～ん");
-                HandleIdle();
-                break;
-            case EnemyState.MiddleFollow:
-                HandleMiddleFollow();
-                break;
-            case EnemyState.ShortFollow:
-                HandleShortFollow();
-                break;
-            case EnemyState.MiddleRetreat:
-                HandleMiddleRetreat();
-                break;
-            case EnemyState.LongRetreat:
-                HandleLongRetreat();
-                break;
-            case EnemyState.Guard:
-                HandleGuard();
-                break;
-            case EnemyState.RightPunch:
-                HandleRightPunch();
-                break;
-            case EnemyState.LeftPunch:
-                HandleLeftPunch();
-                break;
-            case EnemyState.Smash:
-                HandleSmash();
-                break;
-            case EnemyState.Tackle:
-                HandleTackle();
-                break;
-            case EnemyState.Chain:
-                HandleChain();
-                break;
-            case EnemyState.ForwardStep:
-                HandleForwardStep();
-                break;
-            case EnemyState.BackStep:
-                HandleBackStep();
-                break;
-            case EnemyState.BackAttack:
-                HandleBackAttack();
-                break;
-            case EnemyState.HitStan:
-                HandleHitStan();
-                break;
-            case EnemyState.Stan:
-                HandleStan();
-                break;
-            case EnemyState.BeastMode:
-                HandleBeastMode();
-                break;
-            case EnemyState.Down:
-                HandleDown();
-                break;
-            case EnemyState.Push:
-                HandlePush();
-                break;
-            case EnemyState.Counter:
-                HandleCounter();
-                break;
+            //DebugKey();
+            StateTime();
+            switch (_currentState)
+            {
+                case EnemyState.Idle:
+                    Debug.Log("アイドルだよ～ん");
+                    HandleIdle();
+                    break;
+                case EnemyState.MiddleFollow:
+                    HandleMiddleFollow();
+                    break;
+                case EnemyState.ShortFollow:
+                    HandleShortFollow();
+                    break;
+                case EnemyState.MiddleRetreat:
+                    HandleMiddleRetreat();
+                    break;
+                case EnemyState.LongRetreat:
+                    HandleLongRetreat();
+                    break;
+                case EnemyState.Guard:
+                    HandleGuard();
+                    break;
+                case EnemyState.RightPunch:
+                    HandleRightPunch();
+                    break;
+                case EnemyState.LeftPunch:
+                    HandleLeftPunch();
+                    break;
+                case EnemyState.Smash:
+                    HandleSmash();
+                    break;
+                case EnemyState.Tackle:
+                    HandleTackle();
+                    break;
+                case EnemyState.Chain:
+                    HandleChain();
+                    break;
+                case EnemyState.ForwardStep:
+                    HandleForwardStep();
+                    break;
+                case EnemyState.BackStep:
+                    HandleBackStep();
+                    break;
+                case EnemyState.BackAttack:
+                    HandleBackAttack();
+                    break;
+                case EnemyState.HitStan:
+                    HandleHitStan();
+                    break;
+                case EnemyState.Stan:
+                    HandleStan();
+                    break;
+                case EnemyState.BeastMode:
+                    HandleBeastMode();
+                    break;
+                case EnemyState.Down:
+                    HandleDown();
+                    break;
+                case EnemyState.Push:
+                    HandlePush();
+                    break;
+                case EnemyState.StreatPush:
+                    HandleStreatPush();
+                    break;
+                case EnemyState.Counter:
+                    HandleCounter();
+                    break;
+            }
         }
+        
     }
     #endregion
 
@@ -346,9 +381,9 @@ public class NewEnemyMove : MonoBehaviour
     }
     void HandleDown()
     {
-        if (isCoroutineStop)
+        if (!isGameOverCoroutineFlag)
         {
-            isCoroutineStop = false;
+            isGameOverCoroutineFlag = true;
             StopCoroutine(currentCoroutine);
             _isCoroutineRunning = false;
         }
@@ -366,6 +401,18 @@ public class NewEnemyMove : MonoBehaviour
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
         currentCoroutine = StartCoroutine(EnemyPush());
     }
+    void HandleStreatPush()
+    {
+        if (isCoroutineStop)
+        {
+            isCoroutineStop = false;
+            StopCoroutine(currentCoroutine);
+            _isCoroutineRunning = false;
+        }
+        if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
+        currentCoroutine = StartCoroutine(EnemyStreatPush());
+    }
+
 
     void HandleCounter()
     {
@@ -776,7 +823,7 @@ public class NewEnemyMove : MonoBehaviour
         if(PlayerRayCast.isPlayerBackWall)
         {
             PlayerRayCast.isPlayerBackWall = false;
-            StartCoroutine(EnemyBackWall());
+            currentCoroutine = StartCoroutine(EnemyBackWall());
         }
     }
     IEnumerator EnemyBackWall()
@@ -796,18 +843,75 @@ public class NewEnemyMove : MonoBehaviour
         }
     }
 
+
+    IEnumerator EnemyStreatPush()
+    {
+        _rb.isKinematic = false;
+        isPushFlag = true;
+        isPushWall = false;
+        yield return null;
+        float backTime = 0f;
+        _isCoroutineRunning = true;
+        // ここからが吹っ飛び
+        _enemyAnim.SetBool("Fly", true);
+        _enemyAnim.CrossFade("Fly", 0.1f);
+        AudioManager.Instance.PlaySE("playerAttack", 6);
+        if (_directionX.x > 0)
+        {
+            blowDirection = new Vector3(-1, 0, 0);
+        }
+        else if (_directionX.x < 0)
+        {
+            blowDirection = new Vector3(1, 0, 0);
+        }
+        _rb.AddForce(blowDirection.normalized * streatSmashForce, ForceMode.Impulse);
+        while (true)
+        {
+            backTime += Time.deltaTime;
+            yield return null;
+            if (backTime >= 0.5f || isPushWall)
+            {
+                isPushWall = false;
+                break;
+            }
+        }
+        _rb.velocity = Vector3.zero;
+        if (enemyHP < 0)
+        {
+            yield return new WaitForSeconds(1f);
+            JM.ChangeClearScene();
+        }
+        yield return new WaitForSeconds(1f);
+        _rb.isKinematic = true;
+        yield return null;
+        backTime = 0f;
+        _attackStiffnessMin = 0.5f;
+        _attackStiffnessMax = 1f;
+        _enemyAnim.SetBool("Fly", false);
+        _isCoroutineRunning = false;
+        isPushWall = false;
+        _currentState = EnemyState.Idle;
+        isPushFlag = false;
+        yield return null;
+    }
+
+
     public void EnemyPushFanction()
     {
         _currentState = EnemyState.Push;
         isCoroutineStop = true;
     }
+    
     IEnumerator EnemyPush()
     {
         _rb.isKinematic = false;
         yield return null;
         float backTime = 0f;
         _isCoroutineRunning = true;
-        while(true)
+        isPushFlag = true;
+
+        // ラッシュ待機
+        while (true)
         {
             if(!AttackComponent.Instance.isRush)
             {
@@ -815,8 +919,13 @@ public class NewEnemyMove : MonoBehaviour
             }
             yield return null;
         }
+
+        // ここからが吹っ飛び
+        isPushWall = false;
         _enemyAnim.SetBool("Fly", true);
         _enemyAnim.CrossFade("Fly", 0.1f);
+        AudioManager.Instance.PlaySE("playerAttack", 6);
+        ReduceEnemyHP(30);
         if (_directionX.x > 0)
         {
             blowDirection = new Vector3(-1, 1, 0);
@@ -833,6 +942,7 @@ public class NewEnemyMove : MonoBehaviour
             if (backTime >= 2f || isPushWall)
             {
                 isPushWall = false;
+                ReduceEnemyHP(20);
                 break;
             }
         }
@@ -847,17 +957,32 @@ public class NewEnemyMove : MonoBehaviour
                 break;
             }
         }
+        if(enemyHP < 0)
+        {
+            yield return new WaitForSeconds(1f);
+            JM.ChangeClearScene();
+        }
         yield return new WaitForSeconds(1f);
-        _enemyAnim.SetBool("Fly", false);
-        _isCoroutineRunning = false;
         _rb.isKinematic = true;
+        yield return null;
+        _enemyAnim.SetBool("Fly", false);
+        _attackStiffnessMin = 0.5f;
+        _attackStiffnessMax = 1f;
+        _isCoroutineRunning = false;
         isPushWall = false;
         _currentState = EnemyState.Idle;
+        isPushFlag = false;
+        yield return null;
     }
 
     #endregion
 
     #region 敵の行動＋特殊演出関連
+
+    /// <summary>
+    /// アイドル状態
+    /// </summary>
+    /// <returns></returns>
     IEnumerator EnemyIdle()
     {
         _isCoroutineRunning = true;
@@ -881,7 +1006,9 @@ public class NewEnemyMove : MonoBehaviour
         Debug.Log("アイドル状態になりました");
     }
 
-    // ひるみの処理
+    /// <summary>
+    /// ひるみの処理
+    /// </summary>
     public void EnemyHitStanState()
     {
         _rb.velocity = Vector3.zero;
@@ -1074,6 +1201,36 @@ public class NewEnemyMove : MonoBehaviour
                 //_currentState = EnemyState.Guard; // 状態をガードに変更
             }
         }
+        else if (collision.CompareTag("PlayerStreat"))
+        {
+            if (!isGameOverFlag)
+            {
+                damege = 20;
+                int RndCounter = Random.Range(1, 101);
+                if (EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 50)
+                {
+                    // 敵のカウンター攻撃！！！！！
+                    Debug.Log("敵のカウンター攻撃！！！！！！！");
+                    isCoroutineStop = true;
+                    _currentState = EnemyState.Counter;
+                }
+                else if (!isEnemyStanFlag && !isBMJudge)
+                {
+                    EnemyHitStanState();
+                    _currentState = EnemyState.StreatPush;
+                    isCoroutineStop = true;
+                }
+                else
+                {
+                    // スタン中は攻撃力アップ
+                    damege += 5;
+                }
+                DriveGauge.Instance.DriveGaugeUP();
+                HitStopScript.Instance.StartHitStop(0.5f, "Enemy");
+                ReduceEnemyHP(damege);
+            }
+        }
+
     }
     /// <summary>
     /// 敵のHPを減らしたりする
@@ -1083,20 +1240,6 @@ public class NewEnemyMove : MonoBehaviour
         enemyHP -= _lostHP;
         EnemyHP.Instance.TakeDamage(_lostHP);
         PE.PunchEffect();
-        if(enemyHP <= 0)
-        {
-            // ゲームクリアに移行
-            _currentState = EnemyState.Down;
-            isCoroutineStop = true;
-            isGameOverFlag = true;
-            //JM.ChangeClearScene();
-        }
-        else if (enemyHP <= enemyInitialHP * 0.33 && isBeastMode)
-        {
-            isCoroutineStop = true;
-            isBeastMode = false;
-            _currentState = EnemyState.BeastMode;
-        }
     }
     #endregion
 

@@ -43,9 +43,8 @@ public class Hit : MonoBehaviour
                 // プレイヤーの前方にCubeを生成
                 Vector3 spawnPosition = transform.position + transform.forward * 1.5f; // 前方に1.5f
                 spawnPosition.y += 2.2f; // Y座標を2上げる
-                
-                activeCube = Instantiate(hitJudgmentPrefab, spawnPosition, Quaternion.identity);
                 hitJudgmentPrefab.tag = "PlayerStreat";
+                activeCube = Instantiate(hitJudgmentPrefab, spawnPosition, Quaternion.identity);
                 Debug.Log(hitJudgmentPrefab.tag);
                 SetupHitDetection(); // 当たり判定をセットアップ
             }

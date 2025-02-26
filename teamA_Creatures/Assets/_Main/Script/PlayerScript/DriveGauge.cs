@@ -37,13 +37,6 @@ public class DriveGauge : MonoBehaviour
         driveGauge[3] = GameObject.Find("PlayerDriveGauge4").GetComponent<Image>();
         driveGauge[4] = GameObject.Find("PlayerDriveGauge5").GetComponent<Image>();
         driveGauge[5] = GameObject.Find("PlayerDriveGauge6").GetComponent<Image>();
-
-
-            for (int j = 0; j < driveGauge.Length; j++)
-            {
-                driveGauge[j].fillAmount = 6f;
-            }
-        
     }
     private void Update()
     {

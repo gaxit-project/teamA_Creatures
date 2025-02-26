@@ -281,5 +281,9 @@ public class AttackComponent : MonoBehaviour
         isCounterCooldown = Time.time < lastCounterTime + counterCooldown;
         isComboNow = Time.time < lastComboTime + ComboCooldown;
     }
-
+    public void RushSE()
+    {
+        NewEnemyMove.Instance.ReduceEnemyHP(5);
+        AudioManager.Instance.PlaySE("playerAttack", 3);
+    }
 }
