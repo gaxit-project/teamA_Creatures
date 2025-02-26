@@ -111,19 +111,9 @@ public class EnemyEffect : MonoBehaviour
     {
         if (BurstEff != null)
         {
-            // �L�����N�^�[�̑O�����v�Z
-            Vector3 spawnPos = transform.position + transform.forward * spawnDistance;
-
-            spawnPos.y += 0f;
-
-            BurstEff.transform.position = spawnPos;
-
-
-            Debug.Log("出した");
-            // パーティクルを再生
-            BurstEff.Stop();
+        
+            
             BurstEff.Play();
-            Debug.Log("出た");
         }
     }
 }
