@@ -13,6 +13,7 @@ TagManager:
   - EnemyChainAttack
   - EnemySmashAttack
   - EnemyTackleAttack
+  - PlayerStreat
   layers:
   - Default
   - TransparentFX
