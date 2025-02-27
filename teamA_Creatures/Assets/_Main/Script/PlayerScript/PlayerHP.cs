@@ -83,7 +83,8 @@ public class PlayerHP : MonoBehaviour
             }
             else
             {
-                AttackComponent.Instance.attackNow = false;
+                AttackComponent.Instance.EndAttack();
+                //AttackComponent.Instance.attackNow = false;
                 animator.SetBool("Shield", false);
 
                 if (other.gameObject.tag == "EnemyPunchAttack")
@@ -171,12 +172,14 @@ public class PlayerHP : MonoBehaviour
     {
         animator.SetTrigger("Stand");
         animator.CrossFade("Stand", 0f);
-        HitNow = false;
+        
         StartCoroutine(Mmuteki());
     }
     public IEnumerator Mmuteki()
     {
-        yield return new WaitForSeconds(0.2f);
+        //HitNow = false;
+        yield return new WaitForSeconds(1f);
+        HitNow = false;
         muteki = false;
     }
 

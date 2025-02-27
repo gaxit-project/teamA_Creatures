@@ -99,9 +99,12 @@ public class AttackComponent : MonoBehaviour
                 }
                 else if (!DriveGauge.Instance.isDriveGaugeMax)
                 {
-                    if (isCooldown && currentCombo == 0)
+                    if (!Countered)
                     {
-                        return;
+                        if (isCooldown && currentCombo == 0)
+                        {
+                            return;
+                        }
                     }
                     if (!isComboNow && ComboStart)
                     {
@@ -269,9 +272,15 @@ public class AttackComponent : MonoBehaviour
 
     private IEnumerator AttackTimeout(float duration)
     {
-        yield return new WaitForSeconds(duration);
-            Debug.Log("EndAttack");
-            EndAttack();
+        yield return new WaitForSeconds(duration*0.2f);
+        animator.ResetTrigger("Attack");
+        animator.ResetTrigger("Smash");
+        animator.ResetTrigger("Counter");
+        yield return new WaitForSeconds(duration * 0.8f);
+        attackNow = false;
+        animator.SetTrigger("EndAttack");
+        /*Debug.Log("EndAttack");
+        EndAttack();*/
 
     }
 
