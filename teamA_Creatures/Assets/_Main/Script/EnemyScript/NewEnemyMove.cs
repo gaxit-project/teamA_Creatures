@@ -1018,6 +1018,7 @@ public class NewEnemyMove : MonoBehaviour
         _enemyAnim.SetBool("HitStan", true);
         _enemyAnim.CrossFade("HitStan", 0f);
         isCoroutineStop = true;
+        AttackComponent.Instance.Countered = false;
         _currentState = EnemyState.HitStan;
     }
     IEnumerator EnemyHitStan()
