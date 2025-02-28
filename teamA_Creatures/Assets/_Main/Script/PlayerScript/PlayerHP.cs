@@ -193,6 +193,7 @@ public class PlayerHP : MonoBehaviour
         // 向きを変えるやつを入れる
         // ダウンアニメーション再生
         animator.SetTrigger("EnemyTackleHit"); // これ仮置き
+        JM.LoseEffect();
         // アニメーター.CrossFade("Down", 0.1f, 0, 0.35f);
         while (true)
         {

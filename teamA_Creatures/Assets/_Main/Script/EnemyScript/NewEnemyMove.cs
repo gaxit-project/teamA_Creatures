@@ -1107,6 +1107,7 @@ public class NewEnemyMove : MonoBehaviour
     }
     IEnumerator EnemyDown()
     {
+        JM.WinEffect();
         Debug.Log("ダウン！！");
         if (_directionX.x > 0)
         {
