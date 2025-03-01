@@ -28,6 +28,28 @@ public class KnockOutEffect : MonoBehaviour
 
     public void ShowLoseEffect()
     {
+        StartCoroutine(Lose());
+    }
+
+    public void ShowWinEffect()
+    {
+        StartCoroutine(Win());
+       
+    }
+
+    IEnumerator Win()
+    {
+        yield return new WaitForSeconds(4f);
+        winImage.enabled = true;
+        if (winSound != null)
+        {
+            audioSource.PlayOneShot(winSound);
+        }
+    }
+
+    IEnumerator Lose()
+    {
+        yield return new WaitForSeconds(2f);
         loseImage.enabled = true;
         if (loseSound != null)
         {
@@ -35,12 +57,4 @@ public class KnockOutEffect : MonoBehaviour
         }
     }
 
-    public void ShowWinEffect()
-    {
-        winImage.enabled = true;
-        if (winSound != null)
-        {
-            audioSource.PlayOneShot(winSound);
-        }
-    }
 }
