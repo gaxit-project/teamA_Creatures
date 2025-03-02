@@ -276,9 +276,14 @@ public class AttackComponent : MonoBehaviour
         animator.ResetTrigger("Attack");
         animator.ResetTrigger("Smash");
         animator.ResetTrigger("Counter");
+
         yield return new WaitForSeconds(duration * 0.8f);
         attackNow = false;
         animator.SetTrigger("EndAttack");
+        if (cubeController != null)
+        {
+            cubeController.HidePunchCube();
+        }
         /*Debug.Log("EndAttack");
         EndAttack();*/
 
