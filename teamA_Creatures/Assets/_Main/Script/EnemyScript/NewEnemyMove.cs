@@ -71,7 +71,7 @@ public class NewEnemyMove : MonoBehaviour
     bool isCoroutineStop = false;
     public static bool isEnemyStanFlag = false;
 
-    public static NewEnemyMove Instance;
+    
 
     bool isBeastMode = true;
     bool isBMJudge = false;
@@ -92,6 +92,7 @@ public class NewEnemyMove : MonoBehaviour
 
     public static int damege = 10;
 
+    public static NewEnemyMove Instance;
     public void Awake()
     {
         if (Instance == null)
@@ -627,6 +628,7 @@ public class NewEnemyMove : MonoBehaviour
     /// </summary>
     IEnumerator EnemySmash()
     {
+        EnemyMaterialChange.Instance.ChangeMaterial(2);
         Debug.Log("ガードブレイク！");
         _isCoroutineRunning = true;
         _isAnimActive = true;
@@ -652,6 +654,7 @@ public class NewEnemyMove : MonoBehaviour
         _isAnimActive = false; // フラグをオフにする
         _enemyAnim.SetBool("Smash", false);
         Debug.Log("ガードブレイク終了");
+        EnemyMaterialChange.Instance.ReturnMaterial();
         yield return null;
         // 攻撃硬直
         _attackStiffnessMin = 1f;
@@ -700,6 +703,7 @@ public class NewEnemyMove : MonoBehaviour
         EnemyRayCast.isTackleWall = false;
         _isTackle = false;
         _enemyAnim.SetBool("Tackle", false);
+        EnemyMaterialChange.Instance.ReturnMaterial();
         Debug.Log("タックル終了");
         // 攻撃硬直
         _attackStiffnessMin = 0.5f;
@@ -768,7 +772,8 @@ public class NewEnemyMove : MonoBehaviour
                     }
                     break;
                 case "back":
-                    // 敵を前進させる
+                    // 敵を後退させる
+                    EnemyMaterialChange.Instance.ChangeMaterial(1);
                     transform.position -= transform.forward * stepSpeed * Time.deltaTime;
                     _nextCurrent = EnemyState.Tackle;
                     break;
@@ -789,6 +794,7 @@ public class NewEnemyMove : MonoBehaviour
     }
     IEnumerator EnemyBackAttack()
     {
+        EnemyMaterialChange.Instance.ChangeMaterial(1);
         _isCoroutineRunning = true;
         Debug.Log("前ステップ");
         _enemyAnim.SetBool("BackUpper", true);
@@ -804,6 +810,7 @@ public class NewEnemyMove : MonoBehaviour
         }
         Debug.Log("前ステップ終了");
         yield return null;
+        EnemyMaterialChange.Instance.ReturnMaterial();
         _isCoroutineRunning = false;
         _isAtackEnd = false;
         // 攻撃硬直
@@ -1190,7 +1197,7 @@ public class NewEnemyMove : MonoBehaviour
                     isCoroutineStop = true;
                     _currentState = EnemyState.Counter;
                 }
-                else if (!isEnemyStanFlag && !isBMJudge)
+                else if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
                 {
                     EnemyHitStanState();
                 }
@@ -1218,7 +1225,7 @@ public class NewEnemyMove : MonoBehaviour
                     isCoroutineStop = true;
                     _currentState = EnemyState.Counter;
                 }
-                else if (!isEnemyStanFlag && !isBMJudge)
+                else if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
                 {
                     EnemyHitStanState();
                     _currentState = EnemyState.StreatPush;
@@ -1350,6 +1357,8 @@ public class NewEnemyMove : MonoBehaviour
     {
         // 技の処理をすべて消す
         EnemyAtackEnd();
+        EnemyMaterialChange.Instance.ReturnMaterial();
+        EnemyMaterialChange.Instance.isHitStopStop = false;
         _isAtackEnd = false;
         EnemyRayCast.isTackleWall = false;
         _isTackle = false;
