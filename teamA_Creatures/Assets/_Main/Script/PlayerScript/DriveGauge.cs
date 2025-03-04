@@ -38,18 +38,21 @@ public class DriveGauge : MonoBehaviour
         driveGauge[3] = GameObject.Find("PlayerDriveGauge4").GetComponent<Image>();
         driveGauge[4] = GameObject.Find("PlayerDriveGauge5").GetComponent<Image>();
         driveGauge[5] = GameObject.Find("PlayerDriveGauge6").GetComponent<Image>();
-        for (int j = 0; j < driveGauge.Length; j++)
-        {
-            driveGauge[j].fillAmount = 1f;
-        }
+        //for (int j = 0; j < driveGauge.Length; j++)
+        //{
+        //    driveGauge[j].fillAmount = 1f;
+        //}
     }
     private void Update()
     {
+        // ゲージがマックスの時
         if (isDGMax)
         {
+            PlayerMaterialChange.Instance.ChangeMaterial(3);
             driveCnt += Time.deltaTime;
-            if (driveCnt >= 20f)
+            if (driveCnt >= 2f)
             {
+                PlayerMaterialChange.Instance.ReturnMaterial();
                 driveCnt = 0f;
                 isDGMax = false;
                 isDriveGaugeUP = false;
@@ -156,6 +159,10 @@ public class DriveGauge : MonoBehaviour
         {
             driveGauge[j].fillAmount = 0f;
         }
+        PlayerMaterialChange.Instance.ReturnMaterial();
+        isDGMax = false;
+        isDriveGaugeUP = false;
+        isDriveGaugeMax = false;
     }
     #endregion
 }
