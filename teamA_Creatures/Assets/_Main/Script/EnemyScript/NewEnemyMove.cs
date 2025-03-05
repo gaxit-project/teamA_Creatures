@@ -165,7 +165,7 @@ public class NewEnemyMove : MonoBehaviour
     #region アップデートたち
     void Update()
     {
-        if(!Pause.isPaused /*&& !ReadyFight.isStartCutIn*/)
+        if(!Pause.isPaused && !ReadyFight.isStartCutIn)
         {
             // HPが0であるかどうか
             if (enemyHP <= 0)
@@ -972,6 +972,7 @@ public class NewEnemyMove : MonoBehaviour
         {
             blowDirection = new Vector3(1, 1, 0);
         }
+        _rb.velocity = Vector3.zero;
         _rb.AddForce(blowDirection.normalized * smashForce, ForceMode.Impulse);
         while (true)
         {

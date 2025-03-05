@@ -2553,6 +2553,25 @@ MonoBehaviour:
   runningNow: 0
   RunMWait: 0.01
   Runwait: 0
+  Enemy: {fileID: 0}
+  Player: {fileID: 0}
+  PlayerPosX: {x: 0, y: 0, z: 0}
+  EnemyPosX: {x: 0, y: 0, z: 0}
+  dis: 0
+  moveF: 0
+  moveB: 0
+  moveBNow: 0
+  moveFNow: 0
+  moveFSpeed: 0
+  moveBSpeed: 0
+  moveFJumpSpeed: 0
+  moveBJumpSpeed: 0
+  MoveRun: 0
+  backStepReady: 0
+  prevBackInput: 0
+  FrontStepReady: 0
+  prevFrontInput: 0
+  Speed: 0
 --- !u!114 &1342990850141463123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2568,6 +2587,7 @@ MonoBehaviour:
   localGravity: {x: 0, y: -100, z: 0}
   jumpForce: 40
   jumpFlag: 0
+  GroundFlag: 0
   jumpingSound: {fileID: 8300000, guid: edf0660962a967a4d857b872594513ec, type: 3}
   landingSound: {fileID: 8300000, guid: 41c194e46b2e1b84dad7ec72dcd8d049, type: 3}
 --- !u!114 &5219820467901307863
@@ -2587,6 +2607,20 @@ MonoBehaviour:
   soundCooldownTime: 1.25
   attackNow: 0
   CounterRange: 0
+  counterCamScript: {fileID: 0}
+  isRush: 0
+  attackCooldown: 0
+  isCooldown: 0
+  ComboCooldown: 0
+  isComboNow: 0
+  counterCooldown: 0
+  isCounterCooldown: 0
+  ComboStart: 0
+  maxCombo: 0
+  start: 0
+  Cube: {fileID: 0}
+  CountorCube: {fileID: 0}
+  CCube: {x: 0, y: 0, z: 0}
 --- !u!114 &5161464675124318559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2626,7 +2660,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.10000002
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -2722,6 +2756,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6993dd15265c3ab489c85aee4f2b28e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  JM: {fileID: 0}
+  NewEnemyMove: {fileID: 0}
+  EE: {fileID: 0}
+  PE: {fileID: 0}
+  playerHPGauge: {fileID: 0}
+  playerSmoothHPGauge: {fileID: 0}
   slider: {fileID: 0}
   tackleCamScript: {fileID: 0}
   HitNow: 0
