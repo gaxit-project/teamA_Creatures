@@ -37,6 +37,7 @@ public class Counter : MonoBehaviour
         if (other.gameObject.tag == "EnemyPunchAttack")
         {
             Debug.Log("Counter");
+            PlayerMaterialChange.Instance.ChangeMaterial(1);
             NewEnemyMove.Instance.EnemyStanState();
             AttackComponent.Instance.Countered = true;
             AttackComponent.Instance.counterCamScript.StartCoroutine("tackleCameraCor");
@@ -46,6 +47,7 @@ public class Counter : MonoBehaviour
         if (other.gameObject.tag == "EnemyChainAttack")
         {
             Debug.Log("Counter");
+            PlayerMaterialChange.Instance.ChangeMaterial(1);
             AttackComponent.Instance.Countered = true;
             NewEnemyMove.Instance.EnemyStanState();
             AttackComponent.Instance.counterCamScript.StartCoroutine("tackleCameraCor");
@@ -56,6 +58,7 @@ public class Counter : MonoBehaviour
         if (other.gameObject.tag == "EnemyTackleAttack")
         {
             Debug.Log("Counter");
+            PlayerMaterialChange.Instance.ChangeMaterial(1);
             AttackComponent.Instance.Countered = true;
             NewEnemyMove.Instance.EnemyStanState();
             AttackComponent.Instance.counterCamScript.StartCoroutine("tackleCameraCor");

@@ -166,6 +166,8 @@ public class AttackComponent : MonoBehaviour
                         // ストレート
                         if (currentCombo == 2)
                         {
+                            PlayerHP.Instance.muteki = true;
+                            PlayerMaterialChange.Instance.ChangeMaterial(3);
                             Debug.Log("攻撃2");
                             animator.SetTrigger("Smash");
                             attackNow = true;
@@ -260,6 +262,7 @@ public class AttackComponent : MonoBehaviour
     }
     public void CounterOut()
     {
+        PlayerMaterialChange.Instance.ReturnMaterial();
         Destroy(CountorCube);
     }
 
@@ -272,11 +275,13 @@ public class AttackComponent : MonoBehaviour
 
     private IEnumerator AttackTimeout(float duration)
     {
+        PlayerHP.Instance.muteki = false;
         yield return new WaitForSeconds(duration*0.2f);
         animator.ResetTrigger("Attack");
         animator.ResetTrigger("Smash");
         animator.ResetTrigger("Counter");
-
+        // 
+        PlayerMaterialChange.Instance.ReturnMaterial();
         yield return new WaitForSeconds(duration * 0.8f);
         attackNow = false;
         animator.SetTrigger("EndAttack");
