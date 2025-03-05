@@ -949,7 +949,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5642363805473325517, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
       propertyPath: moveBSpeed
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5642363805473325517, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
       propertyPath: moveFSpeed
@@ -16487,6 +16487,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: cdc6507a91851d74884df51364ab55cd, type: 2}
   - {fileID: 2100000, guid: 20f690149f7ca60478253d2384d821d3, type: 2}
   renderer: {fileID: 892499688}
+  isHitStopStop: 0
 --- !u!1 &1673579635
 GameObject:
   m_ObjectHideFlags: 0
@@ -19732,7 +19733,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
       propertyPath: SE_List.Array.size
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
       propertyPath: SE_List.Array.data[4]
@@ -19754,6 +19755,10 @@ PrefabInstance:
       propertyPath: SE_List.Array.data[8]
       value: 
       objectReference: {fileID: 8300000, guid: 2ba57162a28cf6842981b12cc2ebb8e7, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[9]
+      value: 
+      objectReference: {fileID: 8300000, guid: 39c622a28c07d0e4f956ea8b812fda82, type: 3}
     - target: {fileID: 5434118842909102825, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
       propertyPath: m_Volume
       value: 0

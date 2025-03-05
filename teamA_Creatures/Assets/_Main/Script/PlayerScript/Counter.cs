@@ -38,6 +38,7 @@ public class Counter : MonoBehaviour
         {
             Debug.Log("Counter");
             HitStopScript.Instance.StartHitStop(0.5f, "Player");
+            AudioManager.Instance.PlaySE("playerAttack", 9);
             PlayerMaterialChange.Instance.ChangeMaterial(1);
             NewEnemyMove.Instance.EnemyStanState();
             AttackComponent.Instance.Countered = true;
@@ -49,6 +50,7 @@ public class Counter : MonoBehaviour
         {
             Debug.Log("Counter");
             HitStopScript.Instance.StartHitStop(0.5f, "Player");
+            AudioManager.Instance.PlaySE("playerAttack", 9);
             PlayerMaterialChange.Instance.ChangeMaterial(1);
             AttackComponent.Instance.Countered = true;
             NewEnemyMove.Instance.EnemyStanState();
@@ -61,6 +63,7 @@ public class Counter : MonoBehaviour
         {
             Debug.Log("Counter");
             HitStopScript.Instance.StartHitStop(0.5f, "Player");
+            AudioManager.Instance.PlaySE("playerAttack",9);
             PlayerMaterialChange.Instance.ChangeMaterial(1);
             AttackComponent.Instance.Countered = true;
             NewEnemyMove.Instance.EnemyStanState();
