@@ -11,7 +11,18 @@ public class PlayerEffect : MonoBehaviour
 
     public float spawnDistance = 1.0f; // キャラクターの前方距離
 
-
+    public static PlayerEffect Instance;
+    public void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(Instance);
+        }
+    }
     public void DamageEffect()
     {
         if (DamageEff != null)
