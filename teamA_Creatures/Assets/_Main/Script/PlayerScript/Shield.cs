@@ -39,8 +39,7 @@ public class Shield : MonoBehaviour
             ShieldInstance = Instantiate(ShieldObject, ShieldPosition, Quaternion.identity);
             ShieldInstance.transform.rotation = transform.rotation * Quaternion.Euler(shieldRotation);
             MoveComponent.Instance.ATFieldNow = true;
-
-
+            PlayerMaterialChange.Instance.ChangeMaterial(2);
         }
 
 
@@ -51,6 +50,7 @@ public class Shield : MonoBehaviour
         {
             Destroy(ShieldInstance);
             MoveComponent.Instance.ATFieldNow = false;
+            PlayerMaterialChange.Instance.ReturnMaterial();
         }
     }
     private void Update()

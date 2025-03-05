@@ -6,6 +6,15 @@ using UnityEngine.SceneManagement;
 
 public class JudgeManager : MonoBehaviour
 {
+    public KnockOutEffect knockOutEffect;
+
+    void Start()
+    {
+        if (knockOutEffect == null)
+        {
+            knockOutEffect = FindObjectOfType<KnockOutEffect>();
+        }
+    }
 
     public void ChangeOverScene()
     {
@@ -25,6 +34,16 @@ public class JudgeManager : MonoBehaviour
     public void ChangeTitleScene()
     {
         SceneManager.LoadScene("Title");
+    }
+
+    public void LoseEffect()
+    {
+        knockOutEffect.ShowLoseEffect();
+    }
+
+    public void WinEffect()
+    {
+        knockOutEffect.ShowWinEffect();
     }
 
 

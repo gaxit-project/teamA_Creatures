@@ -1,57 +1,58 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem.XR;
+using UnityEngine.SceneManagement;
 
 public class NewEnemyMove : MonoBehaviour
 {
-    // “G‚ÌƒXƒe[ƒ^ƒXŠÖ˜A
-    public static float enemyHP; // “G‚ÌHP
-    public static float enemyInitialHP = 500f; // “G‚ÌHP
+    // æ•µã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹é–¢é€£
+    public static float enemyHP; // æ•µã®HP
+    public static float enemyInitialHP = 500f; // æ•µã®HP
     int _enemyGaurd;
-    [Header("EnemyƒXƒe[ƒ^ƒX")]
-    [SerializeField] float speed = 1; // “G‚Ì“®‚­ƒXƒs[ƒh
-    [SerializeField] float backSpeed = 2; // “G‚Ì“®‚­ƒXƒs[ƒh
-    public bool isFollow = false; // ’Ç]‚·‚é‚©‚Ç‚¤‚©‚Ìƒtƒ‰ƒO
-    Transform _playerTr; // ƒvƒŒƒCƒ„[‚ÌTransform
-    Rigidbody _rb; // ‚±‚ÌƒIƒuƒWƒFƒNƒg‚Ì Rigidbody
-    float _distanceAway = 5f; // ƒvƒŒƒCƒ„[‚©‚ç—£‚ê‚é‹——£
-    float _distanceApp = 1.5f; // ƒvƒŒƒCƒ„[‚É‹ß‚Ã‚­‹——£
-    float _distancePtoE;  // ƒGƒlƒ~[‚ÆƒvƒŒƒCƒ„[‚Ì‹——£‚ğ“ü‚ê‚é•Ï”
-    float forwardSpeed = 1.1f;  // UŒ‚‚·‚é‚Æ‚«‚É‘Oi‚·‚é‘¬“x
-    float tackleSpeed = 5f;  // UŒ‚‚·‚é‚Æ‚«‚É‘Oi‚·‚é‘¬“x
-    float backWallSpeed = 3f;  // ƒvƒŒƒCƒ„[‚ª•ÇÛ‚É‚¢‚é‚Æ‚«‚ÌŒã‘Ş‚·‚é‘¬“x
-    float _acceleration = 3f; // ƒ^ƒbƒNƒ‹UŒ‚‚Ì‰Á‘¬“x
-    float stepSpeed = 10f;  // ƒXƒeƒbƒv‚Ì‘Oi‚·‚é‘¬“x
+    [Header("Enemyã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹")]
+    [SerializeField] float speed = 1; // æ•µã®å‹•ãã‚¹ãƒ”ãƒ¼ãƒ‰
+    [SerializeField] float backSpeed = 2; // æ•µã®å‹•ãã‚¹ãƒ”ãƒ¼ãƒ‰
+    public bool isFollow = false; // è¿½å¾“ã™ã‚‹ã‹ã©ã†ã‹ã®ãƒ•ãƒ©ã‚°
+    Transform _playerTr; // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®Transform
+    Rigidbody _rb; // ã“ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã® Rigidbody
+    float _distanceAway = 5f; // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‹ã‚‰é›¢ã‚Œã‚‹è·é›¢
+    float _distanceApp = 1.5f; // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«è¿‘ã¥ãè·é›¢
+    float _distancePtoE;  // ã‚¨ãƒãƒŸãƒ¼ã¨ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è·é›¢ã‚’å…¥ã‚Œã‚‹å¤‰æ•°
+    float forwardSpeed = 1.1f;  // æ”»æ’ƒã™ã‚‹ã¨ãã«å‰é€²ã™ã‚‹é€Ÿåº¦
+    float tackleSpeed = 5f;  // æ”»æ’ƒã™ã‚‹ã¨ãã«å‰é€²ã™ã‚‹é€Ÿåº¦
+    float backWallSpeed = 3f;  // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒå£éš›ã«ã„ã‚‹ã¨ãã®å¾Œé€€ã™ã‚‹é€Ÿåº¦
+    float _acceleration = 3f; // ã‚¿ãƒƒã‚¯ãƒ«æ”»æ’ƒã®åŠ é€Ÿåº¦
+    float stepSpeed = 10f;  // ã‚¹ãƒ†ãƒƒãƒ—ã®å‰é€²ã™ã‚‹é€Ÿåº¦
     float _tackleAcceleration = 0f;
-    // ƒvƒŒƒCƒ„[‚Æ‚Ì‹——£ŠÖ˜A
-    [Header("Enemy‹——£Œv‘ª")]
-    public float shortDistance = 2f; // ‹ß‹——£‚ğ‘ª‚é•Ï”
-    public float middleDistance = 6f; // ’†‹——£‚ğ‘ª‚é•Ï”
-    public float longDistance = 12f; // ‰“‹——£‚ğ‘ª‚é•Ï”
-    private float _targetDistance; // Œ»İ‚Ì–Ú•W‹——£
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ã®è·é›¢é–¢é€£
+    [Header("Enemyè·é›¢è¨ˆæ¸¬")]
+    public float shortDistance = 2f; // è¿‘è·é›¢ã‚’æ¸¬ã‚‹å¤‰æ•°
+    public float middleDistance = 6f; // ä¸­è·é›¢ã‚’æ¸¬ã‚‹å¤‰æ•°
+    public float longDistance = 12f; // é è·é›¢ã‚’æ¸¬ã‚‹å¤‰æ•°
+    private float _targetDistance; // ç¾åœ¨ã®ç›®æ¨™è·é›¢
     float _shortTime = 0f;
     float _middleTime = 0f;
     float _longTime = 0f;
-    // Œ»İ‚Ìó‘Ô‚ğ•Û‚·‚é•Ï”
+    // ç¾åœ¨ã®çŠ¶æ…‹ã‚’ä¿æŒã™ã‚‹å¤‰æ•°
     private EnemyState _currentState;
     EnemyState _nextCurrent;
-    private bool _isCoroutineRunning = false; // ƒRƒ‹[ƒ`ƒ“Às’†‚©‚Ç‚¤‚©
+    private bool _isCoroutineRunning = false; // ã‚³ãƒ«ãƒ¼ãƒãƒ³å®Ÿè¡Œä¸­ã‹ã©ã†ã‹
 
-    Animator _enemyAnim; // AnimatorƒRƒ“ƒ|[ƒlƒ“ƒg
-    bool _isAnimActive = true; // ƒtƒ‰ƒO‚Ì‰Šúó‘Ô
+    Animator _enemyAnim; // Animatorã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
+    bool _isAnimActive = true; // ãƒ•ãƒ©ã‚°ã®åˆæœŸçŠ¶æ…‹
 
 
     Vector2 _directionX;
 
 
     bool _isAtackEnd = false;
-    private EnemyHit cubeController; // EnemyAttack ƒXƒNƒŠƒvƒg‚ÌQÆ
+    private EnemyHit cubeController; // EnemyAttack ã‚¹ã‚¯ãƒªãƒ—ãƒˆã®å‚ç…§
 
-    private float _moveTimer = 0f; // Œo‰ßŠÔ
-    private float _moveMaxTimer = 3f; // ‘Ş‹p‚ÌÅ‘åŠÔ
+    private float _moveTimer = 0f; // çµŒéæ™‚é–“
+    private float _moveMaxTimer = 3f; // é€€å´ã®æœ€å¤§æ™‚é–“
 
     public chain Chain;
     public EnemyHit2 EnemyHit2;
@@ -70,16 +71,20 @@ public class NewEnemyMove : MonoBehaviour
     bool isCoroutineStop = false;
     public static bool isEnemyStanFlag = false;
 
-    public static NewEnemyMove Instance;
+    
 
     bool isBeastMode = true;
     bool isBMJudge = false;
 
     bool isGameOverFlag = false;
+    bool isGameOverCoroutineFlag = false;
+
+    bool isPushFlag = true;
 
 
-    // ‚Ó‚Á‚Æ‚Î‚µUŒ‚ŠÖ˜A
-    public float smashForce = 50f; // ‚Á”ò‚Î‚·—Í
+    // ãµã£ã¨ã°ã—æ”»æ’ƒé–¢é€£
+    public float streatSmashForce = 50f; // å¹ã£é£›ã°ã™åŠ›
+    public float smashForce = 50f; // å¹ã£é£›ã°ã™åŠ›
     public Vector3 blowDirection = new Vector3(1, 1, 0);
     public bool isPushWall = false;
 
@@ -87,6 +92,7 @@ public class NewEnemyMove : MonoBehaviour
 
     public static int damege = 10;
 
+    public static NewEnemyMove Instance;
     public void Awake()
     {
         if (Instance == null)
@@ -99,165 +105,188 @@ public class NewEnemyMove : MonoBehaviour
         }
     }
     /// <summary>
-    /// ƒGƒlƒ~[‚Ì—ñ‹“Œ^
+    /// ã‚¨ãƒãƒŸãƒ¼ã®åˆ—æŒ™å‹
     /// </summary>
     enum EnemyState
     {
-        Idle,             // ‘Ò‹@
-        MiddleFollow,     // ’†‹——£‚Ü‚Å’ÇÕ
-        ShortFollow,      // ‹ß‹——£‚Ü‚Å’ÇÕ
-        MiddleRetreat,    // ’†‹——£‚Ü‚Å‘Ş”ğ
-        LongRetreat,      // ‰“‹——£‚Ü‚Å‘Ş”ğ
-        Guard,            // ƒK[ƒh
-        RightPunch,       // ‰E‹ß‹——£UŒ‚
-        LeftPunch,        // ¶‹ß‹——£UŒ‚
-        Smash,            // ƒK[ƒhƒuƒŒƒCƒNUŒ‚
-        Tackle,           // ’†‹——£UŒ‚
-        Chain,            // ‰“‹——£UŒ‚
-        Walk,             // •à‚¢‚Ä‚¢‚é
-        BackStep,         // Œã‚ëƒXƒe
-        ForwardStep,      // ‘OƒXƒe
-        BackAttack,       // ƒoƒbƒNƒAƒ^ƒbƒN
-        HitStan,          // UŒ‚ƒqƒbƒg
-        Stan,             // ƒJƒEƒ“ƒ^[‚ÌƒXƒ^ƒ“
-        BeastMode,        // ƒr[ƒXƒgƒ‚[ƒh
-        Down,             // “G€–S
-        Push,             // ‚«”ò‚Î‚µˆ—  
-        Counter           // ƒJƒEƒ“ƒ^[ˆ—
+        Idle,             // å¾…æ©Ÿ
+        MiddleFollow,     // ä¸­è·é›¢ã¾ã§è¿½è·¡
+        ShortFollow,      // è¿‘è·é›¢ã¾ã§è¿½è·¡
+        MiddleRetreat,    // ä¸­è·é›¢ã¾ã§é€€é¿
+        LongRetreat,      // é è·é›¢ã¾ã§é€€é¿
+        Guard,            // ã‚¬ãƒ¼ãƒ‰
+        RightPunch,       // å³è¿‘è·é›¢æ”»æ’ƒ
+        LeftPunch,        // å·¦è¿‘è·é›¢æ”»æ’ƒ
+        Smash,            // ã‚¬ãƒ¼ãƒ‰ãƒ–ãƒ¬ã‚¤ã‚¯æ”»æ’ƒ
+        Tackle,           // ä¸­è·é›¢æ”»æ’ƒ
+        Chain,            // é è·é›¢æ”»æ’ƒ
+        Walk,             // æ­©ã„ã¦ã„ã‚‹
+        BackStep,         // å¾Œã‚ã‚¹ãƒ†
+        ForwardStep,      // å‰ã‚¹ãƒ†
+        BackAttack,       // ãƒãƒƒã‚¯ã‚¢ã‚¿ãƒƒã‚¯
+        HitStan,          // æ”»æ’ƒãƒ’ãƒƒãƒˆæ™‚
+        Stan,             // ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼æ™‚ã®ã‚¹ã‚¿ãƒ³
+        BeastMode,        // ãƒ“ãƒ¼ã‚¹ãƒˆãƒ¢ãƒ¼ãƒ‰
+        Down,             // æ•µæ­»äº¡æ™‚
+        Push,             // å¹ãé£›ã°ã—
+        StreatPush,       // ã‚¹ãƒˆãƒ¬ãƒ¼ãƒˆã®å¹ãé£›ã°ã—
+        Counter           // ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼å‡¦ç†
     }
-    #region ƒXƒ^[ƒg‚½‚¿
+    #region ã‚¹ã‚¿ãƒ¼ãƒˆãŸã¡
     void Start()
     {
+        _playerTr = GameObject.FindGameObjectWithTag("Player").transform;
         enemyHP = enemyInitialHP;
         isFollow = false;
+        isPushFlag = false;
         _isTackle = false;
         _isAtackEnd = false;
         _shortDistance = false;
         _isAnimActive = true;
         _isCoroutineRunning = false;
+        isGameOverCoroutineFlag = false;
+        isEnemyStanFlag = false;
+        isBMJudge = false;
+        isBeastMode = true;
         transform.position = new Vector3(4, 0, 0);
-        _playerTr = GameObject.FindGameObjectWithTag("Player").transform;
-        // ƒŠƒWƒbƒgƒ{ƒfƒB‚Ìİ’è
+        transform.rotation = Quaternion.Euler(0, -90, 0);
+        // ãƒªã‚¸ãƒƒãƒˆãƒœãƒ‡ã‚£ã®è¨­å®š
         _rb = GetComponent<Rigidbody>();
         _rb.constraints = RigidbodyConstraints.FreezePositionZ  | RigidbodyConstraints.FreezeRotation;
-        // ƒGƒlƒ~[‚ÆƒvƒŒƒCƒ„[‚Ì‹——£Œv‘ª
+        // ã‚¨ãƒãƒŸãƒ¼ã¨ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è·é›¢è¨ˆæ¸¬
         _distancePtoE = Vector2.Distance(transform.position, _playerTr.position);
-        _enemyAnim = GetComponent<Animator>(); // Animator‚ğæ“¾
+        _enemyAnim = GetComponent<Animator>(); // Animatorã‚’å–å¾—
+        _enemyAnim.SetBool("Mirror", true);
         cubeController = GetComponent<EnemyHit>();
+        _rb.isKinematic = true;
     }
     #endregion
 
-    #region ƒAƒbƒvƒf[ƒg‚½‚¿
+    #region ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆãŸã¡
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.L))
+        if(!Pause.isPaused /*&& !ReadyFight.isStartCutIn*/)
         {
-            _currentState = EnemyState.Push;
-            isCoroutineStop = true;
-        }
-        if (Input.GetKey(KeyCode.P))
-        {
-            _currentState = EnemyState.Down;
-            isCoroutineStop = true;
-        }
-        // Œİ‚¢‚Ì‹——£Œv‘ª + “G‚ÌŒü‚«ŒğŠ·
-        _distancePtoE = Vector2.Distance(transform.position, _playerTr.position);
-        Debug.Log("‹——£Œv‘ª’†");
-        _directionX = _playerTr.position - transform.position;
+            // HPãŒ0ã§ã‚ã‚‹ã‹ã©ã†ã‹
+            if (enemyHP <= 0)
+            {
+                if(!isPushFlag)
+                {
+                    // ã‚²ãƒ¼ãƒ ã‚¯ãƒªã‚¢ã«ç§»è¡Œ
+                    _currentState = EnemyState.Down;
+                }
+                isGameOverFlag = true;
+                //JM.ChangeClearScene();
+            }
+            else if (enemyHP <= enemyInitialHP * 0.33 && isBeastMode && !isPushFlag)
+            {
+                isCoroutineStop = true;
+                isBeastMode = false;
+                _currentState = EnemyState.BeastMode;
+            }
+            // äº’ã„ã®è·é›¢è¨ˆæ¸¬ + æ•µã®å‘ãäº¤æ›
+            _distancePtoE = Vector2.Distance(transform.position, _playerTr.position);
+            Debug.Log("è·é›¢è¨ˆæ¸¬ä¸­");
+            _directionX = _playerTr.position - transform.position;
 
-        //DebugKey();
-        StateTime();
-        switch (_currentState)
-        {
-            case EnemyState.Idle:
-                Debug.Log("ƒAƒCƒhƒ‹‚¾‚æ`‚ñ");
-                HandleIdle();
-                break;
-            case EnemyState.MiddleFollow:
-                HandleMiddleFollow();
-                break;
-            case EnemyState.ShortFollow:
-                HandleShortFollow();
-                break;
-            case EnemyState.MiddleRetreat:
-                HandleMiddleRetreat();
-                break;
-            case EnemyState.LongRetreat:
-                HandleLongRetreat();
-                break;
-            case EnemyState.Guard:
-                HandleGuard();
-                break;
-            case EnemyState.RightPunch:
-                HandleRightPunch();
-                break;
-            case EnemyState.LeftPunch:
-                HandleLeftPunch();
-                break;
-            case EnemyState.Smash:
-                HandleSmash();
-                break;
-            case EnemyState.Tackle:
-                HandleTackle();
-                break;
-            case EnemyState.Chain:
-                HandleChain();
-                break;
-            case EnemyState.ForwardStep:
-                HandleForwardStep();
-                break;
-            case EnemyState.BackStep:
-                HandleBackStep();
-                break;
-            case EnemyState.BackAttack:
-                HandleBackAttack();
-                break;
-            case EnemyState.HitStan:
-                HandleHitStan();
-                break;
-            case EnemyState.Stan:
-                HandleStan();
-                break;
-            case EnemyState.BeastMode:
-                HandleBeastMode();
-                break;
-            case EnemyState.Down:
-                HandleDown();
-                break;
-            case EnemyState.Push:
-                HandlePush();
-                break;
-            case EnemyState.Counter:
-                HandleCounter();
-                break;
+            //DebugKey();
+            StateTime();
+            switch (_currentState)
+            {
+                case EnemyState.Idle:
+                    Debug.Log("ã‚¢ã‚¤ãƒ‰ãƒ«ã ã‚ˆï½ã‚“");
+                    HandleIdle();
+                    break;
+                case EnemyState.MiddleFollow:
+                    HandleMiddleFollow();
+                    break;
+                case EnemyState.ShortFollow:
+                    HandleShortFollow();
+                    break;
+                case EnemyState.MiddleRetreat:
+                    HandleMiddleRetreat();
+                    break;
+                case EnemyState.LongRetreat:
+                    HandleLongRetreat();
+                    break;
+                case EnemyState.Guard:
+                    HandleGuard();
+                    break;
+                case EnemyState.RightPunch:
+                    HandleRightPunch();
+                    break;
+                case EnemyState.LeftPunch:
+                    HandleLeftPunch();
+                    break;
+                case EnemyState.Smash:
+                    HandleSmash();
+                    break;
+                case EnemyState.Tackle:
+                    HandleTackle();
+                    break;
+                case EnemyState.Chain:
+                    HandleChain();
+                    break;
+                case EnemyState.ForwardStep:
+                    HandleForwardStep();
+                    break;
+                case EnemyState.BackStep:
+                    HandleBackStep();
+                    break;
+                case EnemyState.BackAttack:
+                    HandleBackAttack();
+                    break;
+                case EnemyState.HitStan:
+                    HandleHitStan();
+                    break;
+                case EnemyState.Stan:
+                    HandleStan();
+                    break;
+                case EnemyState.BeastMode:
+                    HandleBeastMode();
+                    break;
+                case EnemyState.Down:
+                    HandleDown();
+                    break;
+                case EnemyState.Push:
+                    HandlePush();
+                    break;
+                case EnemyState.StreatPush:
+                    HandleStreatPush();
+                    break;
+                case EnemyState.Counter:
+                    HandleCounter();
+                    break;
+            }
         }
+        
     }
     #endregion
 
-    #region ó‘Ô‘JˆÚ‚ğŠÇ—‚·‚éƒvƒƒOƒ‰ƒ€‚½‚¿
+    #region çŠ¶æ…‹é·ç§»ã‚’ç®¡ç†ã™ã‚‹ãƒ—ãƒ­ã‚°ãƒ©ãƒ ãŸã¡
     void HandleIdle()
     {
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(EnemyIdle());
     }
     void HandleMiddleFollow()
     {
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(PlayerFollow(_targetDistance));
     }
     void HandleShortFollow()
     {
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(PlayerFollow(_targetDistance));
     }
     void HandleMiddleRetreat()
     {
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(PlayerRetreat(_targetDistance));
     }
     void HandleLongRetreat()
     {
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(PlayerRetreat(_targetDistance));
     }
     void HandleGuard()
@@ -267,48 +296,48 @@ public class NewEnemyMove : MonoBehaviour
     }
     void HandleRightPunch()
     {
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(EnemyRightPunch());
         //_currentState = EnemyState.Idle;
     }
     void HandleLeftPunch()
     {
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(EnemyLeftPunch());
         //_currentState = EnemyState.Idle;
     }
     void HandleSmash()
     {
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(EnemySmash());
         //_currentState = EnemyState.Idle;
     }
     void HandleTackle()
     {
-        Debug.Log("ƒ^ƒbƒNƒ‹ŒÄ‚Ño‚µˆ—ŠJnIII");
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        Debug.Log("ã‚¿ãƒƒã‚¯ãƒ«å‘¼ã³å‡ºã—å‡¦ç†é–‹å§‹ï¼ï¼ï¼");
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(EnemyTackle());
         //_currentState = EnemyState.Idle;
     }
     void HandleChain()
     {
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(EnemyChain());
         //_currentState = EnemyState.Idle;
     }
     void HandleForwardStep()
     {
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(EnemyStep("forward"));
     }
     void HandleBackStep()
     {
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(EnemyStep("back"));
     }
     void HandleBackAttack()
     {
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(EnemyBackAttack());
     }
     void HandleHitStan()
@@ -319,7 +348,7 @@ public class NewEnemyMove : MonoBehaviour
             StopCoroutine(currentCoroutine);
             _isCoroutineRunning = false;
         }
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(EnemyHitStan());
     }
     void HandleStan()
@@ -330,7 +359,7 @@ public class NewEnemyMove : MonoBehaviour
             StopCoroutine(currentCoroutine);
             _isCoroutineRunning = false;
         }
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(EnemyStan());
     }
     void HandleBeastMode()
@@ -341,18 +370,18 @@ public class NewEnemyMove : MonoBehaviour
             StopCoroutine(currentCoroutine);
             _isCoroutineRunning = false;
         }
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(EnemyBeastMode());
     }
     void HandleDown()
     {
-        if (isCoroutineStop)
+        if (!isGameOverCoroutineFlag)
         {
-            isCoroutineStop = false;
+            isGameOverCoroutineFlag = true;
             StopCoroutine(currentCoroutine);
             _isCoroutineRunning = false;
         }
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(EnemyDown());
     }
     void HandlePush()
@@ -363,9 +392,21 @@ public class NewEnemyMove : MonoBehaviour
             StopCoroutine(currentCoroutine);
             _isCoroutineRunning = false;
         }
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(EnemyPush());
     }
+    void HandleStreatPush()
+    {
+        if (isCoroutineStop)
+        {
+            isCoroutineStop = false;
+            StopCoroutine(currentCoroutine);
+            _isCoroutineRunning = false;
+        }
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
+        currentCoroutine = StartCoroutine(EnemyStreatPush());
+    }
+
 
     void HandleCounter()
     {
@@ -375,17 +416,17 @@ public class NewEnemyMove : MonoBehaviour
             StopCoroutine(currentCoroutine);
             _isCoroutineRunning = false;
         }
-        if (_isCoroutineRunning) return; // Às’†‚È‚çV‚µ‚¢ƒRƒ‹[ƒ`ƒ“‚ÍŒÄ‚Ño‚³‚È‚¢
+        if (_isCoroutineRunning) return; // å®Ÿè¡Œä¸­ãªã‚‰æ–°ã—ã„ã‚³ãƒ«ãƒ¼ãƒãƒ³ã¯å‘¼ã³å‡ºã•ãªã„
         currentCoroutine = StartCoroutine(EnemyCounter());
     }
     /// <summary>
-    /// ‹——£‚É‚æ‚éó‘Ô‘JˆÚ
+    /// è·é›¢ã«ã‚ˆã‚‹çŠ¶æ…‹é·ç§»
     /// </summary>
     void UpdateState()
     {
         int randomState = Random.Range(1, 101);
-        //Debug.Log("—”:" + randomState);
-        // ‹——£‚ÉŠî‚Ã‚­ó‘Ô‘JˆÚ
+        //Debug.Log("ä¹±æ•°:" + randomState);
+        // è·é›¢ã«åŸºã¥ãçŠ¶æ…‹é·ç§»
         if (_distancePtoE < middleDistance)
         {
             if (EnemyRayCast.isBackWallSmash)
@@ -397,64 +438,64 @@ public class NewEnemyMove : MonoBehaviour
             {
                 if (randomState <= 50 && !EnemyRayCast.isBackWall)
                 {
-                    _currentState = EnemyState.BackAttack; // ƒoƒNƒXƒeƒpƒ“ƒ`
+                    _currentState = EnemyState.BackAttack; // ãƒã‚¯ã‚¹ãƒ†ãƒ‘ãƒ³ãƒ
                     _shortTime = 5f;
                 }
                 else if (randomState <= 100)
                 {
-                    _currentState = EnemyState.BackStep; // ƒoƒNƒXƒe‚½‚Á‚±[
+                    _currentState = EnemyState.BackStep; // ãƒã‚¯ã‚¹ãƒ†ãŸã£ã“ãƒ¼
                     _shortTime = 5f;
                 }
             }
             else if (randomState <= 65)
             {
-                _currentState = EnemyState.RightPunch; // ‹ß‹——£‚ÅUŒ‚
+                _currentState = EnemyState.RightPunch; // è¿‘è·é›¢ã§æ”»æ’ƒ
             }
             else if (randomState <= 70)
             {
-                _currentState = EnemyState.Smash; // ‹ß‹——£‚ÅUŒ‚
+                _currentState = EnemyState.Smash; // è¿‘è·é›¢ã§æ”»æ’ƒ
             }
             else if (randomState <= 85 && !EnemyRayCast.isBackWall)
             {
-                _currentState = EnemyState.BackAttack; // ƒoƒNƒXƒeƒpƒ“ƒ`
+                _currentState = EnemyState.BackAttack; // ãƒã‚¯ã‚¹ãƒ†ãƒ‘ãƒ³ãƒ
             }
             else if (randomState <= 100)
             {
-                _currentState = EnemyState.BackStep; // ƒoƒNƒXƒe‚½‚Á‚±[
+                _currentState = EnemyState.BackStep; // ãƒã‚¯ã‚¹ãƒ†ãŸã£ã“ãƒ¼
             }
         }
-        // ’†‹——£‚É‚¢‚é‚Æ‚«‚Ìˆ—
+        // ä¸­è·é›¢ã«ã„ã‚‹ã¨ãã®å‡¦ç†
         else if (_distancePtoE >= middleDistance && _distancePtoE < longDistance)
         {
             if (randomState <= 40)
             {
-                _currentState = EnemyState.ForwardStep; // ‘OƒXƒeUŒ‚
+                _currentState = EnemyState.ForwardStep; // å‰ã‚¹ãƒ†æ”»æ’ƒ
                 _shortDistance = true;
             }
             else if (randomState <= 80)
             {
-                _currentState = EnemyState.BackStep; // ƒoƒNƒXƒe‚½‚Á‚±[
+                _currentState = EnemyState.BackStep; // ãƒã‚¯ã‚¹ãƒ†ãŸã£ã“ãƒ¼
             }
             else if (randomState <= 100)
             {
-                _currentState = EnemyState.Smash; // ‹ß‹——£‚ÅUŒ‚
+                _currentState = EnemyState.Smash; // è¿‘è·é›¢ã§æ”»æ’ƒ
             }
         }
-        // ‰“‹——£‚É‚¢‚é‚Æ‚«‚Ìˆ—
+        // é è·é›¢ã«ã„ã‚‹ã¨ãã®å‡¦ç†
         else if (_distancePtoE >= longDistance)
         {
             if (randomState <= 50)
             {
-                //_currentState = EnemyState.Tackle; // ƒ`ƒF[ƒ““Š‚°‚ÅUŒ‚
-                _currentState = EnemyState.ForwardStep; // ‘OƒXƒeƒbƒv
+                //_currentState = EnemyState.Tackle; // ãƒã‚§ãƒ¼ãƒ³æŠ•ã’ã§æ”»æ’ƒ
+                _currentState = EnemyState.ForwardStep; // å‰ã‚¹ãƒ†ãƒƒãƒ—
             }
             else if (randomState <= 100)
             {
-                _currentState = EnemyState.BackStep; // ƒoƒNƒXƒe‚½‚Á‚±[
+                _currentState = EnemyState.BackStep; // ãƒã‚¯ã‚¹ãƒ†ãŸã£ã“ãƒ¼
             }
             else if (randomState <= 100)
             {
-                _currentState = EnemyState.ForwardStep; // ’†‹——£‚Ü‚Å’ÇÕ
+                _currentState = EnemyState.ForwardStep; // ä¸­è·é›¢ã¾ã§è¿½è·¡
                 _targetDistance = middleDistance + 2f;
             }
         }
@@ -462,9 +503,9 @@ public class NewEnemyMove : MonoBehaviour
         {
             if (randomState <= 100)
             {
-                _currentState = EnemyState.Tackle; // ƒ^ƒbƒNƒ‹‚ÅUŒ‚
+                _currentState = EnemyState.Tackle; // ã‚¿ãƒƒã‚¯ãƒ«ã§æ”»æ’ƒ
             }
-            //_currentState = EnemyState.Idle; // ‹——£‚ª‰“‚·‚¬‚éê‡‚Í‘Ò‹@
+            //_currentState = EnemyState.Idle; // è·é›¢ãŒé ã™ãã‚‹å ´åˆã¯å¾…æ©Ÿ
         }
     }
 
@@ -491,72 +532,72 @@ public class NewEnemyMove : MonoBehaviour
     }
 #endregion
 
-    #region UŒ‚‚Ìˆ—‚½‚¿
+    #region æ”»æ’ƒã®å‡¦ç†ãŸã¡
 
     /// <summary>
-    /// ƒpƒ“ƒ`UŒ‚
+    /// ãƒ‘ãƒ³ãƒæ”»æ’ƒ
     /// </summary>
     IEnumerator EnemyRightPunch()
     {
-        Debug.Log("‰Eƒpƒ“ƒ`I");
+        Debug.Log("å³ãƒ‘ãƒ³ãƒï¼");
         _isCoroutineRunning = true;
         _enemyAnim.SetBool("RightPunch", true);
         _enemyAnim.CrossFade("RightPunch", 0.1f);
         AudioManager.GetInstance().PlaySE("enemyAttack", 4);
         while (true)
         {
-            // Œ»İ‚ÌƒAƒjƒ[ƒVƒ‡ƒ“ƒXƒe[ƒgî•ñ‚ğæ“¾
+            // ç¾åœ¨ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¹ãƒ†ãƒ¼ãƒˆæƒ…å ±ã‚’å–å¾—
             AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
-            // “G‚ğ‘Oi‚³‚¹‚é
+            // æ•µã‚’å‰é€²ã•ã›ã‚‹
             transform.position += transform.forward * forwardSpeed * Time.deltaTime;
             if (_isAtackEnd)
             {
                 break;
             }
-            // ƒtƒŒ[ƒ€ŠÔ‚Ì‘Ò‹@
+            // ãƒ•ãƒ¬ãƒ¼ãƒ é–“ã®å¾…æ©Ÿ
             yield return null;
         }
         EnemyEndAttack();
-        // Œ»İ‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªI—¹‚µ‚½‚©‚ğŠm”F
+        // ç¾åœ¨ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚äº†ã—ãŸã‹ã‚’ç¢ºèª
         _isAtackEnd = false;
-        _isAnimActive = false; // ƒtƒ‰ƒO‚ğƒIƒt‚É‚·‚é
+        _isAnimActive = false; // ãƒ•ãƒ©ã‚°ã‚’ã‚ªãƒ•ã«ã™ã‚‹
         _enemyAnim.SetBool("RightPunch", false);
-        Debug.Log("‰Eƒpƒ“ƒ`I—¹");
+        Debug.Log("å³ãƒ‘ãƒ³ãƒçµ‚äº†");
         yield return null;
         _currentState = EnemyState.LeftPunch;
         _isCoroutineRunning = false;
     }
 
     /// <summary>
-    /// ƒpƒ“ƒ`UŒ‚
+    /// ãƒ‘ãƒ³ãƒæ”»æ’ƒ
     /// </summary>
     IEnumerator EnemyLeftPunch()
     {
-        Debug.Log("¶ƒpƒ“ƒ`I");
+        Debug.Log("å·¦ãƒ‘ãƒ³ãƒï¼");
         _isCoroutineRunning = true;
         _enemyAnim.SetBool("LeftPunch", true);
         _enemyAnim.CrossFade("LeftPunch", 0.1f);
         AudioManager.GetInstance().PlaySE("enemyAttack", 4);
         while (true)
         {
-            // Œ»İ‚ÌƒAƒjƒ[ƒVƒ‡ƒ“ƒXƒe[ƒgî•ñ‚ğæ“¾
+            // ç¾åœ¨ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¹ãƒ†ãƒ¼ãƒˆæƒ…å ±ã‚’å–å¾—
             AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
-            // “G‚ğ‘Oi‚³‚¹‚é
+            // æ•µã‚’å‰é€²ã•ã›ã‚‹
             transform.position += transform.forward * forwardSpeed * Time.deltaTime;
             if (_isAtackEnd)
             {
                 break;
             }
-            // ƒtƒŒ[ƒ€ŠÔ‚Ì‘Ò‹@
+            // ãƒ•ãƒ¬ãƒ¼ãƒ é–“ã®å¾…æ©Ÿ
             yield return null;
         }
         EnemyEndAttack();
-        // Œ»İ‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªI—¹‚µ‚½‚©‚ğŠm”F
+        // ç¾åœ¨ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚äº†ã—ãŸã‹ã‚’ç¢ºèª
         _isAtackEnd = false;
-        _isAnimActive = false; // ƒtƒ‰ƒO‚ğƒIƒt‚É‚·‚é
+        _isAnimActive = false; // ãƒ•ãƒ©ã‚°ã‚’ã‚ªãƒ•ã«ã™ã‚‹
 
         _enemyAnim.SetBool("LeftPunch", false);
-        Debug.Log("¶ƒpƒ“ƒ`I—¹");
+        Debug.Log("å·¦ãƒ‘ãƒ³ãƒçµ‚äº†");
         yield return null;
         int smashRnd = Random.Range(1, 10);
         if (smashRnd <= 3)
@@ -565,7 +606,7 @@ public class NewEnemyMove : MonoBehaviour
         }
         else
         {
-            // UŒ‚d’¼
+            // æ”»æ’ƒç¡¬ç›´
             _attackStiffnessMin = 0.5f;
             _attackStiffnessMax = 0.8f;
             _currentState = EnemyState.Idle;
@@ -573,11 +614,12 @@ public class NewEnemyMove : MonoBehaviour
         _isCoroutineRunning = false;
     }
     /// <summary>
-    /// ƒK[ƒhƒuƒŒƒCƒNUŒ‚
+    /// ã‚¬ãƒ¼ãƒ‰ãƒ–ãƒ¬ã‚¤ã‚¯æ”»æ’ƒ
     /// </summary>
     IEnumerator EnemySmash()
     {
-        Debug.Log("ƒK[ƒhƒuƒŒƒCƒNI");
+        EnemyMaterialChange.Instance.ChangeMaterial(2);
+        Debug.Log("ã‚¬ãƒ¼ãƒ‰ãƒ–ãƒ¬ã‚¤ã‚¯ï¼");
         _isCoroutineRunning = true;
         _isAnimActive = true;
         _enemyAnim.SetBool("Smash", true);
@@ -585,25 +627,26 @@ public class NewEnemyMove : MonoBehaviour
         AudioManager.GetInstance().PlaySE("enemyAttack", 4);
         while (true)
         {
-            // Œ»İ‚ÌƒAƒjƒ[ƒVƒ‡ƒ“ƒXƒe[ƒgî•ñ‚ğæ“¾
+            // ç¾åœ¨ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¹ãƒ†ãƒ¼ãƒˆæƒ…å ±ã‚’å–å¾—
             AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
-            // “G‚ğ‘Oi‚³‚¹‚é
+            // æ•µã‚’å‰é€²ã•ã›ã‚‹
             transform.position += transform.forward * forwardSpeed * Time.deltaTime;
             if (_isAtackEnd &&/*currentState.normalizedTime >= 1f &&*/ _isAnimActive)
             {
                 break;
             }
-            // ƒtƒŒ[ƒ€ŠÔ‚Ì‘Ò‹@
+            // ãƒ•ãƒ¬ãƒ¼ãƒ é–“ã®å¾…æ©Ÿ
             yield return null;
-            Debug.Log("ƒK[ƒhƒuƒŒƒCƒN’†‚Å‚·");
+            Debug.Log("ã‚¬ãƒ¼ãƒ‰ãƒ–ãƒ¬ã‚¤ã‚¯ä¸­ã§ã™");
         }
-        // Œ»İ‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªI—¹‚µ‚½‚©‚ğŠm”F
+        // ç¾åœ¨ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚äº†ã—ãŸã‹ã‚’ç¢ºèª
         _isAtackEnd = false;
-        _isAnimActive = false; // ƒtƒ‰ƒO‚ğƒIƒt‚É‚·‚é
+        _isAnimActive = false; // ãƒ•ãƒ©ã‚°ã‚’ã‚ªãƒ•ã«ã™ã‚‹
         _enemyAnim.SetBool("Smash", false);
-        Debug.Log("ƒK[ƒhƒuƒŒƒCƒNI—¹");
+        Debug.Log("ã‚¬ãƒ¼ãƒ‰ãƒ–ãƒ¬ã‚¤ã‚¯çµ‚äº†");
+        EnemyMaterialChange.Instance.ReturnMaterial();
         yield return null;
-        // UŒ‚d’¼
+        // æ”»æ’ƒç¡¬ç›´
         _attackStiffnessMin = 1f;
         _attackStiffnessMax = 1.5f;
         _currentState = EnemyState.Idle;
@@ -611,25 +654,26 @@ public class NewEnemyMove : MonoBehaviour
         yield return null;
     }
     /// <summary>
-    /// ƒ^ƒbƒNƒ‹UŒ‚
+    /// ã‚¿ãƒƒã‚¯ãƒ«æ”»æ’ƒ
     /// </summary>
     /// <returns></returns>
     IEnumerator EnemyTackle()
     {
-        Debug.Log("ƒ^ƒbƒNƒ‹I");
+        Debug.Log("ã‚¿ãƒƒã‚¯ãƒ«ï¼");
         _isCoroutineRunning = true;
         _isTackle = true;
         _enemyAnim.SetBool("Tackle", true);
         _enemyAnim.CrossFade("Tackle", 0.1f);
         tackleSpeed = 5f;
+        float tackleEndTime = 0f;
         AudioManager.GetInstance().PlayLoopSE("enemyMove", 0);
-        // Œ»İ‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªI—¹‚µ‚½‚©‚ğŠm”F
+        // ç¾åœ¨ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚äº†ã—ãŸã‹ã‚’ç¢ºèª
         while (true)
         {
-            // “G‚ğ‘Oi‚³‚¹‚é
+            // æ•µã‚’å‰é€²ã•ã›ã‚‹
             transform.position += transform.forward * tackleSpeed * Time.deltaTime;
             _tackleAcceleration += Time.deltaTime;
-            // ‰Á‘¬‚ğ—^‚¦‚é
+            // åŠ é€Ÿã‚’ä¸ãˆã‚‹
             if (_tackleAcceleration >= 0.3f)
             {
                 tackleSpeed += _acceleration;
@@ -639,9 +683,14 @@ public class NewEnemyMove : MonoBehaviour
             if (_distancePtoE2 <= shortDistance + 1f || EnemyRayCast.isTackleWall)
             {
                 tackleSpeed = 0f;
-                break;
+                tackleEndTime += Time.deltaTime;
+                // ã‚¿ãƒƒã‚¯ãƒ«å½“ãŸã£ãŸå¾Œã‚‚çªã£èµ°ã£ã¦ã»ã—ã„ã‚„ã¤(ã§ããªã‹ã£ãŸ)
+                if (tackleEndTime >= 0.5f)
+                {
+                    break;
+                }
             }
-            // ƒtƒŒ[ƒ€ŠÔ‚Ì‘Ò‹@
+            // ãƒ•ãƒ¬ãƒ¼ãƒ é–“ã®å¾…æ©Ÿ
             yield return null;
         }
         yield return null;
@@ -650,8 +699,9 @@ public class NewEnemyMove : MonoBehaviour
         EnemyRayCast.isTackleWall = false;
         _isTackle = false;
         _enemyAnim.SetBool("Tackle", false);
-        Debug.Log("ƒ^ƒbƒNƒ‹I—¹");
-        // UŒ‚d’¼
+        EnemyMaterialChange.Instance.ReturnMaterial();
+        Debug.Log("ã‚¿ãƒƒã‚¯ãƒ«çµ‚äº†");
+        // æ”»æ’ƒç¡¬ç›´
         _attackStiffnessMin = 0.5f;
         _attackStiffnessMax = 0.8f;
         _currentState = EnemyState.Idle;
@@ -660,12 +710,12 @@ public class NewEnemyMove : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒ`ƒF[ƒ“UŒ‚
+    /// ãƒã‚§ãƒ¼ãƒ³æ”»æ’ƒ
     /// </summary>
     /// <returns></returns>
     IEnumerator EnemyChain()
     {
-        Debug.Log("ƒ`ƒF[ƒ“I");
+        Debug.Log("ãƒã‚§ãƒ¼ãƒ³ï¼");
         _isCoroutineRunning = true;
         _enemyAnim.SetBool("Chain", true);
         _enemyAnim.CrossFade("Chain", 0.1f);
@@ -673,22 +723,22 @@ public class NewEnemyMove : MonoBehaviour
         Chain.ChainAttack();
         //ChainAtack();
 
-        // Œ»İ‚ÌƒAƒjƒ[ƒVƒ‡ƒ“‚ªI—¹‚µ‚½‚©‚ğŠm”F
+        // ç¾åœ¨ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚äº†ã—ãŸã‹ã‚’ç¢ºèª
         while (true)
         {
-            // Œ»İ‚ÌƒAƒjƒ[ƒVƒ‡ƒ“ƒXƒe[ƒgî•ñ‚ğæ“¾
+            // ç¾åœ¨ã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚¹ãƒ†ãƒ¼ãƒˆæƒ…å ±ã‚’å–å¾—
             AnimatorStateInfo currentState = _enemyAnim.GetCurrentAnimatorStateInfo(0);
             if (_isAtackEnd /*&&currentState.normalizedTime >= 1f && _isAnimActive*/)
             {
                 break;
             }
-            // ƒtƒŒ[ƒ€ŠÔ‚Ì‘Ò‹@
+            // ãƒ•ãƒ¬ãƒ¼ãƒ é–“ã®å¾…æ©Ÿ
             yield return null;
         }
         _isAtackEnd = false;
         _isCoroutineRunning = false;
         _enemyAnim.SetBool("Chain", false);
-        Debug.Log("ƒ`ƒF[ƒ“I—¹");
+        Debug.Log("ãƒã‚§ãƒ¼ãƒ³çµ‚äº†");
         _currentState = EnemyState.Idle;
 
     }
@@ -696,7 +746,7 @@ public class NewEnemyMove : MonoBehaviour
     IEnumerator EnemyStep(string around)
     {
         _isCoroutineRunning = true;
-        Debug.Log("‘OƒXƒeƒbƒv");
+        Debug.Log("å‰ã‚¹ãƒ†ãƒƒãƒ—");
         _enemyAnim.SetBool("ForwardStep", true);
         _enemyAnim.CrossFade("ForwardStep", 0.1f);
         AudioManager.GetInstance().PlaySE("enemyAttack", 5);
@@ -705,7 +755,7 @@ public class NewEnemyMove : MonoBehaviour
             switch(around)
             {
                 case "forward":
-                    // “G‚ğ‘Oi‚³‚¹‚é
+                    // æ•µã‚’å‰é€²ã•ã›ã‚‹
                     transform.position += transform.forward * stepSpeed * Time.deltaTime;
                     if(_shortDistance)
                     {
@@ -718,7 +768,8 @@ public class NewEnemyMove : MonoBehaviour
                     }
                     break;
                 case "back":
-                    // “G‚ğ‘Oi‚³‚¹‚é
+                    // æ•µã‚’å¾Œé€€ã•ã›ã‚‹
+                    EnemyMaterialChange.Instance.ChangeMaterial(1);
                     transform.position -= transform.forward * stepSpeed * Time.deltaTime;
                     _nextCurrent = EnemyState.Tackle;
                     break;
@@ -730,7 +781,7 @@ public class NewEnemyMove : MonoBehaviour
             }
             yield return null;
         }
-        Debug.Log("‘OƒXƒeƒbƒvI—¹");
+        Debug.Log("å‰ã‚¹ãƒ†ãƒƒãƒ—çµ‚äº†");
         yield return null;
         _isCoroutineRunning = false;
         _isAtackEnd = false;
@@ -739,8 +790,9 @@ public class NewEnemyMove : MonoBehaviour
     }
     IEnumerator EnemyBackAttack()
     {
+        EnemyMaterialChange.Instance.ChangeMaterial(1);
         _isCoroutineRunning = true;
-        Debug.Log("‘OƒXƒeƒbƒv");
+        Debug.Log("å‰ã‚¹ãƒ†ãƒƒãƒ—");
         _enemyAnim.SetBool("BackUpper", true);
         _enemyAnim.CrossFade("BackUpper", 0.1f);
         AudioManager.GetInstance().PlayLoopSE("enemyMove", 0);
@@ -752,11 +804,12 @@ public class NewEnemyMove : MonoBehaviour
             }
             yield return null;
         }
-        Debug.Log("‘OƒXƒeƒbƒvI—¹");
+        Debug.Log("å‰ã‚¹ãƒ†ãƒƒãƒ—çµ‚äº†");
         yield return null;
+        EnemyMaterialChange.Instance.ReturnMaterial();
         _isCoroutineRunning = false;
         _isAtackEnd = false;
-        // UŒ‚d’¼
+        // æ”»æ’ƒç¡¬ç›´
         _attackStiffnessMin = 0.5f;
         _attackStiffnessMax = 0.8f;
         _currentState = EnemyState.Idle;
@@ -770,13 +823,13 @@ public class NewEnemyMove : MonoBehaviour
     }
 
    
-    // ƒvƒŒƒCƒ„[‚ª•ÇÛ‚Ì‚ÉUŒ‚ŒãŒã‚ë‚É‰º‚ª‚é
+    // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒå£éš›ã®æ™‚ã«æ”»æ’ƒå¾Œå¾Œã‚ã«ä¸‹ãŒã‚‹
     public void EnemyBack()
     {
         if(PlayerRayCast.isPlayerBackWall)
         {
             PlayerRayCast.isPlayerBackWall = false;
-            StartCoroutine(EnemyBackWall());
+            currentCoroutine = StartCoroutine(EnemyBackWall());
         }
     }
     IEnumerator EnemyBackWall()
@@ -784,9 +837,9 @@ public class NewEnemyMove : MonoBehaviour
         float backTime = 0f;
         while(true)
         {
-            Debug.Log("“G‚ğŒã‘Ş‚³‚¹‚é");
+            Debug.Log("æ•µã‚’å¾Œé€€ã•ã›ã‚‹");
             backTime += Time.deltaTime;
-            // “G‚ğŒã‘Ş‚³‚¹‚é
+            // æ•µã‚’å¾Œé€€ã•ã›ã‚‹
             transform.position -= transform.forward * backWallSpeed * Time.deltaTime;
             yield return null;
             if(backTime >= 0.5f)
@@ -796,14 +849,121 @@ public class NewEnemyMove : MonoBehaviour
         }
     }
 
+
+    IEnumerator EnemyStreatPush()
+    {
+        if (_isCoroutineRunning) yield break; // **ã™ã§ã«å®Ÿè¡Œä¸­ãªã‚‰ä¸­æ–­**
+        _isCoroutineRunning = true;
+
+        EnemyCancel();
+        _rb.isKinematic = false;
+        isPushFlag = true;
+        isPushWall = false;
+        yield return null;
+
+        float backTime = 0f;
+
+        _enemyAnim.SetBool("Fly", true);
+        _enemyAnim.CrossFade("Fly", 0.1f);
+        AudioManager.Instance.PlaySE("playerAttack", 6);
+
+        if (_directionX.x > 0)
+        {
+            blowDirection = new Vector3(-1, 0, 0);
+        }
+        else
+        {
+            blowDirection = new Vector3(1, 0, 0);
+        }
+
+        // **ã™ã§ã«å‹•ã„ã¦ã„ãŸã‚‰æ­¢ã‚ã‚‹**
+        _rb.velocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
+
+        // **å¹ã£é£›ã³å‡¦ç†**
+        _rb.AddForce(blowDirection.normalized * streatSmashForce, ForceMode.Impulse);
+
+        while (true)
+        {
+            backTime += Time.deltaTime;
+            yield return null;
+
+            if (isPushWall)
+            {
+                isPushWall = false;
+                break;
+            }
+
+            if (backTime >= 0.5f)
+            {
+                break;
+            }
+        }
+
+
+        // **FixedUpdate ã‚’å¾…ã£ã¦ã‹ã‚‰å®Œå…¨åœæ­¢**
+        yield return new WaitForFixedUpdate();
+        _rb.velocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
+        _rb.isKinematic = true;
+
+        if (enemyHP < 0)
+        {
+            yield return new WaitForSeconds(1f);
+            JM.ChangeClearScene();
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        // **Idle ã«æˆ»ã‚‹å‰ã« velocity ã‚’å®Œå…¨ãƒªã‚»ãƒƒãƒˆ**
+        _rb.velocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
+        _rb.isKinematic = true;
+
+        _attackStiffnessMin = 1f;
+        _attackStiffnessMax = 2f;
+        _enemyAnim.SetBool("Fly", false);
+        _isCoroutineRunning = false;
+        isPushFlag = false;
+
+        _currentState = EnemyState.Idle;
+
+        yield return new WaitForSeconds(0.2f); // **0.2ç§’å¾…ã£ã¦ã‹ã‚‰æ¬¡ã®è¡Œå‹•ã‚’é–‹å§‹**
+    }
+
+
+
+
+    public void EnemyPushFanction()
+    {
+        _currentState = EnemyState.Push;
+        isCoroutineStop = true;
+    }
+    
     IEnumerator EnemyPush()
     {
         _rb.isKinematic = false;
         yield return null;
         float backTime = 0f;
         _isCoroutineRunning = true;
+        isPushFlag = true;
+        EnemyCancel();
+        // ãƒ©ãƒƒã‚·ãƒ¥å¾…æ©Ÿ
+        while (true)
+        {
+            if(!AttackComponent.Instance.isRush)
+            {
+                break;
+            }
+            yield return null;
+        }
+
+        // ã“ã“ã‹ã‚‰ãŒå¹ã£é£›ã³
+        isPushWall = false;
         _enemyAnim.SetBool("Fly", true);
         _enemyAnim.CrossFade("Fly", 0.1f);
+        AudioManager.Instance.PlaySE("playerAttack", 6);
+        ReduceEnemyHP(30);
         if (_directionX.x > 0)
         {
             blowDirection = new Vector3(-1, 1, 0);
@@ -820,10 +980,12 @@ public class NewEnemyMove : MonoBehaviour
             if (backTime >= 2f || isPushWall)
             {
                 isPushWall = false;
+                ReduceEnemyHP(20);
                 break;
             }
         }
         _rb.velocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
         backTime = 0f;
         while (true)
         {
@@ -834,47 +996,66 @@ public class NewEnemyMove : MonoBehaviour
                 break;
             }
         }
+        if(enemyHP < 0)
+        {
+            yield return new WaitForSeconds(1f);
+            JM.ChangeClearScene();
+        }
         yield return new WaitForSeconds(1f);
-        _enemyAnim.SetBool("Fly", false);
-        _isCoroutineRunning = false;
         _rb.isKinematic = true;
+        yield return null;
+        _enemyAnim.SetBool("Fly", false);
+        _attackStiffnessMin = 1f;
+        _attackStiffnessMax = 2f;
+        _isCoroutineRunning = false;
         isPushWall = false;
         _currentState = EnemyState.Idle;
+        isPushFlag = false;
+        yield return null;
     }
 
     #endregion
 
-    #region “G‚Ìs“®{“Áê‰‰oŠÖ˜A
+    #region æ•µã®è¡Œå‹•ï¼‹ç‰¹æ®Šæ¼”å‡ºé–¢é€£
+
+    /// <summary>
+    /// ã‚¢ã‚¤ãƒ‰ãƒ«çŠ¶æ…‹
+    /// </summary>
+    /// <returns></returns>
     IEnumerator EnemyIdle()
     {
         _isCoroutineRunning = true;
+        _rb.velocity = Vector3.zero;
         if (_directionX.x > 0)
         {
             transform.rotation = Quaternion.Euler(0, 90, 0);
             _enemyAnim.SetBool("Mirror", false);
-            Debug.Log("ƒvƒŒƒCƒ„[‚Í‰E‘¤‚É‚¢‚Ü‚·");
+            Debug.Log("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¯å³å´ã«ã„ã¾ã™");
         }
         else if (_directionX.x < 0)
         {
             transform.rotation = Quaternion.Euler(0, -90, 0);
             _enemyAnim.SetBool("Mirror", true);
-            Debug.Log("ƒvƒŒƒCƒ„[‚Í¶‘¤‚É‚¢‚Ü‚·");
+            Debug.Log("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¯å·¦å´ã«ã„ã¾ã™");
         }
         float _IdleRnd = Random.Range(_attackStiffnessMin, _attackStiffnessMax);
         yield return new WaitForSeconds(_IdleRnd);
         _isCoroutineRunning = false;
-        // ‹——£‚ÉŠî‚Ã‚­ó‘Ô‘JˆÚ
+        // è·é›¢ã«åŸºã¥ãçŠ¶æ…‹é·ç§»
         UpdateState();
-        Debug.Log("ƒAƒCƒhƒ‹ó‘Ô‚É‚È‚è‚Ü‚µ‚½");
+        Debug.Log("ã‚¢ã‚¤ãƒ‰ãƒ«çŠ¶æ…‹ã«ãªã‚Šã¾ã—ãŸ");
     }
 
-    // ‚Ğ‚é‚İ‚Ìˆ—
+    /// <summary>
+    /// ã²ã‚‹ã¿ã®å‡¦ç†
+    /// </summary>
     public void EnemyHitStanState()
     {
         _rb.velocity = Vector3.zero;
         _enemyAnim.SetBool("HitStan", true);
         _enemyAnim.CrossFade("HitStan", 0f);
         isCoroutineStop = true;
+        AttackComponent.Instance.Countered = false;
         _currentState = EnemyState.HitStan;
     }
     IEnumerator EnemyHitStan()
@@ -885,20 +1066,20 @@ public class NewEnemyMove : MonoBehaviour
         while (true)
         {
             stanTime += Time.deltaTime;
-            Debug.Log("ƒXƒ^ƒ“’†‚Å‚·IIII");
+            Debug.Log("ã‚¹ã‚¿ãƒ³ä¸­ã§ã™ï¼ï¼ï¼ï¼");
             if (stanTime >= 0.1f)
             {
                 break;
             }
             yield return null;
         }
-        Debug.Log("ƒXƒ^ƒ“‰ğœII");
+        Debug.Log("ã‚¹ã‚¿ãƒ³è§£é™¤ï¼ï¼");
         _enemyAnim.SetBool("HitStan", false);
         _isCoroutineRunning = false;
         _currentState = EnemyState.Idle;
         yield return null;
     }
-    // ƒJƒEƒ“ƒ^[Œˆ‚ß‚ç‚ê‚½‚Ìˆ—
+    // ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼æ±ºã‚ã‚‰ã‚ŒãŸæ™‚ã®å‡¦ç†
     public void EnemyStanState()
     {
         _rb.velocity = Vector3.zero;
@@ -916,14 +1097,14 @@ public class NewEnemyMove : MonoBehaviour
         while (true)
         {
             stanTime += Time.deltaTime;
-            Debug.Log("ƒXƒ^ƒ“’†‚Å‚·IIII");
+            Debug.Log("ã‚¹ã‚¿ãƒ³ä¸­ã§ã™ï¼ï¼ï¼ï¼");
             if (stanTime >= StanMaxTime)
             {
                 break;
             }
             yield return null;
         }
-        Debug.Log("ƒXƒ^ƒ“‰ğœII");
+        Debug.Log("ã‚¹ã‚¿ãƒ³è§£é™¤ï¼ï¼");
         _enemyAnim.SetBool("Stan", false);
         _isCoroutineRunning = false;
         isEnemyStanFlag = false;
@@ -932,50 +1113,37 @@ public class NewEnemyMove : MonoBehaviour
     }
 
     /// <summary>
-    /// ƒr[ƒXƒgƒ‚[ƒh‚Ìˆ—
+    /// ãƒ“ãƒ¼ã‚¹ãƒˆãƒ¢ãƒ¼ãƒ‰ã®å‡¦ç†
     /// </summary>
     /// <returns></returns>
     IEnumerator EnemyBeastMode()
     {
-        Debug.Log("ƒr[ƒXƒgƒ‚[ƒhIIII");
+        Debug.Log("ãƒ“ãƒ¼ã‚¹ãƒˆãƒ¢ãƒ¼ãƒ‰ï¼ï¼ï¼ï¼");
         _isCoroutineRunning = true;
         PlayerHP.BeastModeHP = 1.5f;
         StanMaxTime = 20f;
         isBMJudge = true;
-        float BeastModeTime = 0f;
         EnemyCancel();
         _enemyAnim.SetBool("BeastMode", true);
         _enemyAnim.CrossFade("BeastMode", 0f);
         yield return null;
-        while (true)
-        {
-            Debug.Log("ƒr[ƒXƒgƒ‚[ƒhtyuudazeIIII");
-            BeastModeTime += Time.deltaTime;
-            if (BeastModeTime >= 20)
-            {
-                break;
-            }
-            yield return null;
-        }
-        PlayerHP.BeastModeHP = 1f;
-        StanMaxTime = 10f;
-        isBMJudge = false;
-        yield return null;
     }
     IEnumerator EnemyDown()
     {
-        Debug.Log("ƒ_ƒEƒ“II");
+        JM.WinEffect();
+        Debug.Log("ãƒ€ã‚¦ãƒ³ï¼ï¼");
         if (_directionX.x > 0)
         {
             transform.rotation = Quaternion.Euler(0, 90, 0);
-            Debug.Log("ƒvƒŒƒCƒ„[‚Í‰E‘¤‚É‚¢‚Ü‚·");
+            Debug.Log("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¯å³å´ã«ã„ã¾ã™");
         }
         else if (_directionX.x < 0)
         {
             transform.rotation = Quaternion.Euler(0, -90, 0);
-            Debug.Log("ƒvƒŒƒCƒ„[‚Í¶‘¤‚É‚¢‚Ü‚·");
+            Debug.Log("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¯å·¦å´ã«ã„ã¾ã™");
         }
         _isCoroutineRunning = true;
+        AttackComponent.Instance.counterCamScript.StartCoroutine("tackleCameraCor");
         float downTime = 0f;
         EnemyCancel();
         _enemyAnim.SetBool("Down", true);
@@ -1025,9 +1193,9 @@ public class NewEnemyMove : MonoBehaviour
 
     #endregion
 
-    #region “–‚½‚è”»’è‚ÆHP
+    #region å½“ãŸã‚Šåˆ¤å®šã¨HP
     /// <summary>
-    /// UŒ‚‚ğó‚¯‚½‚©+•Ç‚É“–‚½‚Á‚½‚©‚Ì”»’è‚ğ•Ô‚·
+    /// æ”»æ’ƒã‚’å—ã‘ãŸã‹+å£ã«å½“ãŸã£ãŸã‹ã®åˆ¤å®šã‚’è¿”ã™
     /// </summary>
     void OnTriggerEnter(Collider collision)
     {
@@ -1037,59 +1205,75 @@ public class NewEnemyMove : MonoBehaviour
             {
                 damege = 10;
                 int RndCounter = Random.Range(1, 101);
-                Debug.Log("ƒvƒŒƒCƒ„[‚ÌUŒ‚‚É‚ ‚½‚Á‚½");
+                Debug.Log("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®æ”»æ’ƒã«ã‚ãŸã£ãŸ");
                 //_currentState = EnemyState.HitStan;
                 if(EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 70)
                 {
-                    // “G‚ÌƒJƒEƒ“ƒ^[UŒ‚IIIII
-                    Debug.Log("“G‚ÌƒJƒEƒ“ƒ^[UŒ‚IIIIIII");
+                    // æ•µã®ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼æ”»æ’ƒï¼ï¼ï¼ï¼ï¼
+                    Debug.Log("æ•µã®ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼æ”»æ’ƒï¼ï¼ï¼ï¼ï¼ï¼ï¼");
                     isCoroutineStop = true;
                     _currentState = EnemyState.Counter;
                 }
-                else if (!isEnemyStanFlag && !isBMJudge)
+                else if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
                 {
                     EnemyHitStanState();
                 }
                 else
                 {
-                    // ƒXƒ^ƒ“’†‚ÍUŒ‚—ÍƒAƒbƒv
+                    // ã‚¹ã‚¿ãƒ³ä¸­ã¯æ”»æ’ƒåŠ›ã‚¢ãƒƒãƒ—
                     damege += 5;
                 }
                 DriveGauge.Instance.DriveGaugeUP();
                 HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
                 ReduceEnemyHP(damege);
-                //_currentState = EnemyState.Guard; // ó‘Ô‚ğƒK[ƒh‚É•ÏX
+                //_currentState = EnemyState.Guard; // çŠ¶æ…‹ã‚’ã‚¬ãƒ¼ãƒ‰ã«å¤‰æ›´
             }
         }
+        else if (collision.CompareTag("PlayerStreat"))
+        {
+            if (!isGameOverFlag)
+            {
+                damege = 20;
+                int RndCounter = Random.Range(1, 101);
+                if (EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 50)
+                {
+                    // æ•µã®ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼æ”»æ’ƒï¼ï¼ï¼ï¼ï¼
+                    Debug.Log("æ•µã®ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼æ”»æ’ƒï¼ï¼ï¼ï¼ï¼ï¼ï¼");
+                    isCoroutineStop = true;
+                    _currentState = EnemyState.Counter;
+                }
+                else if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
+                {
+                    EnemyHitStanState();
+                    _currentState = EnemyState.StreatPush;
+                    isCoroutineStop = true;
+                }
+                else
+                {
+                    // ã‚¹ã‚¿ãƒ³ä¸­ã¯æ”»æ’ƒåŠ›ã‚¢ãƒƒãƒ—
+                    damege += 5;
+                }
+                DriveGauge.Instance.DriveGaugeUP();
+                HitStopScript.Instance.StartHitStop(0.5f, "Enemy");
+                ReduceEnemyHP(damege);
+            }
+        }
+
     }
     /// <summary>
-    /// “G‚ÌHP‚ğŒ¸‚ç‚µ‚½‚è‚·‚é
+    /// æ•µã®HPã‚’æ¸›ã‚‰ã—ãŸã‚Šã™ã‚‹
     /// </summary>
     public void ReduceEnemyHP(int _lostHP)
     {
         enemyHP -= _lostHP;
         EnemyHP.Instance.TakeDamage(_lostHP);
         PE.PunchEffect();
-        if(enemyHP <= 0)
-        {
-            // ƒQ[ƒ€ƒNƒŠƒA‚ÉˆÚs
-            _currentState = EnemyState.Down;
-            isCoroutineStop = true;
-            isGameOverFlag = true;
-            //JM.ChangeClearScene();
-        }
-        else if (enemyHP <= enemyInitialHP * 0.33 && isBeastMode)
-        {
-            isCoroutineStop = true;
-            isBeastMode = false;
-            _currentState = EnemyState.BeastMode;
-        }
     }
     #endregion
 
-    #region ƒK[ƒhŠÖ˜A
+    #region ã‚¬ãƒ¼ãƒ‰é–¢é€£
     /// <summary>
-    /// ƒK[ƒh‚·‚é‚©‚Ç‚¤‚©‚ÌŠÖ”
+    /// ã‚¬ãƒ¼ãƒ‰ã™ã‚‹ã‹ã©ã†ã‹ã®é–¢æ•°
     /// </summary>
     void EnemyGaurd()
     {
@@ -1112,21 +1296,21 @@ public class NewEnemyMove : MonoBehaviour
         }
         if (_enemyGaurd >= _gaurdRnd)
         {
-            // ƒK[ƒh‚ğ‚·‚éƒAƒjƒ[ƒVƒ‡ƒ“‚ğ“ü‚ê‚é
-            Debug.Log("ƒK[ƒh‚É¬Œ÷‚µ‚½");
+            // ã‚¬ãƒ¼ãƒ‰ã‚’ã™ã‚‹ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’å…¥ã‚Œã‚‹
+            Debug.Log("ã‚¬ãƒ¼ãƒ‰ã«æˆåŠŸã—ãŸ");
         }
         else
         {
-            // HP‚ğŒ¸‚ç‚·ŠÖ”‚ğŒÄ‚Ño‚·
+            // HPã‚’æ¸›ã‚‰ã™é–¢æ•°ã‚’å‘¼ã³å‡ºã™
             ReduceEnemyHP(10);
-            // ”í’eƒAƒjƒ[ƒVƒ‡ƒ“‚ğÄ¶‚·‚é
+            // è¢«å¼¾ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’å†ç”Ÿã™ã‚‹
         }
     }
     #endregion
 
-    #region ˆÚ“®ŠÖ˜A
+    #region ç§»å‹•é–¢é€£
     /// <summary>
-    /// ƒvƒŒƒCƒ„[‚ğ’Ç]‚·‚éŠÖ”
+    /// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’è¿½å¾“ã™ã‚‹é–¢æ•°
     /// </summary>
     IEnumerator PlayerFollow(float moveDistance)
     {
@@ -1138,7 +1322,7 @@ public class NewEnemyMove : MonoBehaviour
             _moveTimer += Time.deltaTime;
             transform.position = Vector2.MoveTowards(
                             transform.position,
-                            new Vector2(_playerTr.position.x, transform.position.y), // X²‚¾‚¯ƒvƒŒƒCƒ„[‚É’Ç]
+                            new Vector2(_playerTr.position.x, transform.position.y), // Xè»¸ã ã‘ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«è¿½å¾“
                             speed * Time.deltaTime);
             if (_distancePtoE < moveDistance || _moveTimer >= _moveMaxTimer)
             {
@@ -1146,14 +1330,14 @@ public class NewEnemyMove : MonoBehaviour
             }
             yield return null;
         }
-        Debug.Log("’Ç‚¤I—¹II");
+        Debug.Log("è¿½ã†çµ‚äº†ï¼ï¼");
         _moveTimer = 0f;
-        _currentState = EnemyState.Idle; // “’BŒãIdle‚É–ß‚é
+        _currentState = EnemyState.Idle; // åˆ°é”å¾ŒIdleã«æˆ»ã‚‹
         _enemyAnim.SetBool("Walk", false);
         _isCoroutineRunning = false;
     }
     /// <summary>
-    /// ƒvƒŒƒCƒ„[‚©‚ç“¦‚°‚éŠÖ”
+    /// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‹ã‚‰é€ƒã’ã‚‹é–¢æ•°
     /// </summary>
     IEnumerator PlayerRetreat(float moveDistance)
     {
@@ -1163,9 +1347,9 @@ public class NewEnemyMove : MonoBehaviour
         while (true)
         {
             _moveTimer += Time.deltaTime;
-            // ƒvƒŒƒCƒ„[‚©‚ç“¦‚°‚é•ûŒü‚ğŒvZ
+            // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‹ã‚‰é€ƒã’ã‚‹æ–¹å‘ã‚’è¨ˆç®—
             Vector3 directionAwayFromPlayer = (transform.position - _playerTr.position).normalized;
-            // ‹t•ûŒü‚ÉˆÚ“®
+            // é€†æ–¹å‘ã«ç§»å‹•
             Vector3 newPosition = transform.position + (directionAwayFromPlayer * backSpeed * Time.deltaTime);
             _rb.MovePosition(newPosition);
             if (_distancePtoE >= moveDistance || _moveTimer >= _moveMaxTimer)
@@ -1174,22 +1358,24 @@ public class NewEnemyMove : MonoBehaviour
             }
             yield return null;
         }
-        Debug.Log("“¦‚°‚éI—¹II");
+        Debug.Log("é€ƒã’ã‚‹çµ‚äº†ï¼ï¼");
         _moveTimer = 0f;
-        _currentState = EnemyState.Idle; // “’BŒãIdle‚É–ß‚é
+        _currentState = EnemyState.Idle; // åˆ°é”å¾ŒIdleã«æˆ»ã‚‹
         _enemyAnim.SetBool("Walk", false);
         _isCoroutineRunning = false;
-        yield return null; // –Ú•W‹——£‚É“’B‚µ‚½ê‡‚Í‘Ş‹pI—¹
+        yield return null; // ç›®æ¨™è·é›¢ã«åˆ°é”ã—ãŸå ´åˆã¯é€€å´çµ‚äº†
 
     }
     #endregion
 
-    #region I—¹ˆ—‚ÆƒfƒoƒbƒOƒL[
+    #region çµ‚äº†å‡¦ç†ã¨ãƒ‡ãƒãƒƒã‚°ã‚­ãƒ¼
 
     void EnemyCancel()
     {
-        // ‹Z‚Ìˆ—‚ğ‚·‚×‚ÄÁ‚·
+        // æŠ€ã®å‡¦ç†ã‚’ã™ã¹ã¦æ¶ˆã™
         EnemyAtackEnd();
+        EnemyMaterialChange.Instance.ReturnMaterial();
+        EnemyMaterialChange.Instance.isHitStopStop = false;
         _isAtackEnd = false;
         EnemyRayCast.isTackleWall = false;
         _isTackle = false;
@@ -1204,12 +1390,13 @@ public class NewEnemyMove : MonoBehaviour
         _enemyAnim.SetBool("BackUpper", false);
         _enemyAnim.SetBool("Tackle", false);
         _enemyAnim.SetBool("Smash", false);
+        _enemyAnim.SetBool("BeastMode", false);
         //_enemyAnim.SetBool("Smash", false);
         _isAtackEnd = true;
-        Debug.Log("ƒGƒlƒ~[ƒAƒ^ƒbƒNƒGƒ“ƒhIII");
+        Debug.Log("ã‚¨ãƒãƒŸãƒ¼ã‚¢ã‚¿ãƒƒã‚¯ã‚¨ãƒ³ãƒ‰ï¼ï¼ï¼");
     }
     /// <summary>
-    /// ƒfƒoƒbƒOŠÖ˜A‚ğ‹l‚ß‚ñ‚¾ŠÖ”
+    /// ãƒ‡ãƒãƒƒã‚°é–¢é€£ã‚’è©°ã‚è¾¼ã‚“ã é–¢æ•°
     /// </summary>
     void DebugKey()
     {
@@ -1226,7 +1413,7 @@ public class NewEnemyMove : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
             Debug.Log("isFollow" + isFollow);
-            _currentState = EnemyState.Chain; // ƒ`ƒF[ƒ““Š‚°‚ÅUŒ‚
+            _currentState = EnemyState.Chain; // ãƒã‚§ãƒ¼ãƒ³æŠ•ã’ã§æ”»æ’ƒ
         }
         else if (Input.GetKeyDown(KeyCode.L))
         {
@@ -1247,7 +1434,7 @@ public class NewEnemyMove : MonoBehaviour
     {
         if (cubeController == null)
         {
-            Debug.LogError("cubeController ‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñI");
+            Debug.LogError("cubeController ãŒè¨­å®šã•ã‚Œã¦ã„ã¾ã›ã‚“ï¼");
             return;
         }
         cubeController.DestroyCube();

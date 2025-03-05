@@ -83,7 +83,8 @@ public class PlayerHP : MonoBehaviour
             }
             else
             {
-                AttackComponent.Instance.attackNow = false;
+                AttackComponent.Instance.EndAttack();
+                //AttackComponent.Instance.attackNow = false;
                 animator.SetBool("Shield", false);
 
                 if (other.gameObject.tag == "EnemyPunchAttack")
@@ -138,27 +139,29 @@ public class PlayerHP : MonoBehaviour
 
                 }
 
-                if (other.gameObject.tag == "EnemySmashAttack")
-                {
-                    playerHP = playerHP - (30 * BeastModeHP);
-                    isPlayerDown = true;
-                    EE.SmashEffect();
-                    PE.DamageEffect();
-                    animator.SetTrigger("EnemyTackleHit");
-                    // ヒットストップ
-                    animator.CrossFade("EnemyTackleHit", 0f);
-                    HitStopScript.Instance.StartHitStop(0.5f, "Player");
-                    HitNow = true;
-                    muteki = true;
-                    AudioManager.GetInstance().PlaySE("enemyAttack", 3);
-                    NewEnemyMove.EnemyBack();
-                    EnemyDriveGauge.Instance.DriveGaugeUP(1f);
-                    StartCoroutine(SmoothHPBar());
-                    //吹っ飛ぶ
-                    Destroy(AttackComponent.Instance.CountorCube);
-                }
+                
 
             }
+        }
+        if (other.gameObject.tag == "EnemySmashAttack" && !muteki)
+        {
+            playerHP = playerHP - (30 * BeastModeHP);
+            isPlayerDown = true;
+            EE.SmashEffect();
+            EE.BurstEffect();
+            PE.DamageEffect();
+            animator.SetTrigger("EnemyTackleHit");
+            // ヒットストップ
+            animator.CrossFade("EnemyTackleHit", 0f);
+            HitStopScript.Instance.StartHitStop(0.5f, "Player");
+            HitNow = true;
+            muteki = true;
+            AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+            NewEnemyMove.EnemyBack();
+            EnemyDriveGauge.Instance.DriveGaugeUP(1f);
+            StartCoroutine(SmoothHPBar());
+            //吹っ飛ぶ
+            Destroy(AttackComponent.Instance.CountorCube);
         }
     }
     public void GetUpTime()
@@ -170,12 +173,14 @@ public class PlayerHP : MonoBehaviour
     {
         animator.SetTrigger("Stand");
         animator.CrossFade("Stand", 0f);
-        HitNow = false;
+        
         StartCoroutine(Mmuteki());
     }
     public IEnumerator Mmuteki()
     {
-        yield return new WaitForSeconds(0.2f);
+        //HitNow = false;
+        yield return new WaitForSeconds(1f);
+        HitNow = false;
         muteki = false;
     }
 
@@ -189,6 +194,7 @@ public class PlayerHP : MonoBehaviour
         // 向きを変えるやつを入れる
         // ダウンアニメーション再生
         animator.SetTrigger("EnemyTackleHit"); // これ仮置き
+        JM.LoseEffect();
         // アニメーター.CrossFade("Down", 0.1f, 0, 0.35f);
         while (true)
         {
@@ -199,7 +205,7 @@ public class PlayerHP : MonoBehaviour
             }
             yield return null;
         }
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(4f);
         JM.ChangeOverScene();
     }
 

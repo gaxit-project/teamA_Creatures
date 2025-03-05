@@ -12,8 +12,6 @@ public class MovePlayer2 : MonoBehaviour
     public Vector2 velocity;
 
     Animator animator;
-    public RuntimeAnimatorController controller;
-    public RuntimeAnimatorController MirrorC;
     // ƒCƒ“ƒvƒbƒg‚Ì“o˜^‚Æ”jŠü
     PlayerAct input;
 
@@ -42,10 +40,10 @@ public class MovePlayer2 : MonoBehaviour
     {
         if (MoveComponent.Instance.left)
         {
-            animator.runtimeAnimatorController = controller;
+            animator.SetBool("Mirror", false);
         }else
         {
-            animator.runtimeAnimatorController = MirrorC;
+            animator.SetBool("Mirror", true);
         }
 
         if (Time.timeScale == 1)
