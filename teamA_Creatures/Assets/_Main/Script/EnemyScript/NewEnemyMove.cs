@@ -1143,6 +1143,7 @@ public class NewEnemyMove : MonoBehaviour
             Debug.Log("プレイヤーは左側にいます");
         }
         _isCoroutineRunning = true;
+        AttackComponent.Instance.counterCamScript.StartCoroutine("tackleCameraCor");
         float downTime = 0f;
         EnemyCancel();
         _enemyAnim.SetBool("Down", true);
