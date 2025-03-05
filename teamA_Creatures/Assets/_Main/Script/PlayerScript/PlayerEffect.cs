@@ -6,6 +6,8 @@ public class PlayerEffect : MonoBehaviour
 {
     public ParticleSystem DamageEff;
     public ParticleSystem PunchEff; // シーン内のパーティクル
+    public ParticleSystem PunchFireEff;
+    public ParticleSystem CounterEff;
 
     public float spawnDistance = 1.0f; // キャラクターの前方距離
 
@@ -58,6 +60,22 @@ public class PlayerEffect : MonoBehaviour
 
             // パーティクルを再生
             PunchEff.Play();
+        }
+    }
+
+    public void PunchFireEffect()
+    {
+        if (PunchFireEff != null)
+        {
+            PunchFireEff.Play();
+        }
+    }
+
+    public void CounterAttEffect()
+    {
+        if (CounterEff != null)
+        {
+            CounterEff.Play();
         }
     }
 }
