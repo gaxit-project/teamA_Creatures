@@ -130,6 +130,7 @@ public class NewEnemyMove : MonoBehaviour
         Down,             // 敵死亡時
         Push,             // 吹き飛ばし
         StreatPush,       // ストレートの吹き飛ばし
+        GuardBreak,       // ガードブレイク攻撃
         Counter           // カウンター処理
     }
     #region スタートたち
@@ -253,6 +254,9 @@ public class NewEnemyMove : MonoBehaviour
                     break;
                 case EnemyState.StreatPush:
                     HandleStreatPush();
+                    break;
+                case EnemyState.GuardBreak:
+                    HandleGuardBreak();
                     break;
                 case EnemyState.Counter:
                     HandleCounter();
@@ -407,6 +411,13 @@ public class NewEnemyMove : MonoBehaviour
         currentCoroutine = StartCoroutine(EnemyStreatPush());
     }
 
+    void HandleGuardBreak()
+    {
+        if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
+        currentCoroutine = StartCoroutine(EnemyGuardBreak());
+        //_currentState = EnemyState.Idle;
+    }
+
 
     void HandleCounter()
     {
@@ -446,6 +457,10 @@ public class NewEnemyMove : MonoBehaviour
                     _currentState = EnemyState.BackStep; // バクステたっこー
                     _shortTime = 5f;
                 }
+            }
+            else if (randomState <= 100)
+            {
+                _currentState = EnemyState.GuardBreak; // ガードブレイク
             }
             else if (randomState <= 65)
             {
@@ -822,11 +837,49 @@ public class NewEnemyMove : MonoBehaviour
         AudioManager.GetInstance().PlaySE("enemyAttack",num);
     }
 
-   
+
+    /// <summary>
+    /// ガードブレイク攻撃
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator EnemyGuardBreak()
+    {
+        Debug.Log("ガードブレイク攻撃");
+        _isCoroutineRunning = true;
+        EnemyMaterialChange.Instance.ChangeMaterial(2);
+        _enemyAnim.SetBool("GuardBreak", true);
+        _enemyAnim.CrossFade("GuardBreak", 0.1f);
+        AudioManager.GetInstance().PlaySE("enemyAttack", 4);
+        while (true)
+        {
+            // 敵を前進させる
+            transform.position += transform.forward * forwardSpeed * Time.deltaTime;
+            if (_isAtackEnd)
+            {
+                break;
+            }
+            // フレーム間の待機
+            yield return null;
+        }
+        EnemyEndAttack();
+        // 現在のアニメーションが終了したかを確認
+        EnemyMaterialChange.Instance.ReturnMaterial();
+        _isAtackEnd = false;
+        _isAnimActive = false; // フラグをオフにする
+        _enemyAnim.SetBool("GuardBreak", false);
+        Debug.Log("右パンチ終了");
+        yield return null;
+        _currentState = EnemyState.LeftPunch;
+        _isCoroutineRunning = false;
+    }
+
+    #endregion
+
+    #region 敵の攻撃を受けたときの反応
     // プレイヤーが壁際の時に攻撃後後ろに下がる
     public void EnemyBack()
     {
-        if(PlayerRayCast.isPlayerBackWall)
+        if (PlayerRayCast.isPlayerBackWall)
         {
             PlayerRayCast.isPlayerBackWall = false;
             currentCoroutine = StartCoroutine(EnemyBackWall());
@@ -835,14 +888,14 @@ public class NewEnemyMove : MonoBehaviour
     IEnumerator EnemyBackWall()
     {
         float backTime = 0f;
-        while(true)
+        while (true)
         {
             Debug.Log("敵を後退させる");
             backTime += Time.deltaTime;
             // 敵を後退させる
             transform.position -= transform.forward * backWallSpeed * Time.deltaTime;
             yield return null;
-            if(backTime >= 0.5f)
+            if (backTime >= 0.5f)
             {
                 break;
             }
@@ -939,7 +992,7 @@ public class NewEnemyMove : MonoBehaviour
         _currentState = EnemyState.Push;
         isCoroutineStop = true;
     }
-    
+
     IEnumerator EnemyPush()
     {
         _rb.isKinematic = false;
@@ -951,7 +1004,7 @@ public class NewEnemyMove : MonoBehaviour
         // ラッシュ待機
         while (true)
         {
-            if(!AttackComponent.Instance.isRush)
+            if (!AttackComponent.Instance.isRush)
             {
                 break;
             }
@@ -997,7 +1050,7 @@ public class NewEnemyMove : MonoBehaviour
                 break;
             }
         }
-        if(enemyHP < 0)
+        if (enemyHP < 0)
         {
             yield return new WaitForSeconds(1f);
             JM.ChangeClearScene();
@@ -1014,7 +1067,6 @@ public class NewEnemyMove : MonoBehaviour
         isPushFlag = false;
         yield return null;
     }
-
     #endregion
 
     #region 敵の行動＋特殊演出関連
