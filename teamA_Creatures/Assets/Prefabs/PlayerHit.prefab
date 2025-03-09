@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 527586610450124557}
   m_Layer: 0
   m_Name: PlayerHit
-  m_TagString: PlayerStreat
+  m_TagString: PlayerJab
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
