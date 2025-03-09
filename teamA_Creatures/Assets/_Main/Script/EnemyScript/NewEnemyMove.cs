@@ -460,7 +460,7 @@ public class NewEnemyMove : MonoBehaviour
             }
             else if (randomState <= 100)
             {
-                _currentState = EnemyState.GuardBreak; // ガードブレイク
+                _currentState = EnemyState.Idle; // ガードブレイク
             }
             else if (randomState <= 65)
             {
