@@ -163,6 +163,28 @@ public class PlayerHP : MonoBehaviour
             //吹っ飛ぶ
             Destroy(AttackComponent.Instance.CountorCube);
         }
+        else if(other.gameObject.tag == "EnemyGuardBreakAttack" && !muteki )
+        {
+            playerHP = playerHP - (30 * BeastModeHP);
+            isPlayerDown = true;
+            EE.SmashEffect();
+            EE.BurstEffect();
+            PE.DamageEffect();
+            animator.SetTrigger("EnemyTackleHit");
+            // ヒットストップ
+            animator.CrossFade("EnemyTackleHit", 0f);
+            HitStopScript.Instance.StartHitStop(0.5f, "Player");
+            HitNow = true;
+            muteki = true;
+            AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+            NewEnemyMove.EnemyBack();
+            EnemyDriveGauge.Instance.DriveGaugeUP(1f);
+            StartCoroutine(SmoothHPBar());
+            //吹っ飛ぶ
+            Destroy(AttackComponent.Instance.CountorCube);
+
+            Debug.Log("ブレイクされた。うわああああああああああああ！！！！");
+        }
     }
     public void GetUpTime()
     {
