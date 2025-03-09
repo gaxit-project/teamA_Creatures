@@ -25,75 +25,81 @@ public class EnemyRayCast : MonoBehaviour
     }
     void Update()
     {
-        // 前判定
-        RaycastHit hitForward;
-        if (Physics.Raycast(transform.position, transform.forward, out hitForward, rayDistance)) // layerMaskなし
+        // 前方向のレイキャスト（すべてのオブジェクトを取得）
+        RaycastHit[] hitsForward = Physics.RaycastAll(transform.position, transform.forward, rayDistance);
+        if (hitsForward.Length > 0)
         {
-            if (hitForward.collider.CompareTag("Wall"))
+            for (int i = 0; i < hitsForward.Length; i++)
             {
-                Debug.Log("へーすごいですね！");
-                if (NewEnemyMove._isTackle)
+                if (hitsForward[i].collider.CompareTag("Wall"))
                 {
-                    isTackleWall = true;
+                    if (NewEnemyMove._isTackle)
+                    {
+                        isTackleWall = true;
+                    }
                 }
             }
         }
 
-        // 後ろ判定
-        RaycastHit hitBackward;
-        if (Physics.Raycast(transform.position, -transform.forward, out hitBackward, backRayDistance))
+        // 後ろ方向のレイキャスト（すべてのオブジェクトを取得）
+        RaycastHit[] hitsBackward = Physics.RaycastAll(transform.position, -transform.forward, backRayDistance);
+        bool foundBackWall = false;
+        if (hitsBackward.Length > 0)
         {
-            if (hitBackward.collider.CompareTag("Wall"))
+            for (int i = 0; i < hitsBackward.Length; i++)
             {
-                Debug.Log("ここはかべだよーーーー");
-                isBackWall = true;
-                if(!isBackWallSmash)
+                if (hitsBackward[i].collider.CompareTag("Wall"))
                 {
-                    BackWallTime += Time.deltaTime;
-                }
-                if(BackWallTime >= 10f)
-                {
-                    isBackWallSmash = true;
-                    BackWallTime = 0f;
+                    foundBackWall = true;
+                    if (!isBackWallSmash)
+                    {
+                        BackWallTime += Time.deltaTime;
+                    }
                 }
             }
-            else
-            {
-                isBackWall = false;
-                BackWallTime = 0f;
-            }
+        }
+        isBackWall = foundBackWall;
+        if (!foundBackWall)
+        {
+            BackWallTime = 0f;
+        }
+        if (BackWallTime >= 10f)
+        {
+            isBackWallSmash = true;
+            BackWallTime = 0f;
         }
 
         // 飛ばされ時の後ろ判定
-        RaycastHit pushBackward;
-        if (Physics.Raycast(transform.position, -transform.forward, out pushBackward, pushRayDistance))
+        RaycastHit[] pushBackwardHits = Physics.RaycastAll(transform.position, -transform.forward, pushRayDistance);
+        if (pushBackwardHits.Length > 0)
         {
-            if (pushBackward.collider.CompareTag("Wall"))
+            for (int i = 0; i < pushBackwardHits.Length; i++)
             {
-                NewEnemyMove.Instance.isPushWall = true;
+                if (pushBackwardHits[i].collider.CompareTag("Wall"))
+                {
+                    NewEnemyMove.Instance.isPushWall = true;
+                }
             }
         }
 
-        // 床判定
-        RaycastHit hitGround;
-        if (Physics.Raycast(transform.position, Vector3.down, out hitGround, downRayDistance))
+        // 床判定（すべてのオブジェクトを取得）
+        RaycastHit[] groundHits = Physics.RaycastAll(transform.position, Vector3.down, downRayDistance);
+        bool foundGround = false;
+        if (groundHits.Length > 0)
         {
-            if (hitGround.collider.CompareTag("Ground"))
+            for (int i = 0; i < groundHits.Length; i++)
             {
-                isGround = true;
-            }
-            else
-            {
-                isGround = false;
+                if (groundHits[i].collider.CompareTag("Ground"))
+                {
+                    foundGround = true;
+                }
             }
         }
-        else
-        {
-            isGround = false;
-        }
+        isGround = foundGround;
 
         // デバッグ用のレイの可視化
-        Debug.DrawRay(transform.position, transform.forward * rayDistance, Color.red);  // 前方（赤）
-        Debug.DrawRay(transform.position, -transform.forward * backRayDistance, Color.blue); // 後方（青）
+        Debug.DrawRay(transform.position, transform.forward * rayDistance, Color.red);
+        Debug.DrawRay(transform.position, -transform.forward * backRayDistance, Color.blue);
     }
+
 }
