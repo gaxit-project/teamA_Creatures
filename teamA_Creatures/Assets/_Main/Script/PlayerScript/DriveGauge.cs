@@ -166,4 +166,9 @@ public class DriveGauge : MonoBehaviour
         isDriveGaugeUP = false;
         isDriveGaugeMax = false;
     }
+
+    public void DriveGaugeMaxDown()
+    {
+
+    }
 }
