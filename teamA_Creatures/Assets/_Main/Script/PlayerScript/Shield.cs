@@ -54,6 +54,7 @@ public class Shield : MonoBehaviour
         if (onGuard)
         {
             Debug.Log("シールド中。ドライブゲージを減らしたい");
+            DriveGauge.Instance.DriveGaugeDown();
         }
         if (ShieldInstance != null)
         {

@@ -1322,7 +1322,7 @@ public class NewEnemyMove : MonoBehaviour
                     // スタン中は攻撃力アップ
                     damege += 5;
                 }
-                DriveGauge.Instance.DriveGaugeUP();
+                
                 //HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
                 ReduceEnemyHP(damege);
                 //_currentState = EnemyState.Guard; // 状態をガードに変更
@@ -1352,7 +1352,7 @@ public class NewEnemyMove : MonoBehaviour
                     // スタン中は攻撃力アップ
                     damege += 5;
                 }
-                DriveGauge.Instance.DriveGaugeUP();
+                DriveGauge.Instance.GaugeUp("damage");
                 HitStopScript.Instance.StartHitStop(0.5f, "Enemy");
                 ReduceEnemyHP(damege);
             }

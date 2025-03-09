@@ -64,16 +64,11 @@ public class DriveGauge : MonoBehaviour
                 ResetGaugeStatus();
             }
         }
-        else if (!isDBAttack)
-        {
-            DriveGaugeDown();
-        }
-
         // ŽžŠÔŒo‰ß‚ÅƒQ[ƒW‚ð‘‰Á
         GaugeUp("time");
     }
 
-    void DriveGaugeDown()
+    public void DriveGaugeDown()
     {
         for (int i = driveGauge.Length - 1; i >= 0; i--)
         {
