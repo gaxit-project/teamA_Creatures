@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +13,7 @@ public class KnockOutEffect : MonoBehaviour
     public AudioClip loseSound;
 
     private AudioSource audioSource;
+    private bool isLosing = false;
 
     void Start()
     {
@@ -28,7 +30,10 @@ public class KnockOutEffect : MonoBehaviour
 
     public void ShowLoseEffect()
     {
-        StartCoroutine(Lose());
+        if (isLosing == false)
+        {
+            StartCoroutine(Lose());
+        }
     }
 
     public void ShowWinEffect()
@@ -49,12 +54,20 @@ public class KnockOutEffect : MonoBehaviour
 
     IEnumerator Lose()
     {
+        isLosing = true;
         yield return new WaitForSeconds(2f);
         loseImage.enabled = true;
         if (loseSound != null)
         {
             audioSource.PlayOneShot(loseSound);
         }
+    }
+
+    public void ResetEffect()
+    {
+        isLosing = false;
+        winImage.enabled = false;
+        loseImage.enabled = false;
     }
 
 }
