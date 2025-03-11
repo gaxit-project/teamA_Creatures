@@ -7,23 +7,28 @@ public class SceneCamera : MonoBehaviour
     public GameObject player;
     public GameObject enemy;
     private float twoDistance;
-    private Vector3 center;
-    private Camera tackleCamera;
+    private Camera mainCamera;
+    public float cameraJump = 0.3f;
+    private Vector3 posi;
+    private Vector3 startPosi;
+
     private void Start()
     {
-        tackleCamera = this.GetComponent<Camera>();
-        center = this.transform.position;
+        mainCamera = this.GetComponent<Camera>();
+        posi = this.transform.position;
+        startPosi = this.transform.position;
     }
-
+    // Update is called once per frame
     private void Update()
     {
         twoDistance = player.transform.position.x - enemy.transform.position.x;
-        if (twoDistance > 0 )
+        if (twoDistance < 0 )
         {
             twoDistance *= -1;
         }
-        //tackleCamera.fieldOfView = 60 - 60 / (1 + twoDistance);
-        center.x = (player.transform.position.x + enemy.transform.position.x) / 2;
-        this.transform.position = center;
+        mainCamera.fieldOfView = twoDistance+30+(enemy.transform.position.y*3);
+        posi.y = player.transform.position.y * cameraJump + startPosi.y;
+        posi.x = (player.transform.position.x + enemy.transform.position.x) / 2;
+        this.transform.position = posi;
     }
 }
