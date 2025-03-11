@@ -9,7 +9,7 @@ public class PlayerEffect : MonoBehaviour
     public ParticleSystem PunchFireEff;
     public ParticleSystem CounterEff;
 
-    public float spawnDistance = 1.0f; // キャラクターの前方距離
+   
 
     public static PlayerEffect Instance;
     public void Awake()
@@ -60,16 +60,7 @@ public class PlayerEffect : MonoBehaviour
     {
         if (PunchEff != null)
         {
-            // ?L?????N?^?[??O?????v?Z
-            Vector3 spawnPos = transform.position + transform.forward * spawnDistance;
-
-            spawnPos.y += 2.5f;
-
-            PunchEff.transform.position = spawnPos;
-
-            PunchEff.transform.rotation = transform.rotation;
-
-            // パーティクルを再生
+            
             PunchEff.Play();
         }
     }
