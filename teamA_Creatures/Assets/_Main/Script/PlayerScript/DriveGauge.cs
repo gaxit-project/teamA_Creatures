@@ -64,22 +64,29 @@ public class DriveGauge : MonoBehaviour
                 ResetGaugeStatus();
             }
         }
+
+        if (driveGauge[5].fillAmount >= 1f)
+        {
+            isDriveGaugeMax = true;
+        }
         // ŽžŠÔŒo‰ß‚ÅƒQ[ƒW‚ð‘‰Á
         GaugeUp("time");
     }
 
     public void DriveGaugeDown()
     {
-        for (int i = driveGauge.Length - 1; i >= 0; i--)
+        ReduceGauge(gaugeDownSpeed * Time.deltaTime);
+    }
+
+    void ReduceGauge(float amount)
+    {
+        for (int i = driveGauge.Length - 1; i >= 0 && amount > 0; i--)
         {
             if (driveGauge[i].fillAmount > 0f)
             {
-                driveGauge[i].fillAmount -= gaugeDownSpeed * Time.deltaTime;
-                if (driveGauge[i].fillAmount < 0f)
-                {
-                    driveGauge[i].fillAmount = 0f;
-                }
-                break;
+                float decrease = Mathf.Min(driveGauge[i].fillAmount, amount);
+                driveGauge[i].fillAmount -= decrease;
+                amount -= decrease;
             }
         }
     }
@@ -102,21 +109,8 @@ public class DriveGauge : MonoBehaviour
         ReduceGauge(amount);
     }
 
-    void ReduceGauge(float amount)
-    {
-        for (int i = driveGauge.Length - 1; i >= 0; i--)
-        {
-            if (driveGauge[i].fillAmount > 0f)
-            {
-                driveGauge[i].fillAmount -= amount;
-                if (driveGauge[i].fillAmount < 0f)
-                {
-                    driveGauge[i].fillAmount = 0f;
-                }
-                break;
-            }
-        }
-    }
+
+
 
     // --- ’Ç‰Á: GaugeUp ŠÖ” ---
     public void GaugeUp(string type)

@@ -17,6 +17,7 @@ TagManager:
   - EnemyLeftPunchAttack
   - EnemyRightPunchAttack
   - EnemyGuardBreakAttack
+  - PlayerJab2
   layers:
   - Default
   - TransparentFX
