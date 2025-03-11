@@ -130,7 +130,9 @@ public class NewEnemyMove : MonoBehaviour
         Down,             // 敵死亡時
         Push,             // 吹き飛ばし
         StreatPush,       // ストレートの吹き飛ばし
-        Counter           // カウンター処理
+        GuardBreak,       // ガードブレイク攻撃
+        Counter,          // カウンター処理
+        Damage,           // ダメージ処理
     }
     #region スタートたち
     void Start()
@@ -165,7 +167,7 @@ public class NewEnemyMove : MonoBehaviour
     #region アップデートたち
     void Update()
     {
-        if(!Pause.isPaused /*&& !ReadyFight.isStartCutIn*/)
+        if(!Pause.isPaused && !ReadyFight.isStartCutIn)
         {
             // HPが0であるかどうか
             if (enemyHP <= 0)
@@ -254,8 +256,14 @@ public class NewEnemyMove : MonoBehaviour
                 case EnemyState.StreatPush:
                     HandleStreatPush();
                     break;
+                case EnemyState.GuardBreak:
+                    HandleGuardBreak();
+                    break;
                 case EnemyState.Counter:
                     HandleCounter();
+                    break;
+                case EnemyState.Damage:
+                    HandleDamage();
                     break;
             }
         }
@@ -407,6 +415,13 @@ public class NewEnemyMove : MonoBehaviour
         currentCoroutine = StartCoroutine(EnemyStreatPush());
     }
 
+    void HandleGuardBreak()
+    {
+        if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
+        currentCoroutine = StartCoroutine(EnemyGuardBreak());
+        //_currentState = EnemyState.Idle;
+    }
+
 
     void HandleCounter()
     {
@@ -418,6 +433,18 @@ public class NewEnemyMove : MonoBehaviour
         }
         if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
         currentCoroutine = StartCoroutine(EnemyCounter());
+    }
+
+    void HandleDamage()
+    {
+        if (isCoroutineStop)
+        {
+            isCoroutineStop = false;
+            StopCoroutine(currentCoroutine);
+            _isCoroutineRunning = false;
+        }
+        if (_isCoroutineRunning) return; // 実行中なら新しいコルーチンは呼び出さない
+        currentCoroutine = StartCoroutine(EnemyDamage());
     }
     /// <summary>
     /// 距離による状態遷移
@@ -446,6 +473,10 @@ public class NewEnemyMove : MonoBehaviour
                     _currentState = EnemyState.BackStep; // バクステたっこー
                     _shortTime = 5f;
                 }
+            }
+            else if (randomState <= 100)
+            {
+                _currentState = EnemyState.Idle; // ガードブレイク
             }
             else if (randomState <= 65)
             {
@@ -822,11 +853,49 @@ public class NewEnemyMove : MonoBehaviour
         AudioManager.GetInstance().PlaySE("enemyAttack",num);
     }
 
-   
+
+    /// <summary>
+    /// ガードブレイク攻撃
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator EnemyGuardBreak()
+    {
+        Debug.Log("ガードブレイク攻撃");
+        _isCoroutineRunning = true;
+        EnemyMaterialChange.Instance.ChangeMaterial(2);
+        _enemyAnim.SetBool("GuardBreak", true);
+        _enemyAnim.CrossFade("GuardBreak", 0.1f);
+        AudioManager.GetInstance().PlaySE("enemyAttack", 4);
+        while (true)
+        {
+            // 敵を前進させる
+            transform.position += transform.forward * forwardSpeed * Time.deltaTime;
+            if (_isAtackEnd)
+            {
+                break;
+            }
+            // フレーム間の待機
+            yield return null;
+        }
+        EnemyEndAttack();
+        // 現在のアニメーションが終了したかを確認
+        EnemyMaterialChange.Instance.ReturnMaterial();
+        _isAtackEnd = false;
+        _isAnimActive = false; // フラグをオフにする
+        _enemyAnim.SetBool("GuardBreak", false);
+        Debug.Log("右パンチ終了");
+        yield return null;
+        _currentState = EnemyState.LeftPunch;
+        _isCoroutineRunning = false;
+    }
+
+    #endregion
+
+    #region 敵の攻撃を受けたときの反応
     // プレイヤーが壁際の時に攻撃後後ろに下がる
     public void EnemyBack()
     {
-        if(PlayerRayCast.isPlayerBackWall)
+        if (PlayerRayCast.isPlayerBackWall)
         {
             PlayerRayCast.isPlayerBackWall = false;
             currentCoroutine = StartCoroutine(EnemyBackWall());
@@ -835,14 +904,14 @@ public class NewEnemyMove : MonoBehaviour
     IEnumerator EnemyBackWall()
     {
         float backTime = 0f;
-        while(true)
+        while (true)
         {
             Debug.Log("敵を後退させる");
             backTime += Time.deltaTime;
             // 敵を後退させる
             transform.position -= transform.forward * backWallSpeed * Time.deltaTime;
             yield return null;
-            if(backTime >= 0.5f)
+            if (backTime >= 0.5f)
             {
                 break;
             }
@@ -939,7 +1008,7 @@ public class NewEnemyMove : MonoBehaviour
         _currentState = EnemyState.Push;
         isCoroutineStop = true;
     }
-    
+
     IEnumerator EnemyPush()
     {
         _rb.isKinematic = false;
@@ -951,7 +1020,7 @@ public class NewEnemyMove : MonoBehaviour
         // ラッシュ待機
         while (true)
         {
-            if(!AttackComponent.Instance.isRush)
+            if (!AttackComponent.Instance.isRush)
             {
                 break;
             }
@@ -972,6 +1041,7 @@ public class NewEnemyMove : MonoBehaviour
         {
             blowDirection = new Vector3(1, 1, 0);
         }
+        _rb.velocity = Vector3.zero;
         _rb.AddForce(blowDirection.normalized * smashForce, ForceMode.Impulse);
         while (true)
         {
@@ -996,7 +1066,7 @@ public class NewEnemyMove : MonoBehaviour
                 break;
             }
         }
-        if(enemyHP < 0)
+        if (enemyHP < 0)
         {
             yield return new WaitForSeconds(1f);
             JM.ChangeClearScene();
@@ -1014,15 +1084,44 @@ public class NewEnemyMove : MonoBehaviour
         yield return null;
     }
 
-    #endregion
 
-    #region 敵の行動＋特殊演出関連
 
-    /// <summary>
-    /// アイドル状態
-    /// </summary>
-    /// <returns></returns>
-    IEnumerator EnemyIdle()
+    IEnumerator EnemyDamage()
+    {
+        if (_isCoroutineRunning) yield break; // **すでに実行中なら中断**
+        _isCoroutineRunning = true;
+
+        _enemyAnim.SetBool("Damage", true);
+        _enemyAnim.CrossFade("Damage", 0f);
+        yield return null;
+        while(true)
+        {
+            if(_isAtackEnd)
+            {
+                break;
+            }
+            yield return null;
+        }
+        _enemyAnim.SetBool("Damage", false);
+        yield return null;
+        _isAtackEnd = false;
+        _isCoroutineRunning = false;
+        _attackStiffnessMin = 0.5f;
+        _attackStiffnessMax = 0.8f;
+        yield return null;
+        Debug.Log("ダメージ処理終了");
+        _currentState = EnemyState.Idle;
+        yield return null;
+    }
+        #endregion
+
+        #region 敵の行動＋特殊演出関連
+
+        /// <summary>
+        /// アイドル状態
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator EnemyIdle()
     {
         _isCoroutineRunning = true;
         _rb.velocity = Vector3.zero;
@@ -1223,8 +1322,8 @@ public class NewEnemyMove : MonoBehaviour
                     // スタン中は攻撃力アップ
                     damege += 5;
                 }
-                DriveGauge.Instance.DriveGaugeUP();
-                HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
+                
+                //HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
                 ReduceEnemyHP(damege);
                 //_currentState = EnemyState.Guard; // 状態をガードに変更
             }
@@ -1253,7 +1352,7 @@ public class NewEnemyMove : MonoBehaviour
                     // スタン中は攻撃力アップ
                     damege += 5;
                 }
-                DriveGauge.Instance.DriveGaugeUP();
+                DriveGauge.Instance.GaugeUp("damage");
                 HitStopScript.Instance.StartHitStop(0.5f, "Enemy");
                 ReduceEnemyHP(damege);
             }
@@ -1391,6 +1490,7 @@ public class NewEnemyMove : MonoBehaviour
         _enemyAnim.SetBool("Tackle", false);
         _enemyAnim.SetBool("Smash", false);
         _enemyAnim.SetBool("BeastMode", false);
+        _enemyAnim.SetBool("Damage", false);
         //_enemyAnim.SetBool("Smash", false);
         _isAtackEnd = true;
         Debug.Log("エネミーアタックエンド！！！");

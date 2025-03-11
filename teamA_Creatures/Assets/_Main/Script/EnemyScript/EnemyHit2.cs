@@ -32,7 +32,7 @@ public class EnemyHit2 : MonoBehaviour
         }
     }
 
-    public void Punch()
+    public void RightPunch()
     {
         if (attackCubePrefab != null)
         {
@@ -40,7 +40,7 @@ public class EnemyHit2 : MonoBehaviour
             if (attackCube == null)
             {
 
-                PunchCreateCube();
+                RightPunchCreateCube();
 
             }
             //else
@@ -53,13 +53,73 @@ public class EnemyHit2 : MonoBehaviour
         }
     }
 
-    private void PunchCreateCube()
+    private void RightPunchCreateCube()
     {
         Vector3 spawnPosition = transform.position + transform.forward * offset.z;
         spawnPosition.y = transform.position.y + offset.y;
         attackCube = Instantiate(attackCubePrefab, spawnPosition, Quaternion.identity);
         attackCube.transform.localScale = new Vector3(1, 1, 1); // サイズ設定
-        attackCube.tag = "EnemyPunchAttack";
+        attackCube.tag = "EnemyRightPunchAttack";
+    }
+
+    public void LeftPunch()
+    {
+        if (attackCubePrefab != null)
+        {
+
+            if (attackCube == null)
+            {
+
+                LeftPunchCreateCube();
+
+            }
+            //else
+            //{
+            //    attackCube.SetActive(true);
+            //}
+            // キューブが生成済みかつオブジェクトが動いている場合、キューブを再生成
+            // 前回位置を更新
+
+        }
+    }
+
+    private void LeftPunchCreateCube()
+    {
+        Vector3 spawnPosition = transform.position + transform.forward * offset.z;
+        spawnPosition.y = transform.position.y + offset.y;
+        attackCube = Instantiate(attackCubePrefab, spawnPosition, Quaternion.identity);
+        attackCube.transform.localScale = new Vector3(1, 1, 1); // サイズ設定
+        attackCube.tag = "EnemyLeftPunchAttack";
+    }
+
+    public void GuardBreak()
+    {
+        if (attackCubePrefab != null)
+        {
+
+            if (attackCube == null)
+            {
+
+                GuardBreakCreateCube();
+
+            }
+            //else
+            //{
+            //    attackCube.SetActive(true);
+            //}
+            // キューブが生成済みかつオブジェクトが動いている場合、キューブを再生成
+            // 前回位置を更新
+
+        }
+    }
+
+    private void GuardBreakCreateCube()
+    {
+        Vector3 spawnPosition = transform.position + transform.forward * offset.z;
+        spawnPosition.y = transform.position.y + offset.y;
+        attackCube = Instantiate(attackCubePrefab, spawnPosition, Quaternion.identity);
+        attackCube.transform.localScale = new Vector3(1, 1, 1); // サイズ設定
+        attackCube.tag = "EnemyGuardBreakAttack";
     }
 
 

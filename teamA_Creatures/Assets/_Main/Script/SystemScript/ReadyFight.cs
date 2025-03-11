@@ -6,13 +6,13 @@ public class ReadyFight : MonoBehaviour
 {
     public Text readyText;
     public Text fightText;
-
+    public static bool isStartCutIn = false;
     void Start()
     {
         // 最初は非表示
         readyText.enabled = false;
         fightText.enabled = false;
-
+        isStartCutIn = true;
         StartCoroutine(ShowReadyFight());
     }
 
@@ -30,7 +30,7 @@ public class ReadyFight : MonoBehaviour
         // Fight! を表示
         fightText.enabled = true;
         yield return new WaitForSeconds(1f);
-
+        isStartCutIn = false;
         // フェードアウト
         StartCoroutine(FadeOutText(fightText));
     }
