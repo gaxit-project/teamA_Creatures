@@ -11441,7 +11441,7 @@ MonoBehaviour:
   - {fileID: 1185106979}
   - {fileID: 457006162}
   gaugeDownSpeed: 0.1
-  guardGaugeDown: 0.2
+  guardGaugeDown: 1.5
   avoidMoveGaugeDown: 0.5
   blowAwayGaugeDown: 0.7
   timeGaugeUp: 0.05
