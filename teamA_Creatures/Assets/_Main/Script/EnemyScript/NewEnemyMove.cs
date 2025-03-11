@@ -636,17 +636,17 @@ public class NewEnemyMove : MonoBehaviour
             smashRnd = Random.Range(1, 10);
             Debug.Log("壁際攻撃処理！");
             #region 壁際処理
-            if (DriveGauge.Instance.isDriveGaugeZero)
-            {
-                if (smashRnd <= 5)
-                {
-                    _currentState = EnemyState.Smash;
-                }
-                else
-                {
-                    _currentState = EnemyState.GuardBreak;
-                }
-            }
+            //if (DriveGauge.Instance.isDriveGaugeZero)
+            //{
+            //    if (smashRnd <= 5)
+            //    {
+            //        _currentState = EnemyState.Smash;
+            //    }
+            //    else
+            //    {
+            //        _currentState = EnemyState.GuardBreak;
+            //    }
+            //}
             else
             {
                 if (smashRnd <= 3)
