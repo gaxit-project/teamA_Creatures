@@ -93,7 +93,7 @@ public class AttackComponent : MonoBehaviour
                     Debug.Log("˜A‘Å");
                     //‚±‚±‚Å–³“G‚Ì”»’è‚ð“ü‚ê‚Ä‚¨‚­
                     DriveGauge.Instance.DriveGaugeMaxDown();
-
+                    DriveGauge.Instance.GaugeDown("blowAway");
                     animator.SetBool("Rush", true);
                     isRush = true;
                     attackNow = true;

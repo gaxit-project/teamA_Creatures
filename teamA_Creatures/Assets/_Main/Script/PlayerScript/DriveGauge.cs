@@ -11,7 +11,7 @@ public class DriveGauge : MonoBehaviour
 
     [SerializeField] private float guardGaugeDown = 0.2f; //ガード中の減少量
     [SerializeField] private float avoidMoveGaugeDown = 0.5f; //避け技使用時の減少量
-    [SerializeField] private float blowAwayGaugeDown = 0.7f; //吹っ飛ばし使用時の減少量
+    [SerializeField] private float blowAwayGaugeDown = 3f; //吹っ飛ばし使用時の減少量
 
     [SerializeField] private float timeGaugeUp = 0.05f; // 時間経過での上昇量
     [SerializeField] private float technicalGaugeUp = 0.3f; // カウンター時やストレート時などの特殊な技を使った際の上昇量
@@ -21,6 +21,7 @@ public class DriveGauge : MonoBehaviour
     bool isDriveGaugeUP = false;
 
     public bool isDriveGaugeMax = false;
+    public bool isDriveGaugeZero = false;
     public static bool isDBAttack = false;
 
     public static DriveGauge Instance;
@@ -42,6 +43,7 @@ public class DriveGauge : MonoBehaviour
         for (int i = 0; i < driveGauge.Length; i++)
         {
             driveGauge[i] = GameObject.Find($"PlayerDriveGauge{i + 1}").GetComponent<Image>();
+            driveGauge[i].fillAmount = 1f;
         }
     }
 
@@ -68,6 +70,18 @@ public class DriveGauge : MonoBehaviour
         if (driveGauge[5].fillAmount >= 1f)
         {
             isDriveGaugeMax = true;
+        }
+        else
+        {
+            isDriveGaugeMax = false;
+        }
+        if (driveGauge[0].fillAmount < 1f)
+        {
+            isDriveGaugeZero = true;
+        }
+        else
+        {
+            isDriveGaugeZero = false;
         }
         // 時間経過でゲージを増加
         GaugeUp("time");

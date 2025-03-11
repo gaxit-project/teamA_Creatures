@@ -9,13 +9,20 @@ public class EnemyDriveGauge : MonoBehaviour
     [SerializeField] Image[] enemyDriveGauge;
     public float gaugeDownSpeed = 0.1f;
 
+    [SerializeField] private float guardGaugeDown = 0.2f; //ガード中の減少量
+    [SerializeField] private float avoidMoveGaugeDown = 0.5f; //避け技使用時の減少量
+    [SerializeField] private float blowAwayGaugeDown = 0.7f; //吹っ飛ばし使用時の減少量
+
+    [SerializeField] private float timeGaugeUp = 0.05f; // 時間経過での上昇量
+    [SerializeField] private float technicalGaugeUp = 0.3f; // カウンター時やストレート時などの特殊な技を使った際の上昇量
+    [SerializeField] private float damageTakenGaugeUp = 0.2f; // 被ダメージ時の上昇量
+
     bool isDGMax = false;
     bool isDriveGaugeUP = false;
 
     public bool isEnemyDriveGaugeMax = false;
-    public bool isEnemyDBAttack = false;
-
-    public float stopGauge = 2f;
+    public bool isEnemyDriveGaugeZero = false;
+    public static bool isDBAttack = false;
 
     public static EnemyDriveGauge Instance;
     public void Awake()
@@ -26,33 +33,28 @@ public class EnemyDriveGauge : MonoBehaviour
         }
         else if (Instance != this)
         {
-            Destroy(Instance);
+            Destroy(gameObject);
         }
     }
-    // Start is called before the first frame update
+
     void Start()
     {
         driveCnt = 0f;
-        enemyDriveGauge[0] = GameObject.Find("EnemyDriveGauge6").GetComponent<Image>();
-        enemyDriveGauge[1] = GameObject.Find("EnemyDriveGauge5").GetComponent<Image>();
-        enemyDriveGauge[2] = GameObject.Find("EnemyDriveGauge4").GetComponent<Image>();
-        enemyDriveGauge[3] = GameObject.Find("EnemyDriveGauge3").GetComponent<Image>();
-        enemyDriveGauge[4] = GameObject.Find("EnemyDriveGauge2").GetComponent<Image>();
-        enemyDriveGauge[5] = GameObject.Find("EnemyDriveGauge1").GetComponent<Image>();
-
+        for (int i = 0; i < enemyDriveGauge.Length; i++)
+        {
+            enemyDriveGauge[i] = GameObject.Find($"EnemyDriveGauge{6-i}").GetComponent<Image>();
+        }
     }
+
     private void Update()
     {
         if (isDGMax)
         {
+            PlayerMaterialChange.Instance.ChangeMaterial(3);
             driveCnt += Time.deltaTime;
-            if (driveCnt >= stopGauge)
+            if (driveCnt >= 2f)
             {
-                stopGauge = 2f;
-                driveCnt = 0f;
-                isDGMax = false;
-                isDriveGaugeUP = false;
-                isEnemyDriveGaugeMax = false;
+                ResetGaugeStatus();
             }
         }
         else if (isDriveGaugeUP)
@@ -60,101 +62,111 @@ public class EnemyDriveGauge : MonoBehaviour
             driveCnt += Time.deltaTime;
             if (driveCnt >= 1f)
             {
-                driveCnt = 0f;
-                isDGMax = false;
-                isDriveGaugeUP = false;
+                ResetGaugeStatus();
             }
         }
-        else if (!isEnemyDBAttack)
-        {
-            DriveGaugeDown();
-        }
-    }
 
-    #region ゲージを上げる
-    public void DriveGaugeUP(float num)
-    {
-        isDriveGaugeUP = true;
-        driveCnt = 0f;
+        if (enemyDriveGauge[5].fillAmount >= 1f)
+        {
+            isEnemyDriveGaugeMax = true;
+        }
         if (enemyDriveGauge[0].fillAmount < 1f)
         {
-            DriveGaugeSetting(0, num);
+            isEnemyDriveGaugeZero = true;
         }
-        else if (enemyDriveGauge[1].fillAmount < 1f)
+        else
         {
-            DriveGaugeSetting(1, num);
+            isEnemyDriveGaugeZero = false;
         }
-        else if (enemyDriveGauge[2].fillAmount < 1f)
-        {
-            DriveGaugeSetting(2, num);
-        }
-        else if (enemyDriveGauge[3].fillAmount < 1f)
-        {
-            DriveGaugeSetting(3, num);
-        }
-        else if (enemyDriveGauge[4].fillAmount < 1f)
-        {
-            DriveGaugeSetting(4, num);
-        }
-        else if (enemyDriveGauge[5].fillAmount < 1f)
-        {
-            DriveGaugeSetting(5, num);
-        }
+        // 時間経過でゲージを増加
+        EnemyGaugeUp("time");
     }
-    void DriveGaugeSetting(int i, float num)
-    {
-        enemyDriveGauge[i].fillAmount += num;
-        if (enemyDriveGauge[i].fillAmount >= 1f)
-        {
-            isDGMax = true;
-            if (i == 5)
-            {
-                AudioManager.GetInstance().PlaySE("playerAttack", 8);
-                isEnemyDriveGaugeMax = true;
-                stopGauge = 5f;
-            }
-            else
-            {
-                AudioManager.GetInstance().PlaySE("playerAttack", 7);
-            }
-        }
-    }
-    #endregion
 
-    #region ゲージを下げる
-    void DriveGaugeDown()
+    public void DriveGaugeDown()
     {
-        if (enemyDriveGauge[5].fillAmount > 0f)
+        ReduceGauge(gaugeDownSpeed * Time.deltaTime);
+    }
+
+    void ReduceGauge(float amount)
+    {
+        for (int i = enemyDriveGauge.Length - 1; i >= 0 && amount > 0; i--)
         {
-            enemyDriveGauge[5].fillAmount -= gaugeDownSpeed * Time.deltaTime;
-        }
-        else if (enemyDriveGauge[4].fillAmount > 0f)
-        {
-            enemyDriveGauge[4].fillAmount -= gaugeDownSpeed * Time.deltaTime;
-        }
-        else if (enemyDriveGauge[3].fillAmount > 0f)
-        {
-            enemyDriveGauge[3].fillAmount -= gaugeDownSpeed * Time.deltaTime;
-        }
-        else if (enemyDriveGauge[2].fillAmount > 0f)
-        {
-            enemyDriveGauge[2].fillAmount -= gaugeDownSpeed * Time.deltaTime;
-        }
-        else if (enemyDriveGauge[1].fillAmount > 0f)
-        {
-            enemyDriveGauge[1].fillAmount -= gaugeDownSpeed * Time.deltaTime;
-        }
-        else if (enemyDriveGauge[0].fillAmount > 0f)
-        {
-            enemyDriveGauge[0].fillAmount -= gaugeDownSpeed * Time.deltaTime;
+            if (enemyDriveGauge[i].fillAmount > 0f)
+            {
+                float decrease = Mathf.Min(enemyDriveGauge[i].fillAmount, amount);
+                enemyDriveGauge[i].fillAmount -= decrease;
+                amount -= decrease;
+            }
         }
     }
+
+    public void EnemyGaugeDown(string type)
+    {
+        float amount = 0f;
+        switch (type)
+        {
+            case "guard":
+                amount = guardGaugeDown;
+                break;
+            case "avoid":
+                amount = avoidMoveGaugeDown;
+                break;
+            case "blowAway":
+                amount = blowAwayGaugeDown;
+                break;
+        }
+        ReduceGauge(amount);
+    }
+
+
+
+
+    // --- 追加: GaugeUp 関数 ---
+    public void EnemyGaugeUp(string type)
+    {
+        float amount = 0f;
+        switch (type)
+        {
+            case "time":
+                amount = timeGaugeUp * Time.deltaTime;
+                break;
+            case "Smash":
+                amount = technicalGaugeUp;
+                break;
+            case "GuardBreak":
+                amount = damageTakenGaugeUp;
+                break;
+        }
+        IncreaseGauge(amount);
+    }
+
+    void IncreaseGauge(float amount)
+    {
+        for (int i = 0; i < enemyDriveGauge.Length; i++)
+        {
+            if (enemyDriveGauge[i].fillAmount < 1f)
+            {
+                enemyDriveGauge[i].fillAmount += amount;
+                if (enemyDriveGauge[i].fillAmount > 1f)
+                {
+                    enemyDriveGauge[i].fillAmount = 1f;
+                }
+                break;
+            }
+        }
+    }
+
+    void ResetGaugeStatus()
+    {
+        PlayerMaterialChange.Instance.ReturnMaterial();
+        driveCnt = 0f;
+        isDGMax = false;
+        isDriveGaugeUP = false;
+        isEnemyDriveGaugeMax = false;
+    }
+
     public void DriveGaugeMaxDown()
     {
-        for (int j = 0; j < 0; j++)
-        {
-            enemyDriveGauge[j].fillAmount = 0f;
-        }
+
     }
-    #endregion
 }

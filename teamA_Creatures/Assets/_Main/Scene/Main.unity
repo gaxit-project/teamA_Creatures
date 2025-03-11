@@ -11428,7 +11428,6 @@ MonoBehaviour:
   PunchEff: {fileID: 626271856}
   PunchFireEff: {fileID: 595174827}
   CounterEff: {fileID: 1312513654}
-  spawnDistance: 1
 --- !u!4 &851187299 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4692684994304406507, guid: e01c6d412591f8a4dab174359f9ec416, type: 3}
@@ -11456,11 +11455,12 @@ MonoBehaviour:
   gaugeDownSpeed: 0.1
   guardGaugeDown: 1.5
   avoidMoveGaugeDown: 0.5
-  blowAwayGaugeDown: 0.7
-  timeGaugeUp: 0.05
+  blowAwayGaugeDown: 6
+  timeGaugeUp: 0.1
   technicalGaugeUp: 0.3
   damageTakenGaugeUp: 0.2
   isDriveGaugeMax: 0
+  isDriveGaugeZero: 0
 --- !u!114 &851187311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16689,16 +16689,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyDriveGauge:
-  - {fileID: 762110378}
-  - {fileID: 1241727130}
-  - {fileID: 329184274}
-  - {fileID: 1384002003}
-  - {fileID: 847945810}
-  - {fileID: 2014587419}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   gaugeDownSpeed: 0.1
+  guardGaugeDown: 0.2
+  avoidMoveGaugeDown: 0.5
+  blowAwayGaugeDown: 0.7
+  timeGaugeUp: 0.1
+  technicalGaugeUp: 0.3
+  damageTakenGaugeUp: 0.2
   isEnemyDriveGaugeMax: 0
-  isEnemyDBAttack: 0
-  stopGauge: 2
+  isEnemyDriveGaugeZero: 0
 --- !u!23 &1661968458
 MeshRenderer:
   m_ObjectHideFlags: 0

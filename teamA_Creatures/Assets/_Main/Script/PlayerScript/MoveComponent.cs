@@ -112,9 +112,11 @@ public class MoveComponent : MonoBehaviour
 
         if (isFrontInput && !prevFrontInput)
         {
-            if (FrontStepReady && Time.time - lastFrontInputTime <= FrontStepThreshold)
+            if (FrontStepReady && Time.time - lastFrontInputTime <= FrontStepThreshold && !DriveGauge.Instance.isDriveGaugeZero)
             {
                 StartCoroutine(FrontStep());
+                PlayerHP.Instance.muteki = true;
+                DriveGauge.Instance.GaugeDown("avoid");
                 FrontStepReady = false;
             }
             lastFrontInputTime = Time.time;
@@ -350,6 +352,7 @@ public class MoveComponent : MonoBehaviour
 
         // 走るアニメーションを終了
         animator.SetBool("run", false);
+        PlayerHP.Instance.muteki = false;
 
         isTeleporting = false;
     }

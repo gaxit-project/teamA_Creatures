@@ -81,6 +81,8 @@ public class NewEnemyMove : MonoBehaviour
 
     bool isPushFlag = true;
 
+    bool isBeastModeMaterial = false;
+
 
     // ふっとばし攻撃関連
     public float streatSmashForce = 50f; // 吹っ飛ばす力
@@ -149,6 +151,7 @@ public class NewEnemyMove : MonoBehaviour
         isGameOverCoroutineFlag = false;
         isEnemyStanFlag = false;
         isBMJudge = false;
+        isBeastModeMaterial = false;
         isBeastMode = true;
         transform.position = new Vector3(4, 0, 0);
         transform.rotation = Quaternion.Euler(0, -90, 0);
@@ -182,8 +185,10 @@ public class NewEnemyMove : MonoBehaviour
             }
             else if (enemyHP <= enemyInitialHP * 0.33 && isBeastMode && !isPushFlag)
             {
+                EnemyMaterialChange.Instance.ChangeMaterial(1);
                 isCoroutineStop = true;
                 isBeastMode = false;
+                isBeastModeMaterial = true;
                 _currentState = EnemyState.BeastMode;
             }
             // 互いの距離計測 + 敵の向き交換
@@ -636,19 +641,19 @@ public class NewEnemyMove : MonoBehaviour
             smashRnd = Random.Range(1, 10);
             Debug.Log("壁際攻撃処理！");
             #region 壁際処理
-            //if (DriveGauge.Instance.isDriveGaugeZero)
-            //{
-            //    if (smashRnd <= 5)
-            //    {
-            //        _currentState = EnemyState.Smash;
-            //    }
-            //    else
-            //    {
-            //        _currentState = EnemyState.GuardBreak;
-            //    }
-            //}
-            //else
-            //{
+            if (DriveGauge.Instance.isDriveGaugeZero)
+            {
+                if (smashRnd <= 5)
+                {
+                    _currentState = EnemyState.Smash;
+                }
+                else
+                {
+                    _currentState = EnemyState.GuardBreak;
+                }
+            }
+            else
+            {
                 if (smashRnd <= 3)
                 {
                     _currentState = EnemyState.Smash;
@@ -658,12 +663,12 @@ public class NewEnemyMove : MonoBehaviour
                     _currentState = EnemyState.GuardBreak;
                 }
                 else
-            {
-                _attackStiffnessMin = 0.3f;
-                _attackStiffnessMax = 0.5f;
-                _currentState = EnemyState.Idle;
+                {
+                    _attackStiffnessMin = 0.3f;
+                    _attackStiffnessMax = 0.5f;
+                    _currentState = EnemyState.Idle;
+                }
             }
-            //}
             #endregion
         }
         else
@@ -707,7 +712,15 @@ public class NewEnemyMove : MonoBehaviour
         _isAnimActive = false; // フラグをオフにする
         _enemyAnim.SetBool("Smash", false);
         Debug.Log("ガードブレイク終了");
-        EnemyMaterialChange.Instance.ReturnMaterial();
+        if(isBeastModeMaterial)
+        {
+            EnemyMaterialChange.Instance.ChangeMaterial(1);
+        }
+        else
+        {
+            EnemyMaterialChange.Instance.ReturnMaterial();
+        }
+        
         yield return null;
         // 攻撃硬直
         _attackStiffnessMin = 1f;
@@ -762,7 +775,6 @@ public class NewEnemyMove : MonoBehaviour
         EnemyRayCast.isTackleWall = false;
         _isTackle = false;
         _enemyAnim.SetBool("Tackle", false);
-        EnemyMaterialChange.Instance.ReturnMaterial();
         Debug.Log("タックル終了");
         // 攻撃硬直
         _attackStiffnessMin = 0.5f;
@@ -832,7 +844,6 @@ public class NewEnemyMove : MonoBehaviour
                     break;
                 case "back":
                     // 敵を後退させる
-                    EnemyMaterialChange.Instance.ChangeMaterial(1);
                     transform.position -= transform.forward * stepSpeed * Time.deltaTime;
                     _nextCurrent = EnemyState.Tackle;
                     break;
@@ -853,7 +864,6 @@ public class NewEnemyMove : MonoBehaviour
     }
     IEnumerator EnemyBackAttack()
     {
-        EnemyMaterialChange.Instance.ChangeMaterial(1);
         _isCoroutineRunning = true;
         Debug.Log("前ステップ");
         _enemyAnim.SetBool("BackUpper", true);
@@ -869,7 +879,6 @@ public class NewEnemyMove : MonoBehaviour
         }
         Debug.Log("前ステップ終了");
         yield return null;
-        EnemyMaterialChange.Instance.ReturnMaterial();
         _isCoroutineRunning = false;
         _isAtackEnd = false;
         // 攻撃硬直
@@ -911,7 +920,15 @@ public class NewEnemyMove : MonoBehaviour
         }
         EnemyEndAttack();
         // 現在のアニメーションが終了したかを確認
-        EnemyMaterialChange.Instance.ReturnMaterial();
+        if (isBeastModeMaterial)
+        {
+            EnemyMaterialChange.Instance.ChangeMaterial(1);
+        }
+        else
+        {
+            EnemyMaterialChange.Instance.ReturnMaterial();
+        }
+
         _isAtackEnd = false;
         _isAnimActive = false; // フラグをオフにする
         _enemyAnim.SetBool("GuardBreak", false);
@@ -1249,6 +1266,7 @@ public class NewEnemyMove : MonoBehaviour
     /// <returns></returns>
     IEnumerator EnemyBeastMode()
     {
+        EnemyMaterialChange.Instance.ChangeMaterial(1);
         Debug.Log("ビーストモード！！！！");
         _isCoroutineRunning = true;
         PlayerHP.BeastModeHP = 1.5f;
@@ -1339,14 +1357,14 @@ public class NewEnemyMove : MonoBehaviour
                 Debug.Log("プレイヤーの攻撃にあたった");
                 AudioManager.Instance.PlaySE("enemyAttack", 3);
                 //_currentState = EnemyState.HitStan;
-                if (EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 70)
-                {
-                    // 敵のカウンター攻撃！！！！！
-                    Debug.Log("敵のカウンター攻撃！！！！！！！");
-                    isCoroutineStop = true;
-                    _currentState = EnemyState.Counter;
-                }
-                else if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
+                //if (EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 70)
+                //{
+                //    // 敵のカウンター攻撃！！！！！
+                //    Debug.Log("敵のカウンター攻撃！！！！！！！");
+                //    isCoroutineStop = true;
+                //    _currentState = EnemyState.Counter;
+                //}
+                if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
                 {
                     EnemyHitStanState();
                 }
@@ -1371,14 +1389,14 @@ public class NewEnemyMove : MonoBehaviour
                 Debug.Log("プレイヤーの攻撃にあたった");
                 AudioManager.Instance.PlaySE("enemyAttack", 3);
                 //_currentState = EnemyState.HitStan;
-                if (EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 70)
-                {
-                    // 敵のカウンター攻撃！！！！！
-                    Debug.Log("敵のカウンター攻撃！！！！！！！");
-                    isCoroutineStop = true;
-                    _currentState = EnemyState.Counter;
-                }
-                else if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
+                //if (EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 70)
+                //{
+                //    // 敵のカウンター攻撃！！！！！
+                //    Debug.Log("敵のカウンター攻撃！！！！！！！");
+                //    isCoroutineStop = true;
+                //    _currentState = EnemyState.Counter;
+                //}
+                if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
                 {
                     EnemyHitStanState();
                     StartCoroutine(KnockBack());
@@ -1402,14 +1420,14 @@ public class NewEnemyMove : MonoBehaviour
                 damege = 20;
                 int RndCounter = Random.Range(1, 101);
                 AudioManager.Instance.PlaySE("playerAttack", 11);
-                if (EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 50)
-                {
-                    // 敵のカウンター攻撃！！！！！
-                    Debug.Log("敵のカウンター攻撃！！！！！！！");
-                    isCoroutineStop = true;
-                    _currentState = EnemyState.Counter;
-                }
-                else if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
+                //if (EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 50)
+                //{
+                //    // 敵のカウンター攻撃！！！！！
+                //    Debug.Log("敵のカウンター攻撃！！！！！！！");
+                //    isCoroutineStop = true;
+                //    _currentState = EnemyState.Counter;
+                //}
+                if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
                 {
                     EnemyHitStanState();
                     _currentState = EnemyState.StreatPush;
