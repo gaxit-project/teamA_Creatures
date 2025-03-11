@@ -50,6 +50,13 @@ public class MoveComponent : MonoBehaviour
     private float FrontStepThreshold = 0.2f;
     public bool prevFrontInput = false;
 
+    public float teleportDistance = 5f;
+    public float teleportCooldown = 3f;
+    private float lastTeleportTime = -Mathf.Infinity;
+    public float teleportSpeed = 20f; // テレポート中の移動速度
+
+    private bool isTeleporting = false;
+
     private void Awake()
     {
         if (Instance == null)
@@ -300,22 +307,51 @@ public class MoveComponent : MonoBehaviour
 
     public IEnumerator FrontStep()
     {
-        float frontStepSpeed = 8f;
-        float frontStepTime = 0.2f;
+        isTeleporting = true;
 
-        Vector3 frontDir = !left ? Vector3.left : Vector3.right;
-        float moveDistance = frontStepSpeed * frontStepTime;
+        // 走るアニメーションを開始
+        animator.SetBool("dash", true);
 
-        if (!Physics.Raycast(transform.position, frontDir, moveDistance))
+        // テレポート方向の決定
+        Vector3 teleportDirection = transform.forward;
+
+
+        // デフォルトの移動距離を設定
+        float targetDistance = teleportDistance;
+
+        Debug.DrawRay(transform.position, teleportDirection * teleportDistance, Color.red, 1f);
+
+        // Raycast で障害物までの距離を確認
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, teleportDirection, out hit, teleportDistance))
         {
-            float timer = 0f;
-            while (timer < frontStepTime)
-            {
-                transform.Translate(frontDir * frontStepSpeed*Time.deltaTime, Space.World);
-                timer += Time.deltaTime;
-                yield return null;
-            }
+            // 障害物がある場合、手前で止まる
+            targetDistance = hit.distance - 0.1f;
+            Debug.Log($"障害物検出: {hit.collider.name} までの距離: {targetDistance}");
         }
+
+        Vector3 startPosition = transform.position;
+
+        Vector3 targetPosition = startPosition + teleportDirection * teleportDistance;
+
+        float time = 0f;
+        float duration = teleportDistance / teleportSpeed; // 時間 = 距離 ÷ 速度
+
+        // Lerpでスムーズに移動
+        while (time < duration)
+        {
+            transform.position = Vector3.Lerp(startPosition, targetPosition, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        // 最終位置を補正
+        transform.position = targetPosition;
+
+        // 走るアニメーションを終了
+        animator.SetBool("run", false);
+
+        isTeleporting = false;
     }
     private IEnumerator RunNow()
     {
