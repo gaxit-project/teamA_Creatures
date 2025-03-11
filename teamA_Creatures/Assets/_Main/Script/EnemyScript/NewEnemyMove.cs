@@ -647,23 +647,23 @@ public class NewEnemyMove : MonoBehaviour
             //        _currentState = EnemyState.GuardBreak;
             //    }
             //}
-            else
-            {
+            //else
+            //{
                 if (smashRnd <= 3)
                 {
                     _currentState = EnemyState.Smash;
                 }
-                else/* if (smashRnd <= 6)*/
+                else if (smashRnd <= 6)
                 {
                     _currentState = EnemyState.GuardBreak;
                 }
-                //else
-                //{
-                //    _attackStiffnessMin = 0.3f;
-                //    _attackStiffnessMax = 0.5f;
-                //    _currentState = EnemyState.Idle;
-                //}
+                else
+            {
+                _attackStiffnessMin = 0.3f;
+                _attackStiffnessMax = 0.5f;
+                _currentState = EnemyState.Idle;
             }
+            //}
             #endregion
         }
         else
