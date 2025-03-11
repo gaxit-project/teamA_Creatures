@@ -222,6 +222,11 @@ public class PlayerHP : MonoBehaviour
             }
             Debug.Log("ブレイクされた。うわああああああああああああ！！！！");
         }
+
+        else if(Shield.Instance.onGuard)
+        {
+            KnockBack();
+        }
     }
     public void GetUpTime()
     {
@@ -291,7 +296,7 @@ public class PlayerHP : MonoBehaviour
     IEnumerator KnockBack()
     {
         float knockBackTime = 0f;
-        float knockBackSpeed = 5f;
+        float knockBackSpeed = 3f;
         while (true)
         {
             knockBackTime += Time.deltaTime;

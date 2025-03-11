@@ -160,7 +160,7 @@ public class NewEnemyMove : MonoBehaviour
         _enemyAnim = GetComponent<Animator>(); // Animatorを取得
         _enemyAnim.SetBool("Mirror", true);
         cubeController = GetComponent<EnemyHit>();
-        //_rb.isKinematic = true;
+        _rb.isKinematic = false;
     }
     #endregion
 
@@ -1337,8 +1337,9 @@ public class NewEnemyMove : MonoBehaviour
                 damege = 10;
                 int RndCounter = Random.Range(1, 101);
                 Debug.Log("プレイヤーの攻撃にあたった");
+                AudioManager.Instance.PlaySE("enemyAttack", 3);
                 //_currentState = EnemyState.HitStan;
-                if(EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 70)
+                if (EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 70)
                 {
                     // 敵のカウンター攻撃！！！！！
                     Debug.Log("敵のカウンター攻撃！！！！！！！");
@@ -1354,8 +1355,9 @@ public class NewEnemyMove : MonoBehaviour
                     // スタン中は攻撃力アップ
                     damege += 5;
                 }
-                
+
                 //HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
+                AttackComponent.Instance.isAttackHit = true;
                 ReduceEnemyHP(damege);
                 //_currentState = EnemyState.Guard; // 状態をガードに変更
             }
@@ -1367,6 +1369,7 @@ public class NewEnemyMove : MonoBehaviour
                 damege = 10;
                 int RndCounter = Random.Range(1, 101);
                 Debug.Log("プレイヤーの攻撃にあたった");
+                AudioManager.Instance.PlaySE("enemyAttack", 3);
                 //_currentState = EnemyState.HitStan;
                 if (EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 70)
                 {
@@ -1387,6 +1390,7 @@ public class NewEnemyMove : MonoBehaviour
                 }
 
                 //HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
+                AttackComponent.Instance.isAttackHit = true;
                 ReduceEnemyHP(damege);
                 //_currentState = EnemyState.Guard; // 状態をガードに変更
             }
@@ -1397,6 +1401,7 @@ public class NewEnemyMove : MonoBehaviour
             {
                 damege = 20;
                 int RndCounter = Random.Range(1, 101);
+                AudioManager.Instance.PlaySE("playerAttack", 11);
                 if (EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 50)
                 {
                     // 敵のカウンター攻撃！！！！！
@@ -1430,6 +1435,27 @@ public class NewEnemyMove : MonoBehaviour
         enemyHP -= _lostHP;
         EnemyHP.Instance.TakeDamage(_lostHP);
         PE.PunchEffect();
+    }
+
+    public void MissShotStyleChange()
+    {
+        if(!AttackComponent.Instance.isAttackHit)
+        {
+            Debug.Log("メイクアップスタイルチェンジ！！！");
+            if (_distancePtoE < middleDistance)
+            {
+                _currentState = EnemyState.RightPunch;
+            }
+            else if (_distancePtoE >= middleDistance && _distancePtoE < longDistance)
+            {
+                _currentState = EnemyState.ForwardStep;
+            }
+        }
+        else
+        {
+            Debug.Log("スタイルチェンジなし！！！");
+        }
+        AttackComponent.Instance.isAttackHit = true;
     }
 
     IEnumerator KnockBack()

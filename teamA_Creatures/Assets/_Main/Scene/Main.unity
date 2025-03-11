@@ -662,13 +662,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rock_05 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1000013569322780, guid: 5d10ae558efe6a64d96e5b4d02ec6792, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4000010352536618, guid: 5d10ae558efe6a64d96e5b4d02ec6792, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 9.587164
+      value: 10.55
       objectReference: {fileID: 0}
     - target: {fileID: 4000010352536618, guid: 5d10ae558efe6a64d96e5b4d02ec6792, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 203.71268
+      value: 201.17
       objectReference: {fileID: 0}
     - target: {fileID: 4000010352536618, guid: 5d10ae558efe6a64d96e5b4d02ec6792, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3381,6 +3385,10 @@ PrefabInstance:
     - target: {fileID: 1000010869019282, guid: d7ba4fe833670a140b9b6085652f0e26, type: 3}
       propertyPath: m_Name
       value: Rock_02 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1000010869019282, guid: d7ba4fe833670a140b9b6085652f0e26, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4000010653347892, guid: d7ba4fe833670a140b9b6085652f0e26, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10411,7 +10419,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &664070999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10645,7 +10653,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4000010653347892, guid: d7ba4fe833670a140b9b6085652f0e26, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 204.91742
+      value: 204.83
       objectReference: {fileID: 0}
     - target: {fileID: 4000010653347892, guid: d7ba4fe833670a140b9b6085652f0e26, type: 3}
       propertyPath: m_LocalPosition.z
@@ -11453,7 +11461,6 @@ MonoBehaviour:
   technicalGaugeUp: 0.3
   damageTakenGaugeUp: 0.2
   isDriveGaugeMax: 0
-  isDriveGaugeZero: 0
 --- !u!114 &851187311
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12377,7 +12384,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1022140599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18852,7 +18859,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1975837316
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19827,7 +19834,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2139863165
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19997,7 +20004,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
       propertyPath: SE_List.Array.size
-      value: 10
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
       propertyPath: SE_List.Array.data[4]
@@ -20023,6 +20030,18 @@ PrefabInstance:
       propertyPath: SE_List.Array.data[9]
       value: 
       objectReference: {fileID: 8300000, guid: 39c622a28c07d0e4f956ea8b812fda82, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[10]
+      value: 
+      objectReference: {fileID: 8300000, guid: b4f802f1b15a4bb41a27d1f67e022340, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[11]
+      value: 
+      objectReference: {fileID: 8300000, guid: c47e414a93831ab4791cc1fc98f9966e, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[12]
+      value: 
+      objectReference: {fileID: 8300000, guid: a930e9dd71ab1704c8ec266f825cf8d3, type: 3}
     - target: {fileID: 5434118842909102825, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
       propertyPath: m_Volume
       value: 0
