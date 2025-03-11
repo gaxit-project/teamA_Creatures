@@ -758,13 +758,14 @@ public class NewEnemyMove : MonoBehaviour
             float _distancePtoE2 = Vector2.Distance(transform.position, _playerTr.position);
             if (_distancePtoE2 <= shortDistance + 1f || EnemyRayCast.isTackleWall)
             {
-                tackleSpeed = 0f;
-                tackleEndTime += Time.deltaTime;
-                // タックル当たった後も突っ走ってほしいやつ(できなかった)
-                if (tackleEndTime >= 0.5f)
-                {
-                    break;
-                }
+                break;
+                //tackleSpeed = 0f;
+                //tackleEndTime += Time.deltaTime;
+                //// タックル当たった後も突っ走ってほしいやつ(できなかった)
+                //if (tackleEndTime >= 0.5f)
+                //{
+                    
+                //}
             }
             // フレーム間の待機
             yield return null;
