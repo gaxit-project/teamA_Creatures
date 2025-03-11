@@ -23,7 +23,7 @@ public class NewEnemyMove : MonoBehaviour
     float _distancePtoE;  // エネミーとプレイヤーの距離を入れる変数
     float forwardSpeed = 1.1f;  // 攻撃するときに前進する速度
     float tackleSpeed = 5f;  // 攻撃するときに前進する速度
-    float backWallSpeed = 3f;  // プレイヤーが壁際にいるときの後退する速度
+    public float backWallSpeed = 1f;  // プレイヤーが壁際にいるときの後退する速度
     float _acceleration = 3f; // タックル攻撃の加速度
     float stepSpeed = 10f;  // ステップの前進する速度
     float _tackleAcceleration = 0f;
@@ -160,7 +160,7 @@ public class NewEnemyMove : MonoBehaviour
         _enemyAnim = GetComponent<Animator>(); // Animatorを取得
         _enemyAnim.SetBool("Mirror", true);
         cubeController = GetComponent<EnemyHit>();
-        _rb.isKinematic = true;
+        //_rb.isKinematic = true;
     }
     #endregion
 
@@ -474,10 +474,10 @@ public class NewEnemyMove : MonoBehaviour
                     _shortTime = 5f;
                 }
             }
-            else if (randomState <= 100)
-            {
-                _currentState = EnemyState.Idle; // ガードブレイク
-            }
+            //else if (randomState <= 100)
+            //{
+            //    _currentState = EnemyState.Idle; // ガードブレイク
+            //}
             else if (randomState <= 65)
             {
                 _currentState = EnemyState.RightPunch; // 近距離で攻撃
@@ -631,13 +631,45 @@ public class NewEnemyMove : MonoBehaviour
         Debug.Log("左パンチ終了");
         yield return null;
         int smashRnd = Random.Range(1, 10);
-        if (smashRnd <= 3)
+        if (/*smashRnd <= 3 ||*/ EnemyRayCast.isFowardWall)
         {
-            _currentState = EnemyState.Smash;
+            smashRnd = Random.Range(1, 10);
+            Debug.Log("壁際攻撃処理！");
+            #region 壁際処理
+            //if (DriveGauge.Instance.isDriveGaugeZero)
+            //{
+            //    if (smashRnd <= 5)
+            //    {
+            //        _currentState = EnemyState.Smash;
+            //    }
+            //    else
+            //    {
+            //        _currentState = EnemyState.GuardBreak;
+            //    }
+            //}
+            //else
+            //{
+                if (smashRnd <= 3)
+                {
+                    _currentState = EnemyState.Smash;
+                }
+                else if (smashRnd <= 6)
+                {
+                    _currentState = EnemyState.GuardBreak;
+                }
+                else
+            {
+                _attackStiffnessMin = 0.3f;
+                _attackStiffnessMax = 0.5f;
+                _currentState = EnemyState.Idle;
+            }
+            //}
+            #endregion
         }
         else
         {
             // 攻撃硬直
+            Debug.Log("壁際攻撃処理！じゃないです．．．");
             _attackStiffnessMin = 0.5f;
             _attackStiffnessMax = 0.8f;
             _currentState = EnemyState.Idle;
@@ -925,7 +957,7 @@ public class NewEnemyMove : MonoBehaviour
         _isCoroutineRunning = true;
 
         EnemyCancel();
-        _rb.isKinematic = false;
+        //_rb.isKinematic = false;
         isPushFlag = true;
         isPushWall = false;
         yield return null;
@@ -974,7 +1006,7 @@ public class NewEnemyMove : MonoBehaviour
         yield return new WaitForFixedUpdate();
         _rb.velocity = Vector3.zero;
         _rb.angularVelocity = Vector3.zero;
-        _rb.isKinematic = true;
+        //_rb.isKinematic = true;
 
         if (enemyHP < 0)
         {
@@ -987,7 +1019,7 @@ public class NewEnemyMove : MonoBehaviour
         // **Idle に戻る前に velocity を完全リセット**
         _rb.velocity = Vector3.zero;
         _rb.angularVelocity = Vector3.zero;
-        _rb.isKinematic = true;
+        //_rb.isKinematic = true;
 
         _attackStiffnessMin = 1f;
         _attackStiffnessMax = 2f;
@@ -1011,7 +1043,7 @@ public class NewEnemyMove : MonoBehaviour
 
     IEnumerator EnemyPush()
     {
-        _rb.isKinematic = false;
+        //_rb.isKinematic = false;
         yield return null;
         float backTime = 0f;
         _isCoroutineRunning = true;
@@ -1072,7 +1104,7 @@ public class NewEnemyMove : MonoBehaviour
             JM.ChangeClearScene();
         }
         yield return new WaitForSeconds(1f);
-        _rb.isKinematic = true;
+        //_rb.isKinematic = true;
         yield return null;
         _enemyAnim.SetBool("Fly", false);
         _attackStiffnessMin = 1f;
@@ -1115,7 +1147,7 @@ public class NewEnemyMove : MonoBehaviour
     }
         #endregion
 
-        #region 敵の行動＋特殊演出関連
+    #region 敵の行動＋特殊演出関連
 
         /// <summary>
         /// アイドル状態
@@ -1328,6 +1360,37 @@ public class NewEnemyMove : MonoBehaviour
                 //_currentState = EnemyState.Guard; // 状態をガードに変更
             }
         }
+        if (collision.CompareTag("PlayerJab2"))
+        {
+            if (!isGameOverFlag)
+            {
+                damege = 10;
+                int RndCounter = Random.Range(1, 101);
+                Debug.Log("プレイヤーの攻撃にあたった");
+                //_currentState = EnemyState.HitStan;
+                if (EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 70)
+                {
+                    // 敵のカウンター攻撃！！！！！
+                    Debug.Log("敵のカウンター攻撃！！！！！！！");
+                    isCoroutineStop = true;
+                    _currentState = EnemyState.Counter;
+                }
+                else if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
+                {
+                    EnemyHitStanState();
+                    StartCoroutine(KnockBack());
+                }
+                else
+                {
+                    // スタン中は攻撃力アップ
+                    damege += 5;
+                }
+
+                //HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
+                ReduceEnemyHP(damege);
+                //_currentState = EnemyState.Guard; // 状態をガードに変更
+            }
+        }
         else if (collision.CompareTag("PlayerStreat"))
         {
             if (!isGameOverFlag)
@@ -1367,6 +1430,22 @@ public class NewEnemyMove : MonoBehaviour
         enemyHP -= _lostHP;
         EnemyHP.Instance.TakeDamage(_lostHP);
         PE.PunchEffect();
+    }
+
+    IEnumerator KnockBack()
+    {
+        float knockBackTime = 0f;
+        float knockBackSpeed = 5f;
+        while (true)
+        {
+            knockBackTime += Time.deltaTime;
+            transform.position -= transform.forward * knockBackSpeed * Time.deltaTime;
+            if (knockBackTime >= 1f || PlayerRayCast.isPlayerWall)
+            {
+                break;
+            }
+            yield return null;
+        }
     }
     #endregion
 

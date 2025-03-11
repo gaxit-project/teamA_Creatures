@@ -10,7 +10,7 @@ public class Shield : MonoBehaviour
     public GameObject ShieldObject;
     private GameObject ShieldInstance;
     public Vector3 shieldRotation = new Vector3(0, 90, 0);
-    private bool onGuard;
+    public bool onGuard;
 
     public void Awake()
     {

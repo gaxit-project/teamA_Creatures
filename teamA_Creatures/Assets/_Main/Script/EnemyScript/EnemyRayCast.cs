@@ -5,12 +5,14 @@ using UnityEngine;
 public class EnemyRayCast : MonoBehaviour
 {
     public float rayDistance = 3f; // レイの長さ
+    public float rayFowardDistance = 9f;
     public float backRayDistance = 5f; // レイの長さ
     public float pushRayDistance = 3f; // レイの長さ
     float downRayDistance = 1f;
     public static bool isTackleWall = false;
     public static bool isBackWallSmash = false;
     public static bool isBackWall = false;
+    public static bool isFowardWall = false;
     float BackWallTime = 0f;
 
 
@@ -21,6 +23,7 @@ public class EnemyRayCast : MonoBehaviour
         isTackleWall = false;
         isBackWall = false;
         isBackWallSmash = false;
+        isFowardWall = false;
         BackWallTime = 0f;
     }
     void Update()
@@ -37,6 +40,24 @@ public class EnemyRayCast : MonoBehaviour
                     {
                         isTackleWall = true;
                     }
+                }
+            }
+        }
+
+        RaycastHit[] hitForward = Physics.RaycastAll(transform.position, transform.forward, rayFowardDistance);
+        if (hitForward.Length > 0)
+        {
+            for (int i = 0; i < hitForward.Length; i++)
+            {
+                if (hitForward[i].collider.CompareTag("Wall"))
+                {
+                    Debug.Log("壁際処理です");
+                    isFowardWall = true;
+                }
+                else
+                {
+                    Debug.Log("壁際じゃないです");
+                    isFowardWall = false;
                 }
             }
         }
@@ -99,6 +120,7 @@ public class EnemyRayCast : MonoBehaviour
 
         // デバッグ用のレイの可視化
         Debug.DrawRay(transform.position, transform.forward * rayDistance, Color.red);
+        Debug.DrawRay(transform.position, transform.forward * rayFowardDistance, Color.green);
         Debug.DrawRay(transform.position, -transform.forward * backRayDistance, Color.blue);
     }
 
