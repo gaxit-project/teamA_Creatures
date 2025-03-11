@@ -87,7 +87,8 @@ public class PlayerHP : MonoBehaviour
                 //AttackComponent.Instance.attackNow = false;
                 animator.SetBool("Shield", false);
 
-                if (other.gameObject.tag == "EnemyPunchAttack")
+                // 敵右パンチ
+                if (other.gameObject.tag == "EnemyRightPunchAttack")
                 {
                     playerHP = playerHP - (10 * BeastModeHP);
                     EE.PunchEffect();
@@ -97,16 +98,41 @@ public class PlayerHP : MonoBehaviour
                     animator.CrossFade("falter", 0f);
                     HitStopScript.Instance.StartHitStop(0.2f, "Player");
                     AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+                    NewEnemyMove.Instance.backWallSpeed = 1f;
                     NewEnemyMove.EnemyBack();
                     EnemyDriveGauge.Instance.DriveGaugeUP(0.5f);
                     StartCoroutine(SmoothHPBar());
                     HitNow = true;
-                    muteki = true;
+                    //muteki = true;
                     //怯む
                     Destroy(AttackComponent.Instance.CountorCube);
 
                 }
 
+                // 敵左パンチ
+                if (other.gameObject.tag == "EnemyLeftPunchAttack")
+                {
+                    playerHP = playerHP - (10 * BeastModeHP);
+                    EE.PunchEffect();
+                    PE.DamageEffect();
+                    animator.SetTrigger("falter");
+                    // ヒットストップ
+                    animator.CrossFade("falter", 0f);
+                    HitStopScript.Instance.StartHitStop(0.2f, "Player");
+                    AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+                    NewEnemyMove.Instance.backWallSpeed = 1f;
+                    NewEnemyMove.EnemyBack();
+                    EnemyDriveGauge.Instance.DriveGaugeUP(0.5f);
+                    StartCoroutine(KnockBack());
+                    StartCoroutine(SmoothHPBar());
+                    HitNow = true;
+                    //muteki = true;
+                    //怯む
+                    Destroy(AttackComponent.Instance.CountorCube);
+
+                }
+
+                // 敵チェーンアタック
                 if (other.gameObject.tag == "EnemyChainAttack")
                 {
                     playerHP = playerHP - (10 * BeastModeHP);
@@ -122,6 +148,7 @@ public class PlayerHP : MonoBehaviour
 
                 }
 
+                // 敵タックル
                 if (other.gameObject.tag == "EnemyTackleAttack")
                 {
                     playerHP = playerHP - (20 * BeastModeHP);
@@ -131,6 +158,7 @@ public class PlayerHP : MonoBehaviour
                     muteki = true;
                     //tackleCamScript.StartCoroutine("tackleCameraCor");
                     AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+                    NewEnemyMove.Instance.backWallSpeed = 3f;
                     NewEnemyMove.EnemyBack();
                     EnemyDriveGauge.Instance.DriveGaugeUP(1f);
                     StartCoroutine(SmoothHPBar());
@@ -143,6 +171,7 @@ public class PlayerHP : MonoBehaviour
 
             }
         }
+        // 敵スマッシュ攻撃
         if (other.gameObject.tag == "EnemySmashAttack" && !muteki)
         {
             playerHP = playerHP - (30 * BeastModeHP);
@@ -157,12 +186,15 @@ public class PlayerHP : MonoBehaviour
             HitNow = true;
             muteki = true;
             AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+            NewEnemyMove.Instance.backWallSpeed = 3f;
             NewEnemyMove.EnemyBack();
             EnemyDriveGauge.Instance.DriveGaugeUP(1f);
             StartCoroutine(SmoothHPBar());
             //吹っ飛ぶ
             Destroy(AttackComponent.Instance.CountorCube);
         }
+
+        // 敵ガードブレイク攻撃
         else if(other.gameObject.tag == "EnemyGuardBreakAttack" && !muteki )
         {
             playerHP = playerHP - (30 * BeastModeHP);
@@ -170,19 +202,24 @@ public class PlayerHP : MonoBehaviour
             EE.SmashEffect();
             EE.BurstEffect();
             PE.DamageEffect();
-            animator.SetTrigger("EnemyTackleHit");
+            //animator.SetTrigger("EnemyTackleHit");
             // ヒットストップ
-            animator.CrossFade("EnemyTackleHit", 0f);
+            //animator.CrossFade("EnemyTackleHit", 0f);
             HitStopScript.Instance.StartHitStop(0.5f, "Player");
             HitNow = true;
             muteki = true;
             AudioManager.GetInstance().PlaySE("enemyAttack", 3);
+            NewEnemyMove.Instance.backWallSpeed = 3f;
             NewEnemyMove.EnemyBack();
             EnemyDriveGauge.Instance.DriveGaugeUP(1f);
             StartCoroutine(SmoothHPBar());
             //吹っ飛ぶ
             Destroy(AttackComponent.Instance.CountorCube);
 
+            if(Shield.Instance.onGuard)
+            {
+                StartCoroutine(GuardBreakStop());
+            }
             Debug.Log("ブレイクされた。うわああああああああああああ！！！！");
         }
     }
@@ -246,6 +283,37 @@ public class PlayerHP : MonoBehaviour
             // fillAmountを滑らかに変化
             playerSmoothHPGauge.fillAmount = Mathf.Lerp(startFill, endFill, progress);
 
+            yield return null;
+        }
+    }
+
+
+    IEnumerator KnockBack()
+    {
+        float knockBackTime = 0f;
+        float knockBackSpeed = 5f;
+        while (true)
+        {
+            knockBackTime += Time.deltaTime;
+            transform.position -= transform.forward * knockBackSpeed * Time.deltaTime;
+            if (knockBackTime >= 1f || PlayerRayCast.isPlayerWall)
+            {
+                break;
+            }
+            yield return null;
+        }
+    }
+
+    IEnumerator GuardBreakStop()
+    {
+        float guardBreakTime = 0f;
+        while (true)
+        {
+            guardBreakTime += Time.deltaTime;
+            if (guardBreakTime >= 5f)
+            {
+                break;
+            }
             yield return null;
         }
     }
