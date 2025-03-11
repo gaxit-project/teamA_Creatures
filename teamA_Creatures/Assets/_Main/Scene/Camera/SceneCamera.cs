@@ -9,6 +9,8 @@ public class SceneCamera : MonoBehaviour
     private float twoDistance;
     private Camera mainCamera;
     public float cameraJump = 0.3f;
+    public float cameraFuttobi = 3f;
+    public float smallestZoom = 30f;
     private Vector3 posi;
     private Vector3 startPosi;
 
@@ -26,7 +28,7 @@ public class SceneCamera : MonoBehaviour
         {
             twoDistance *= -1;
         }
-        mainCamera.fieldOfView = twoDistance+30+(enemy.transform.position.y*3);
+        mainCamera.fieldOfView = twoDistance+smallestZoom+(enemy.transform.position.y*cameraFuttobi);
         posi.y = player.transform.position.y * cameraJump + startPosi.y;
         posi.x = (player.transform.position.x + enemy.transform.position.x) / 2;
         this.transform.position = posi;
