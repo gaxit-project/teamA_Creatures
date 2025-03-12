@@ -27,34 +27,12 @@ public class PlayerEffect : MonoBehaviour
     {
         if (DamageEff != null)
         {
-            Vector3 spawnPos = transform.position;
-
-            spawnPos.y += 2.0f;
-            spawnPos.z += -0.5f;
-
-            DamageEff.transform.position = spawnPos;
-            DamageEff.transform.parent = transform; // キャラに追従
-
+            
             // パーティクルを再生
             DamageEff.Play();
         }
     }
 
-    public void TackleDamageEffect()
-    {
-        if (DamageEff != null)
-        {
-            Vector3 spawnPos = transform.position;
-
-            spawnPos.y += 2.0f;
-
-            DamageEff.transform.position = spawnPos;
-            DamageEff.transform.parent = transform; // キャラに追従
-
-            // パーティクルを再生
-            DamageEff.Play();
-        }
-    }
 
     public void PunchEffect()
     {

@@ -1,7 +1,8 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MoveComponent : MonoBehaviour
@@ -42,8 +43,8 @@ public class MoveComponent : MonoBehaviour
 
     public bool backStepReady = false;
     private float lastBackInputTime = 0f;
-    private float backStepThreshold = 0.2f; // ƒoƒbƒNƒXƒeƒbƒv”­“®—P—\ŠÔ
-    public bool prevBackInput = false; // ‘O‰ñ‚Ì“ü—Íó‘Ô
+    private float backStepThreshold = 0.2f; // ãƒãƒƒã‚¯ã‚¹ãƒ†ãƒƒãƒ—ç™ºå‹•çŒ¶äºˆæ™‚é–“
+    public bool prevBackInput = false; // å‰å›ã®å…¥åŠ›çŠ¶æ…‹
 
     public bool FrontStepReady = false;
     private float lastFrontInputTime = 0f;
@@ -51,11 +52,19 @@ public class MoveComponent : MonoBehaviour
     public bool prevFrontInput = false;
 
     public float teleportDistance = 5f;
-    public float teleportCooldown = 3f;
     private float lastTeleportTime = -Mathf.Infinity;
-    public float teleportSpeed = 20f; // ƒeƒŒƒ|[ƒg’†‚ÌˆÚ“®‘¬“x
+    public float teleportSpeed = 20f; // ãƒ†ãƒ¬ãƒãƒ¼ãƒˆä¸­ã®ç§»å‹•é€Ÿåº¦
+
+    // ã‚·ãƒ¼ãƒ³å†…ã®åœ°å½¢ç¯„å›²ã‚’è¨­å®š (å¿…è¦ã«å¿œã˜ã¦èª¿æ•´)
+    public Bounds stageBounds;
+
 
     private bool isTeleporting = false;
+
+    public GameObject Zanzou;
+    private GameObject zan;
+
+    public bool isZanCoroutine = false;
 
     private void Awake()
     {
@@ -69,6 +78,7 @@ public class MoveComponent : MonoBehaviour
         }
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+
     }
     private void Start()
     {
@@ -80,7 +90,7 @@ public class MoveComponent : MonoBehaviour
     }
     public float Speed;
     /// <summary>
-    /// Down‚æ‚èSpeed‚Ì’l‚ª‘½‚¯‚ê‚ÎˆÚ“®‚·‚é
+    /// Downã‚ˆã‚ŠSpeedã®å€¤ãŒå¤šã‘ã‚Œã°ç§»å‹•ã™ã‚‹
     /// </summary>
     /// <param name="Speed"></param>
     /// <param name="Down"></param>
@@ -88,10 +98,10 @@ public class MoveComponent : MonoBehaviour
     {
         
 
-        bool isBackInput = (!left && Speed < 0) || (left && Speed > 0); // Œã‚ë“ü—Í”»’è
+        bool isBackInput = (!left && Speed < 0) || (left && Speed > 0); // å¾Œã‚å…¥åŠ›åˆ¤å®š
 
-        // ƒoƒbƒNƒXƒeƒbƒv”»’è
-        if (isBackInput && !prevBackInput) // Œã‚ë“ü—Í‚ğV‚µ‚­‰Ÿ‚µ‚½uŠÔ
+        // ãƒãƒƒã‚¯ã‚¹ãƒ†ãƒƒãƒ—åˆ¤å®š
+        if (isBackInput && !prevBackInput) // å¾Œã‚å…¥åŠ›ã‚’æ–°ã—ãæŠ¼ã—ãŸç¬é–“
         {
             if (backStepReady && Time.time - lastBackInputTime <= backStepThreshold)
             {
@@ -100,7 +110,7 @@ public class MoveComponent : MonoBehaviour
             }
             lastBackInputTime = Time.time;
         }
-        else if (!isBackInput && prevBackInput) // Œã‚ë“ü—Í‚ğ—£‚µ‚½uŠÔ
+        else if (!isBackInput && prevBackInput) // å¾Œã‚å…¥åŠ›ã‚’é›¢ã—ãŸç¬é–“
         {
             backStepReady = true;
         }
@@ -112,7 +122,7 @@ public class MoveComponent : MonoBehaviour
 
         if (isFrontInput && !prevFrontInput)
         {
-            if (FrontStepReady && Time.time - lastFrontInputTime <= FrontStepThreshold && !DriveGauge.Instance.isDriveGaugeZero)
+            if (FrontStepReady && Time.time - lastFrontInputTime <= FrontStepThreshold && !DriveGauge.Instance.isDriveGaugeZero && !isZanCoroutine)
             {
                 StartCoroutine(FrontStep());
                 PlayerHP.Instance.muteki = true;
@@ -189,14 +199,15 @@ public class MoveComponent : MonoBehaviour
                     }
                 }
                 
-                //AudioManager.GetInstance().PlayLoopSE("playerMove",0);
+                AudioManager.GetInstance().PlayLoopSE("playerMove",0);
+                // AudioManager.GetInstance().PlayLoopSE("playerMove");  â†ã“ã‚ŒéŸ³æ­¢ã‚ã‚‹å¥´
                 ///<summary>
-                if (!audioSource.isPlaying)
-                {
-                    audioSource.clip = runningSound;
-                    audioSource.loop = true; // ‰¹‚ğƒ‹[ƒvÄ¶
-                    audioSource.Play();
-                }
+                //if (!audioSource.isPlaying)
+                //{
+                //    audioSource.clip = runningSound;
+                //    audioSource.loop = true; // éŸ³ã‚’ãƒ«ãƒ¼ãƒ—å†ç”Ÿ
+                //    audioSource.Play();
+
                 animator.SetBool("Shield", false);
                 if (ATFieldNow)
                 {
@@ -291,10 +302,10 @@ public class MoveComponent : MonoBehaviour
         float backStepSpeed = 8f;
         float backStepTime = 0.2f;
 
-        Vector3 backDir = !left ? Vector3.right : Vector3.left; // •ûŒüŒˆ’è
+        Vector3 backDir = !left ? Vector3.right : Vector3.left; // æ–¹å‘æ±ºå®š
         float moveDistance = backStepSpeed * backStepTime;
 
-        // Raycast‚ÅŒã‚ë•ûŒü‚ÉáŠQ•¨‚ª‚ ‚é‚©ƒ`ƒFƒbƒN
+        // Raycastã§å¾Œã‚æ–¹å‘ã«éšœå®³ç‰©ãŒã‚ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
         if (!Physics.Raycast(transform.position, backDir, moveDistance))
         {
             float timer = 0f;
@@ -306,40 +317,71 @@ public class MoveComponent : MonoBehaviour
             }
         }
     }
+    public float zanntime;
+    public float zantime = 0.2f;
+    public bool zannnnn;
+    public void zann()
+    { 
+        zanntime=Time.time;
+        zannnnn = true;
+        while (zanntime + zantime > Time.time)
+        {
+            return;
 
+        }
+
+
+    }
     public IEnumerator FrontStep()
     {
         isTeleporting = true;
+        isZanCoroutine = true;
 
-        // ‘–‚éƒAƒjƒ[ƒVƒ‡ƒ“‚ğŠJn
+
+        if (left)
+        {
+            zan = Instantiate(Zanzou, transform.position, Quaternion.Euler(0, 90, 0));
+            //zann();
+
+        }
+        if (!left)
+        {
+            zan = Instantiate(Zanzou, transform.position, Quaternion.Euler(0, -90, 0));
+            //zann();
+        }
+
+        // èµ°ã‚‹ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’é–‹å§‹
         animator.SetBool("dash", true);
 
-        // ƒeƒŒƒ|[ƒg•ûŒü‚ÌŒˆ’è
+        // ãƒ†ãƒ¬ãƒãƒ¼ãƒˆæ–¹å‘ã®æ±ºå®š
         Vector3 teleportDirection = transform.forward;
 
 
-        // ƒfƒtƒHƒ‹ƒg‚ÌˆÚ“®‹——£‚ğİ’è
+        // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ç§»å‹•è·é›¢ã‚’è¨­å®š
         float targetDistance = teleportDistance;
+
+        
 
         Debug.DrawRay(transform.position, teleportDirection * teleportDistance, Color.red, 1f);
 
-        // Raycast ‚ÅáŠQ•¨‚Ü‚Å‚Ì‹——£‚ğŠm”F
+        // Raycast ã§éšœå®³ç‰©ã¾ã§ã®è·é›¢ã‚’ç¢ºèª
         RaycastHit hit;
         if (Physics.Raycast(transform.position, teleportDirection, out hit, teleportDistance))
         {
-            // áŠQ•¨‚ª‚ ‚éê‡Aè‘O‚Å~‚Ü‚é
+            // éšœå®³ç‰©ãŒã‚ã‚‹å ´åˆã€æ‰‹å‰ã§æ­¢ã¾ã‚‹
             targetDistance = hit.distance - 0.1f;
-            Debug.Log($"áŠQ•¨ŒŸo: {hit.collider.name} ‚Ü‚Å‚Ì‹——£: {targetDistance}");
+            Debug.Log($"éšœå®³ç‰©æ¤œå‡º: {hit.collider.name} ã¾ã§ã®è·é›¢: {targetDistance}");
         }
 
         Vector3 startPosition = transform.position;
 
         Vector3 targetPosition = startPosition + teleportDirection * teleportDistance;
 
+        
         float time = 0f;
-        float duration = teleportDistance / teleportSpeed; // ŠÔ = ‹——£ € ‘¬“x
+        float duration = teleportDistance / teleportSpeed; // æ™‚é–“ = è·é›¢ Ã· é€Ÿåº¦
 
-        // Lerp‚ÅƒXƒ€[ƒY‚ÉˆÚ“®
+        // Lerpã§ã‚¹ãƒ ãƒ¼ã‚ºã«ç§»å‹•
         while (time < duration)
         {
             transform.position = Vector3.Lerp(startPosition, targetPosition, time / duration);
@@ -347,13 +389,16 @@ public class MoveComponent : MonoBehaviour
             yield return null;
         }
 
-        // ÅIˆÊ’u‚ğ•â³
+        // æœ€çµ‚ä½ç½®ã‚’è£œæ­£
         transform.position = targetPosition;
 
-        // ‘–‚éƒAƒjƒ[ƒVƒ‡ƒ“‚ğI—¹
+        
+        Destroy(zan);
+
+        // èµ°ã‚‹ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’çµ‚äº†
         animator.SetBool("run", false);
         PlayerHP.Instance.muteki = false;
-
+        isZanCoroutine = false;
         isTeleporting = false;
     }
     private IEnumerator RunNow()
