@@ -13,8 +13,11 @@ public class SceneCamera : MonoBehaviour
     public float smallestZoom = 30f;
     public float leftCameraBorder = -4.5f;
     public float rightCameraBorder = 4f;
+    public float longRange = 25f;
+    public float longTime = 0.5f;
     private Vector3 posi;
     private Vector3 startPosi;
+    public static bool longBool = false;
 
     private void Start()
     {
@@ -25,22 +28,36 @@ public class SceneCamera : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        twoDistance = player.transform.position.x - enemy.transform.position.x;
-        if (twoDistance < 0 )
+        if (!longBool)
         {
-            twoDistance *= -1;
+            twoDistance = player.transform.position.x - enemy.transform.position.x;
+            if (twoDistance < 0)
+            {
+                twoDistance *= -1;
+            }
+            mainCamera.fieldOfView = twoDistance+smallestZoom+(enemy.transform.position.y*cameraFuttobi);
+            posi.y = player.transform.position.y * cameraJump + startPosi.y;
+            posi.x = (player.transform.position.x + enemy.transform.position.x) / 2;
+            if (posi.x < leftCameraBorder)
+            {
+                posi.x = leftCameraBorder;
+            }
+            if (posi.x > rightCameraBorder)
+            {
+                posi.x = rightCameraBorder;
+            }
+            this.transform.position = posi;
         }
-        mainCamera.fieldOfView = twoDistance+smallestZoom+(enemy.transform.position.y*cameraFuttobi);
-        posi.y = player.transform.position.y * cameraJump + startPosi.y;
-        posi.x = (player.transform.position.x + enemy.transform.position.x) / 2;
-        if(posi.x < leftCameraBorder)
+        else
         {
-            posi.x = leftCameraBorder;
+            StartCoroutine("cameraCol");
         }
-        if (posi.x > rightCameraBorder)
-        {
-            posi.x = rightCameraBorder;
-        }
-        this.transform.position = posi;
+    }
+
+    IEnumerator cameraCol()
+    {
+        mainCamera.fieldOfView = longRange;
+        yield return new WaitForSeconds(longTime);
+        longBool = false;
     }
 }
