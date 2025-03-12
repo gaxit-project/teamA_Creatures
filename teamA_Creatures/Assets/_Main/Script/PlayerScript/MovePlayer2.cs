@@ -46,7 +46,7 @@ public class MovePlayer2 : MonoBehaviour
             animator.SetBool("Mirror", true);
         }
 
-        if (Time.timeScale == 1)
+        if (Time.timeScale == 1 && !ReadyFight.isStartCutIn)
         {
             if (PlayerHP.Instance.HitNow)
             {

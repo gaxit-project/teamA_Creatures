@@ -19,6 +19,7 @@ public class ReadyFight : MonoBehaviour
     IEnumerator ShowReadyFight()
     {
         // Ready? を表示
+        Time.timeScale = 0f;
         readyText.enabled = true;
         yield return new WaitForSeconds(1f);
 
@@ -32,6 +33,7 @@ public class ReadyFight : MonoBehaviour
         yield return new WaitForSeconds(1f);
         isStartCutIn = false;
         // フェードアウト
+        Time.timeScale = 1f;
         StartCoroutine(FadeOutText(fightText));
     }
 
