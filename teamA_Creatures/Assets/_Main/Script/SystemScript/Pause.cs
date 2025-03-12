@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class Pause : MonoBehaviour
 {
     public GameObject pauseObject;
+    public GameObject settingObject;
 
     public Button continueButton;
     public Button settingButton;
@@ -17,6 +18,7 @@ public class Pause : MonoBehaviour
     public Setting settingScript;
 
     public static bool isPaused = false;
+    private bool canPause = false;
 
     void Start()
     {
@@ -26,6 +28,7 @@ public class Pause : MonoBehaviour
 
         pauseObject.SetActive(false);
         Time.timeScale = 1f;
+        StartCoroutine(BeforeFightTime());
     }
 
     public void OnEnable()
@@ -35,16 +38,19 @@ public class Pause : MonoBehaviour
 
     void Update()
     {
-        // ポーズ画面の開閉処理
-        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton7))
+        if (canPause)
         {
-            if (Time.timeScale == 1f)
+            // ポーズ画面の開閉処理
+            if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton7))
             {
-                PauseGame(); // ゲームをポーズ状態にする
-            }
-            else
-            {
-                Continue(); // ゲームを再開する
+                if (Time.timeScale == 1f)
+                {
+                    PauseGame(); // ゲームをポーズ状態にする
+                }
+                else if (Time.timeScale == 0f && settingObject == null)
+                {
+                    Continue(); // ゲームを再開する
+                }
             }
         }
 
@@ -96,5 +102,11 @@ public class Pause : MonoBehaviour
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene("Title");
+    }
+
+    IEnumerator BeforeFightTime()
+    {
+        yield return new WaitForSeconds(3f);
+        canPause = true;
     }
 }
