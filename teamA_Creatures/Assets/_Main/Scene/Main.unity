@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.06361731, g: 0.052071244, b: 0.056788962, a: 1}
+  m_IndirectSpecularColor: {r: 0.06361822, g: 0.052069563, b: 0.056787517, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -10785,6 +10785,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pauseObject: {fileID: 2043972698}
+  settingObject: {fileID: 2104223451}
   continueButton: {fileID: 1880277794}
   settingButton: {fileID: 1357560081}
   titleButton: {fileID: 1099311653}
@@ -20107,6 +20108,10 @@ PrefabInstance:
     - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
       propertyPath: SE_List.Array.size
       value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: BGM_List.Array.size
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
       propertyPath: SE_List.Array.data[4]

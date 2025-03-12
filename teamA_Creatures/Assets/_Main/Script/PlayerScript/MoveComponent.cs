@@ -199,14 +199,15 @@ public class MoveComponent : MonoBehaviour
                     }
                 }
                 
-                //AudioManager.GetInstance().PlayLoopSE("playerMove",0);
+                AudioManager.GetInstance().PlayLoopSE("playerMove",0);
+                // AudioManager.GetInstance().PlayLoopSE("playerMove");  ←これ音止める奴
                 ///<summary>
-                if (!audioSource.isPlaying)
-                {
-                    audioSource.clip = runningSound;
-                    audioSource.loop = true; // 音をループ再生
-                    audioSource.Play();
-                }
+                //if (!audioSource.isPlaying)
+                //{
+                //    audioSource.clip = runningSound;
+                //    audioSource.loop = true; // 音をループ再生
+                //    audioSource.Play();
+
                 animator.SetBool("Shield", false);
                 if (ATFieldNow)
                 {
