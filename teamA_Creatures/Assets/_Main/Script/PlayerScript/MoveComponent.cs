@@ -397,7 +397,7 @@ public class MoveComponent : MonoBehaviour
 
         // 走るアニメーションを終了
         animator.SetBool("run", false);
-        PlayerHP.Instance.muteki = false;
+        
         isZanCoroutine = false;
         isTeleporting = false;
     }
