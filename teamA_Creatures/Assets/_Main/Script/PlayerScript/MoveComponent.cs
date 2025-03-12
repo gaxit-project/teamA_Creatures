@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MoveComponent : MonoBehaviour
@@ -63,6 +64,8 @@ public class MoveComponent : MonoBehaviour
     public GameObject Zanzou;
     private GameObject zan;
 
+    public bool isZanCoroutine = false;
+
     private void Awake()
     {
         if (Instance == null)
@@ -119,7 +122,7 @@ public class MoveComponent : MonoBehaviour
 
         if (isFrontInput && !prevFrontInput)
         {
-            if (FrontStepReady && Time.time - lastFrontInputTime <= FrontStepThreshold && !DriveGauge.Instance.isDriveGaugeZero)
+            if (FrontStepReady && Time.time - lastFrontInputTime <= FrontStepThreshold && !DriveGauge.Instance.isDriveGaugeZero && !isZanCoroutine)
             {
                 StartCoroutine(FrontStep());
                 PlayerHP.Instance.muteki = true;
@@ -313,21 +316,37 @@ public class MoveComponent : MonoBehaviour
             }
         }
     }
+    public float zanntime;
+    public float zantime = 0.2f;
+    public bool zannnnn;
+    public void zann()
+    { 
+        zanntime=Time.time;
+        zannnnn = true;
+        while (zanntime + zantime > Time.time)
+        {
+            return;
 
+        }
+
+
+    }
     public IEnumerator FrontStep()
     {
         isTeleporting = true;
+        isZanCoroutine = true;
 
-        
+
         if (left)
         {
             zan = Instantiate(Zanzou, transform.position, Quaternion.Euler(0, 90, 0));
+            //zann();
 
         }
         if (!left)
         {
             zan = Instantiate(Zanzou, transform.position, Quaternion.Euler(0, -90, 0));
-
+            //zann();
         }
 
         // 走るアニメーションを開始
@@ -340,7 +359,7 @@ public class MoveComponent : MonoBehaviour
         // デフォルトの移動距離を設定
         float targetDistance = teleportDistance;
 
-        int layerMask = LayerMask.GetMask("Default", "Ground", "Obstacle");
+        
 
         Debug.DrawRay(transform.position, teleportDirection * teleportDistance, Color.red, 1f);
 
@@ -357,9 +376,7 @@ public class MoveComponent : MonoBehaviour
 
         Vector3 targetPosition = startPosition + teleportDirection * teleportDistance;
 
-        targetPosition.x = Mathf.Clamp(targetPosition.x, stageBounds.min.x, stageBounds.max.x);
-        targetPosition.y = Mathf.Clamp(targetPosition.y, stageBounds.min.y, stageBounds.max.y);
-        targetPosition.z = Mathf.Clamp(targetPosition.z, stageBounds.min.z, stageBounds.max.z);
+        
         float time = 0f;
         float duration = teleportDistance / teleportSpeed; // 時間 = 距離 ÷ 速度
 
@@ -380,7 +397,7 @@ public class MoveComponent : MonoBehaviour
         // 走るアニメーションを終了
         animator.SetBool("run", false);
         PlayerHP.Instance.muteki = false;
-
+        isZanCoroutine = false;
         isTeleporting = false;
     }
     private IEnumerator RunNow()
