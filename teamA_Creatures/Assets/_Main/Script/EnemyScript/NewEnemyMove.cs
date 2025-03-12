@@ -470,7 +470,7 @@ public class NewEnemyMove : MonoBehaviour
             {
                 if (randomState <= 50 && !EnemyRayCast.isBackWall)
                 {
-                    _currentState = EnemyState.BackAttack; // バクステパンチ
+                    _currentState = EnemyState.Smash;
                     _shortTime = 5f;
                 }
                 else if (randomState <= 100)
@@ -483,18 +483,18 @@ public class NewEnemyMove : MonoBehaviour
             //{
             //    _currentState = EnemyState.Idle; // ガードブレイク
             //}
-            else if (randomState <= 65)
+            else if (randomState <= 70)
             {
                 _currentState = EnemyState.RightPunch; // 近距離で攻撃
             }
-            else if (randomState <= 70)
+            else if (randomState <= 80)
             {
                 _currentState = EnemyState.Smash; // 近距離で攻撃
             }
-            else if (randomState <= 85 && !EnemyRayCast.isBackWall)
-            {
-                _currentState = EnemyState.BackAttack; // バクステパンチ
-            }
+            //else if (randomState <= 85 && !EnemyRayCast.isBackWall)
+            //{
+            //    _currentState = EnemyState.BackAttack; // バクステパンチ
+            //}
             else if (randomState <= 100)
             {
                 _currentState = EnemyState.BackStep; // バクステたっこー
@@ -580,6 +580,7 @@ public class NewEnemyMove : MonoBehaviour
         _enemyAnim.SetBool("RightPunch", true);
         _enemyAnim.CrossFade("RightPunch", 0.1f);
         AudioManager.GetInstance().PlaySE("enemyAttack", 4);
+        AudioManager.GetInstance().PlaySE("enemyVoice", 24);
         while (true)
         {
             // 現在のアニメーションステート情報を取得
@@ -614,6 +615,7 @@ public class NewEnemyMove : MonoBehaviour
         _enemyAnim.SetBool("LeftPunch", true);
         _enemyAnim.CrossFade("LeftPunch", 0.1f);
         AudioManager.GetInstance().PlaySE("enemyAttack", 4);
+        AudioManager.GetInstance().PlaySE("enemyVoice", 23);
         while (true)
         {
             // 現在のアニメーションステート情報を取得
@@ -693,6 +695,8 @@ public class NewEnemyMove : MonoBehaviour
         _enemyAnim.SetBool("Smash", true);
         _enemyAnim.CrossFade("Smash", 0.1f);
         AudioManager.GetInstance().PlaySE("enemyAttack", 4);
+        AudioManager.GetInstance().PlaySE("enemyVoice", 23);
+        AudioManager.GetInstance().PlaySE("enemyVoice", 16);
         while (true)
         {
             // 現在のアニメーションステート情報を取得
@@ -1367,6 +1371,7 @@ public class NewEnemyMove : MonoBehaviour
                 //}
                 if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
                 {
+                    AudioManager.GetInstance().PlaySE("enemyVoice", 13);
                     EnemyHitStanState();
                 }
                 else
@@ -1399,6 +1404,7 @@ public class NewEnemyMove : MonoBehaviour
                 //}
                 if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
                 {
+                    AudioManager.GetInstance().PlaySE("enemyVoice", 13);
                     EnemyHitStanState();
                     StartCoroutine(KnockBack());
                 }
@@ -1430,6 +1436,7 @@ public class NewEnemyMove : MonoBehaviour
                 //}
                 if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
                 {
+                    AudioManager.GetInstance().PlaySE("enemyVoice", 13);
                     EnemyHitStanState();
                     _currentState = EnemyState.StreatPush;
                     isCoroutineStop = true;
