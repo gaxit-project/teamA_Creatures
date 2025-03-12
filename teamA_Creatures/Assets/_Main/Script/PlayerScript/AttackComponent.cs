@@ -121,6 +121,7 @@ public class AttackComponent : MonoBehaviour
                         {
                             isAttackHit = false;
                             Debug.Log("çUåÇ0");
+                            AudioManager.GetInstance().PlaySE("enemyVoice", 18);
                             animator.SetTrigger("Attack");
                             attackNow = true;
                             animator.SetBool("run", false);
@@ -147,6 +148,7 @@ public class AttackComponent : MonoBehaviour
                         {
                             isAttackHit = false;
                             Debug.Log("çUåÇ1");
+                            AudioManager.GetInstance().PlaySE("enemyVoice", 18);
                             animator.SetTrigger("Attack");
                             attackNow = true;
                             animator.SetBool("run", false);
@@ -172,8 +174,9 @@ public class AttackComponent : MonoBehaviour
                         {
                             isAttackHit = false;
                             PlayerHP.Instance.muteki = true;
-                            PlayerMaterialChange.Instance.ChangeMaterial(3);
+                            //PlayerMaterialChange.Instance.ChangeMaterial(3);
                             Debug.Log("çUåÇ2");
+                            AudioManager.GetInstance().PlaySE("enemyVoice", 20);
                             animator.SetTrigger("Smash");
                             attackNow = true;
                             animator.SetBool("run", false);
@@ -234,8 +237,10 @@ public class AttackComponent : MonoBehaviour
     {
         animator.speed = 0f;
         DriveGauge.Instance.isDriveGaugeMax = false;
-        yield return new WaitForSeconds(2);
+        AudioManager.GetInstance().PlaySE("enemyVoice", 22);
+        yield return new WaitForSeconds(1);
         animator.speed = 1f;
+        AudioManager.GetInstance().PlaySE("enemyVoice", 20);
     }
 
     public void nan()
