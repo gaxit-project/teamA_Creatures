@@ -11,6 +11,8 @@ public class SceneCamera : MonoBehaviour
     public float cameraJump = 0.3f;
     public float cameraFuttobi = 3f;
     public float smallestZoom = 30f;
+    public float leftCameraBorder = -4.5f;
+    public float rightCameraBorder = 4f;
     private Vector3 posi;
     private Vector3 startPosi;
 
@@ -31,6 +33,14 @@ public class SceneCamera : MonoBehaviour
         mainCamera.fieldOfView = twoDistance+smallestZoom+(enemy.transform.position.y*cameraFuttobi);
         posi.y = player.transform.position.y * cameraJump + startPosi.y;
         posi.x = (player.transform.position.x + enemy.transform.position.x) / 2;
+        if(posi.x < leftCameraBorder)
+        {
+            posi.x = leftCameraBorder;
+        }
+        if (posi.x > rightCameraBorder)
+        {
+            posi.x = rightCameraBorder;
+        }
         this.transform.position = posi;
     }
 }
