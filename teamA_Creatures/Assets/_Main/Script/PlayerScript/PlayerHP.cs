@@ -100,7 +100,6 @@ public class PlayerHP : MonoBehaviour
                     AudioManager.GetInstance().PlaySE("enemyAttack", 3);
                     NewEnemyMove.Instance.backWallSpeed = 1f;
                     NewEnemyMove.EnemyBack();
-                    EnemyDriveGauge.Instance.DriveGaugeUP(0.5f);
                     StartCoroutine(SmoothHPBar());
                     HitNow = true;
                     //muteki = true;
@@ -122,7 +121,6 @@ public class PlayerHP : MonoBehaviour
                     AudioManager.GetInstance().PlaySE("enemyAttack", 3);
                     NewEnemyMove.Instance.backWallSpeed = 1f;
                     NewEnemyMove.EnemyBack();
-                    EnemyDriveGauge.Instance.DriveGaugeUP(0.5f);
                     StartCoroutine(KnockBack());
                     StartCoroutine(SmoothHPBar());
                     HitNow = true;
@@ -141,7 +139,6 @@ public class PlayerHP : MonoBehaviour
                     muteki = true;
                     AudioManager.GetInstance().PlaySE("enemyAttack", 3);
                     NewEnemyMove.EnemyBack();
-                    EnemyDriveGauge.Instance.DriveGaugeUP(1f);
                     StartCoroutine(SmoothHPBar());
                     //怯む
                     Destroy(AttackComponent.Instance.CountorCube);
@@ -160,7 +157,6 @@ public class PlayerHP : MonoBehaviour
                     AudioManager.GetInstance().PlaySE("enemyAttack", 3);
                     NewEnemyMove.Instance.backWallSpeed = 3f;
                     NewEnemyMove.EnemyBack();
-                    EnemyDriveGauge.Instance.DriveGaugeUP(1f);
                     StartCoroutine(SmoothHPBar());
                     //吹っ飛ぶ
                     Destroy(AttackComponent.Instance.CountorCube);
@@ -176,10 +172,12 @@ public class PlayerHP : MonoBehaviour
         {
             playerHP = playerHP - (30 * BeastModeHP);
             isPlayerDown = true;
+            Shield.Instance.OffShield();
             EE.SmashEffect();
             EE.BurstEffect();
             PE.DamageEffect();
             animator.SetTrigger("EnemyTackleHit");
+            EnemyDriveGauge.Instance.EnemyGaugeUp("Smash");
             // ヒットストップ
             animator.CrossFade("EnemyTackleHit", 0f);
             HitStopScript.Instance.StartHitStop(0.5f, "Player");
@@ -188,7 +186,6 @@ public class PlayerHP : MonoBehaviour
             AudioManager.GetInstance().PlaySE("enemyAttack", 3);
             NewEnemyMove.Instance.backWallSpeed = 3f;
             NewEnemyMove.EnemyBack();
-            EnemyDriveGauge.Instance.DriveGaugeUP(1f);
             StartCoroutine(SmoothHPBar());
             //吹っ飛ぶ
             Destroy(AttackComponent.Instance.CountorCube);
@@ -197,30 +194,37 @@ public class PlayerHP : MonoBehaviour
         // 敵ガードブレイク攻撃
         else if(other.gameObject.tag == "EnemyGuardBreakAttack" && !muteki )
         {
-            playerHP = playerHP - (30 * BeastModeHP);
             isPlayerDown = true;
-            EE.SmashEffect();
-            EE.BurstEffect();
+            Shield.Instance.OffShield();
+            //EE.SmashEffect();
+            //EE.BurstEffect();
             PE.DamageEffect();
-            //animator.SetTrigger("EnemyTackleHit");
+            animator.SetTrigger("falter");
+            EnemyDriveGauge.Instance.EnemyGaugeUp("GuardBreak");
             // ヒットストップ
-            //animator.CrossFade("EnemyTackleHit", 0f);
+            animator.CrossFade("falter", 0f);
             HitStopScript.Instance.StartHitStop(0.5f, "Player");
             HitNow = true;
             muteki = true;
             AudioManager.GetInstance().PlaySE("enemyAttack", 3);
             NewEnemyMove.Instance.backWallSpeed = 3f;
             NewEnemyMove.EnemyBack();
-            EnemyDriveGauge.Instance.DriveGaugeUP(1f);
             StartCoroutine(SmoothHPBar());
             //吹っ飛ぶ
             Destroy(AttackComponent.Instance.CountorCube);
 
-            if(Shield.Instance.onGuard)
-            {
-                StartCoroutine(GuardBreakStop());
-            }
+            //if(Shield.Instance.onGuard)
+            //{
+            //    StartCoroutine(GuardBreakStop());
+            //}
             Debug.Log("ブレイクされた。うわああああああああああああ！！！！");
+        }
+
+        else if(Shield.Instance.onGuard)
+        {
+            Debug.Log("ガード成功！！！");
+            AudioManager.Instance.PlaySE("playerAttack", 12);
+            KnockBack();
         }
     }
     public void GetUpTime()
@@ -291,7 +295,7 @@ public class PlayerHP : MonoBehaviour
     IEnumerator KnockBack()
     {
         float knockBackTime = 0f;
-        float knockBackSpeed = 5f;
+        float knockBackSpeed = 3f;
         while (true)
         {
             knockBackTime += Time.deltaTime;
