@@ -91,6 +91,7 @@ public class PlayerHP : MonoBehaviour
                 if (other.gameObject.tag == "EnemyRightPunchAttack")
                 {
                     playerHP = playerHP - (10 * BeastModeHP);
+                    AudioManager.GetInstance().PlaySE("enemyVoice", 21);
                     EE.PunchEffect();
                     PE.DamageEffect();
                     animator.SetTrigger("falter");
@@ -112,6 +113,7 @@ public class PlayerHP : MonoBehaviour
                 if (other.gameObject.tag == "EnemyLeftPunchAttack")
                 {
                     playerHP = playerHP - (10 * BeastModeHP);
+                    AudioManager.GetInstance().PlaySE("enemyVoice", 21);
                     EE.PunchEffect();
                     PE.DamageEffect();
                     animator.SetTrigger("falter");
@@ -149,6 +151,7 @@ public class PlayerHP : MonoBehaviour
                 if (other.gameObject.tag == "EnemyTackleAttack")
                 {
                     playerHP = playerHP - (20 * BeastModeHP);
+                    AudioManager.GetInstance().PlaySE("enemyVoice", 21);
                     PE.TackleDamageEffect();
                     animator.SetTrigger("falter");
                     HitNow = true;
@@ -171,6 +174,7 @@ public class PlayerHP : MonoBehaviour
         if (other.gameObject.tag == "EnemySmashAttack" && !muteki)
         {
             playerHP = playerHP - (30 * BeastModeHP);
+            AudioManager.GetInstance().PlaySE("enemyVoice", 21);
             isPlayerDown = true;
             Shield.Instance.OffShield();
             EE.SmashEffect();
@@ -196,6 +200,7 @@ public class PlayerHP : MonoBehaviour
         {
             isPlayerDown = true;
             Shield.Instance.OffShield();
+            AudioManager.GetInstance().PlaySE("enemyVoice", 21);
             //EE.SmashEffect();
             //EE.BurstEffect();
             PE.DamageEffect();

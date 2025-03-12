@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.063576035, g: 0.052026946, b: 0.056728896, a: 1}
+  m_IndirectSpecularColor: {r: 0.06361822, g: 0.052069563, b: 0.056787517, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2418,6 +2418,8 @@ MonoBehaviour:
   smallestZoom: 40
   leftCameraBorder: -4.5
   rightCameraBorder: 4
+  longRange: 25
+  longTime: 0.5
 --- !u!114 &352593765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20045,7 +20047,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
       propertyPath: SE_List.Array.size
-      value: 13
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
       propertyPath: SE_List.Array.data[4]
@@ -20083,6 +20085,58 @@ PrefabInstance:
       propertyPath: SE_List.Array.data[12]
       value: 
       objectReference: {fileID: 8300000, guid: a930e9dd71ab1704c8ec266f825cf8d3, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[13]
+      value: 
+      objectReference: {fileID: 8300000, guid: a6bee17d4107e0840b2df4cef0f91ef3, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[14]
+      value: 
+      objectReference: {fileID: 8300000, guid: 5fe54392fcb864e4e8bd686ddb2a0ca4, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[15]
+      value: 
+      objectReference: {fileID: 8300000, guid: 7cfc8837e92bc07408adb0850a82be5b, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[16]
+      value: 
+      objectReference: {fileID: 8300000, guid: c1a555ca5a6c6e64489742a8ff244323, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[17]
+      value: 
+      objectReference: {fileID: 8300000, guid: 460d73acb89a4e64eb8a14e3e838838c, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[18]
+      value: 
+      objectReference: {fileID: 8300000, guid: 9c18f291d2c1b6d4ea1b9298ca902858, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[19]
+      value: 
+      objectReference: {fileID: 8300000, guid: 784707f02c42fae40991e9da4f47a352, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[20]
+      value: 
+      objectReference: {fileID: 8300000, guid: a40d4c5ccefd08c42b5ce15fada7020c, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[21]
+      value: 
+      objectReference: {fileID: 8300000, guid: b7706100dfe6f7c498a523717d71867f, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[22]
+      value: 
+      objectReference: {fileID: 8300000, guid: 9e128e41d73717d41a6de1776762870d, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[23]
+      value: 
+      objectReference: {fileID: 8300000, guid: b1145ed49350ccd459a821bc1f66c8b3, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[24]
+      value: 
+      objectReference: {fileID: 8300000, guid: 581dfef8ab309254f898a738b705c6b8, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[25]
+      value: 
+      objectReference: {fileID: 8300000, guid: 581dfef8ab309254f898a738b705c6b8, type: 3}
     - target: {fileID: 5434118842909102825, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
       propertyPath: m_Volume
       value: 0
