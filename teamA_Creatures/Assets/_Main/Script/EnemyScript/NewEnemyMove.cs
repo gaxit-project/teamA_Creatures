@@ -185,7 +185,6 @@ public class NewEnemyMove : MonoBehaviour
             }
             else if (enemyHP <= enemyInitialHP * 0.33 && isBeastMode && !isPushFlag)
             {
-                EnemyMaterialChange.Instance.ChangeMaterial(1);
                 isCoroutineStop = true;
                 isBeastMode = false;
                 isBeastModeMaterial = true;
@@ -1271,7 +1270,6 @@ public class NewEnemyMove : MonoBehaviour
     /// <returns></returns>
     IEnumerator EnemyBeastMode()
     {
-        EnemyMaterialChange.Instance.ChangeMaterial(1);
         Debug.Log("ビーストモード！！！！");
         _isCoroutineRunning = true;
         PlayerHP.BeastModeHP = 1.5f;
@@ -1280,6 +1278,7 @@ public class NewEnemyMove : MonoBehaviour
         EnemyCancel();
         _enemyAnim.SetBool("BeastMode", true);
         _enemyAnim.CrossFade("BeastMode", 0f);
+        EnemyMaterialChange.Instance.ChangeMaterial(1);
         yield return null;
     }
     IEnumerator EnemyDown()

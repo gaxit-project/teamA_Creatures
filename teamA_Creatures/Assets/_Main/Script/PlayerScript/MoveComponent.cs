@@ -336,7 +336,7 @@ public class MoveComponent : MonoBehaviour
     {
         isTeleporting = true;
         isZanCoroutine = true;
-
+        PlayerMaterialChange.Instance.ChangeMaterial(3);
 
         if (left)
         {
@@ -351,7 +351,7 @@ public class MoveComponent : MonoBehaviour
         }
 
         // 走るアニメーションを開始
-        animator.SetBool("dash", true);
+        animator.SetBool("FowardStep", true);
 
         // テレポート方向の決定
         Vector3 teleportDirection = transform.forward;
@@ -396,8 +396,10 @@ public class MoveComponent : MonoBehaviour
         Destroy(zan);
 
         // 走るアニメーションを終了
-        animator.SetBool("run", false);
-        
+        animator.SetBool("FowardStep", false);
+        PlayerHP.Instance.muteki = false;
+        PlayerMaterialChange.Instance.ReturnMaterial();
+
         isZanCoroutine = false;
         isTeleporting = false;
     }
