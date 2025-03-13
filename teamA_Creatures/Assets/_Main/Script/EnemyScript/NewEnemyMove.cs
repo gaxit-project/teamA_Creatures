@@ -1278,6 +1278,7 @@ public class NewEnemyMove : MonoBehaviour
         EnemyCancel();
         _enemyAnim.SetBool("BeastMode", true);
         _enemyAnim.CrossFade("BeastMode", 0f);
+        AudioManager.Instance.PlaySE("enemyAttack",14);
         EnemyMaterialChange.Instance.ChangeMaterial(1);
         yield return null;
     }
