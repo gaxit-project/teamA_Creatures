@@ -8,7 +8,6 @@ public class PlayerHP : MonoBehaviour
     public JudgeManager JM;
     public NewEnemyMove NewEnemyMove;
     public EnemyEffect EE;
-    public PlayerEffect PE;
     [SerializeField] Image playerHPGauge;
     [SerializeField] Image playerSmoothHPGauge;
 
@@ -93,7 +92,7 @@ public class PlayerHP : MonoBehaviour
                     playerHP = playerHP - (10 * BeastModeHP);
                     AudioManager.GetInstance().PlaySE("enemyVoice", 21);
                     EE.PunchEffect();
-                    PlayerEffect.Instance.DamageEffect();
+                    PlayerEffect2.Instance.DamageEffect();
                     animator.SetTrigger("falter");
                     // ヒットストップ
                     animator.CrossFade("falter", 0f);
@@ -115,7 +114,7 @@ public class PlayerHP : MonoBehaviour
                     playerHP = playerHP - (10 * BeastModeHP);
                     AudioManager.GetInstance().PlaySE("enemyVoice", 21);
                     EE.PunchEffect();
-                    PlayerEffect.Instance.DamageEffect();
+                    PlayerEffect2.Instance.DamageEffect();
                     animator.SetTrigger("falter");
                     // ヒットストップ
                     animator.CrossFade("falter", 0f);
@@ -152,7 +151,7 @@ public class PlayerHP : MonoBehaviour
                 {
                     playerHP = playerHP - (20 * BeastModeHP);
                     AudioManager.GetInstance().PlaySE("enemyVoice", 21);
-                    PlayerEffect.Instance.DamageEffect();
+                    PlayerEffect2.Instance.DamageEffect();
                     animator.SetTrigger("falter");
                     HitNow = true;
                     muteki = true;
@@ -179,7 +178,7 @@ public class PlayerHP : MonoBehaviour
             Shield.Instance.OffShield();
             EE.SmashEffect();
             EE.BurstEffect();
-            PlayerEffect.Instance.DamageEffect();
+            PlayerEffect2.Instance.DamageEffect();
             animator.SetTrigger("EnemyTackleHit");
             EnemyDriveGauge.Instance.EnemyGaugeUp("Smash");
             // ヒットストップ
@@ -203,7 +202,7 @@ public class PlayerHP : MonoBehaviour
             AudioManager.GetInstance().PlaySE("enemyVoice", 21);
             //EE.SmashEffect();
             //EE.BurstEffect();
-            PlayerEffect.Instance.DamageEffect();
+            PlayerEffect2.Instance.DamageEffect();
             animator.SetTrigger("falter");
             EnemyDriveGauge.Instance.EnemyGaugeUp("GuardBreak");
             // ヒットストップ

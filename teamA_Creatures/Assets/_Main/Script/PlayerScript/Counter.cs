@@ -36,7 +36,7 @@ public class Counter : MonoBehaviour
 
         if (other.gameObject.tag == "EnemyPunchAttack")
         {
-            PlayerEffect.Instance.CounterAttEffect();
+            PlayerEffect2.Instance.CounterAttEffect();
             Debug.Log("Counter");
             HitStopScript.Instance.StartHitStop(0.5f, "Player");
             AudioManager.Instance.PlaySE("playerAttack", 9);
@@ -49,7 +49,7 @@ public class Counter : MonoBehaviour
 
         if (other.gameObject.tag == "EnemyChainAttack")
         {
-            PlayerEffect.Instance.CounterAttEffect();
+            PlayerEffect2.Instance.CounterAttEffect();
             Debug.Log("Counter");
             HitStopScript.Instance.StartHitStop(0.5f, "Player");
             AudioManager.Instance.PlaySE("playerAttack", 9);
@@ -63,7 +63,7 @@ public class Counter : MonoBehaviour
 
         if (other.gameObject.tag == "EnemyTackleAttack")
         {
-            PlayerEffect.Instance.CounterAttEffect();
+            PlayerEffect2.Instance.CounterAttEffect();
             Debug.Log("Counter");
             HitStopScript.Instance.StartHitStop(0.5f, "Player");
             AudioManager.Instance.PlaySE("playerAttack",9);

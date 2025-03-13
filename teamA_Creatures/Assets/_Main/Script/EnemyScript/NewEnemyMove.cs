@@ -1460,7 +1460,7 @@ public class NewEnemyMove : MonoBehaviour
     {
         enemyHP -= _lostHP;
         EnemyHP.Instance.TakeDamage(_lostHP);
-        PE.PunchEffect();
+        PlayerEffect2.Instance.PunchEffect();
     }
 
     public void MissShotStyleChange()
