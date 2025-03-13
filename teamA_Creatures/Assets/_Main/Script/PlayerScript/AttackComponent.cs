@@ -94,6 +94,7 @@ public class AttackComponent : MonoBehaviour
                     //‚±‚±‚Å–³“G‚Ì”»’è‚ð“ü‚ê‚Ä‚¨‚­
                     DriveGauge.Instance.DriveGaugeMaxDown();
                     DriveGauge.Instance.GaugeDown("blowAway");
+                    PlayerMaterialChange.Instance.ChangeMaterial(3);
                     animator.SetBool("Rush", true);
                     isRush = true;
                     attackNow = true;
@@ -241,6 +242,8 @@ public class AttackComponent : MonoBehaviour
         yield return new WaitForSeconds(1);
         animator.speed = 1f;
         AudioManager.GetInstance().PlaySE("enemyVoice", 20);
+        yield return new WaitForSeconds(0.5f);
+        PlayerMaterialChange.Instance.ReturnMaterial();
     }
 
     public void nan()

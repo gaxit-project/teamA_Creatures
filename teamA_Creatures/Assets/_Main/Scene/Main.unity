@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.06361731, g: 0.052071244, b: 0.056788962, a: 1}
+  m_IndirectSpecularColor: {r: 0.06361822, g: 0.052069563, b: 0.056787517, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -11647,13 +11647,13 @@ MonoBehaviour:
   - {fileID: 833748404}
   - {fileID: 1185106979}
   - {fileID: 457006162}
-  gaugeDownSpeed: 0.1
+  gaugeDownSpeed: 0.3
   guardGaugeDown: 1.5
-  avoidMoveGaugeDown: 0.5
+  avoidMoveGaugeDown: 1
   blowAwayGaugeDown: 6
   timeGaugeUp: 0.1
-  technicalGaugeUp: 0.3
-  damageTakenGaugeUp: 0.2
+  technicalGaugeUp: 1
+  damageTakenGaugeUp: 0.5
   isDriveGaugeMax: 0
   isDriveGaugeZero: 0
 --- !u!114 &851187311

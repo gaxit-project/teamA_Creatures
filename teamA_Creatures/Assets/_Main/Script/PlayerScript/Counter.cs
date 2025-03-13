@@ -43,6 +43,7 @@ public class Counter : MonoBehaviour
             PlayerMaterialChange.Instance.ChangeMaterial(1);
             NewEnemyMove.Instance.EnemyStanState();
             AttackComponent.Instance.Countered = true;
+            DriveGauge.Instance.GaugeUp("counter");
             //AttackComponent.Instance.counterCamScript.StartCoroutine("tackleCameraCor");
 
         }
@@ -56,8 +57,8 @@ public class Counter : MonoBehaviour
             PlayerMaterialChange.Instance.ChangeMaterial(1);
             AttackComponent.Instance.Countered = true;
             NewEnemyMove.Instance.EnemyStanState();
+            DriveGauge.Instance.GaugeUp("counter");
             //AttackComponent.Instance.counterCamScript.StartCoroutine("tackleCameraCor");
-
 
         }
 
@@ -70,8 +71,8 @@ public class Counter : MonoBehaviour
             PlayerMaterialChange.Instance.ChangeMaterial(1);
             AttackComponent.Instance.Countered = true;
             NewEnemyMove.Instance.EnemyStanState();
+            DriveGauge.Instance.GaugeUp("counter");
             //AttackComponent.Instance.counterCamScript.StartCoroutine("tackleCameraCor");
-
 
         }
     }
