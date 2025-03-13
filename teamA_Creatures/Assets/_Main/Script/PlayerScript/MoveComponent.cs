@@ -66,6 +66,7 @@ public class MoveComponent : MonoBehaviour
 
     public bool isZanCoroutine = false;
 
+    public bool isguardBreak = false;
     private void Awake()
     {
         if (Instance == null)
@@ -225,7 +226,7 @@ public class MoveComponent : MonoBehaviour
                     audioSource.Stop();
                 }
 
-                if (!ATFieldNow)
+                if (!ATFieldNow /*&& !isguardBreak*/)
                 {
                     Shield.Instance.OnShield();
                 }
@@ -336,7 +337,7 @@ public class MoveComponent : MonoBehaviour
     {
         isTeleporting = true;
         isZanCoroutine = true;
-
+        PlayerMaterialChange.Instance.ChangeMaterial(3);
 
         if (left)
         {
@@ -351,7 +352,7 @@ public class MoveComponent : MonoBehaviour
         }
 
         // 走るアニメーションを開始
-        animator.SetBool("dash", true);
+        animator.SetBool("FowardStep", true);
 
         // テレポート方向の決定
         Vector3 teleportDirection = transform.forward;
@@ -396,8 +397,10 @@ public class MoveComponent : MonoBehaviour
         Destroy(zan);
 
         // 走るアニメーションを終了
-        animator.SetBool("run", false);
-        
+        animator.SetBool("FowardStep", false);
+        PlayerHP.Instance.muteki = false;
+        PlayerMaterialChange.Instance.ReturnMaterial();
+
         isZanCoroutine = false;
         isTeleporting = false;
     }

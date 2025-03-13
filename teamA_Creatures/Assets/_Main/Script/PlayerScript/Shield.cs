@@ -46,6 +46,7 @@ public class Shield : MonoBehaviour
             MoveComponent.Instance.ATFieldNow = false;
             PlayerMaterialChange.Instance.ReturnMaterial();
         }
+        PlayerMaterialChange.Instance.ReturnMaterial();
         onGuard = false; // シールドがなくなったらガード解除
     }
 
