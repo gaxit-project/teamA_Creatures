@@ -1271,6 +1271,7 @@ public class NewEnemyMove : MonoBehaviour
     /// <returns></returns>
     IEnumerator EnemyBeastMode()
     {
+        EnemyMaterialChange.Instance.ChangeMaterial(1);
         Debug.Log("ビーストモード！！！！");
         _isCoroutineRunning = true;
         PlayerHP.BeastModeHP = 1.5f;
@@ -1279,9 +1280,6 @@ public class NewEnemyMove : MonoBehaviour
         EnemyCancel();
         _enemyAnim.SetBool("BeastMode", true);
         _enemyAnim.CrossFade("BeastMode", 0f);
-        _enemyAnim.speed = 0.75f;
-        EnemyMaterialChange.Instance.ChangeMaterial(1);
-        AudioManager.Instance.PlaySE("enemyAttack", 14);
         yield return null;
     }
     IEnumerator EnemyDown()
@@ -1462,7 +1460,7 @@ public class NewEnemyMove : MonoBehaviour
     {
         enemyHP -= _lostHP;
         EnemyHP.Instance.TakeDamage(_lostHP);
-        //PE.PunchEffect();
+        PE.PunchEffect();
     }
 
     public void MissShotStyleChange()
