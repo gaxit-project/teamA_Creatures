@@ -11493,13 +11493,13 @@ MonoBehaviour:
   - {fileID: 833748404}
   - {fileID: 1185106979}
   - {fileID: 457006162}
-  gaugeDownSpeed: 0.1
+  gaugeDownSpeed: 0.3
   guardGaugeDown: 1.5
   avoidMoveGaugeDown: 0.5
   blowAwayGaugeDown: 6
   timeGaugeUp: 0.1
-  technicalGaugeUp: 0.3
-  damageTakenGaugeUp: 0.2
+  technicalGaugeUp: 1
+  damageTakenGaugeUp: 0.5
   isDriveGaugeMax: 0
   isDriveGaugeZero: 0
 --- !u!114 &851187311

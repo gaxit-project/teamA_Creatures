@@ -66,6 +66,7 @@ public class MoveComponent : MonoBehaviour
 
     public bool isZanCoroutine = false;
 
+    public bool isguardBreak = false;
     private void Awake()
     {
         if (Instance == null)
@@ -225,7 +226,7 @@ public class MoveComponent : MonoBehaviour
                     audioSource.Stop();
                 }
 
-                if (!ATFieldNow)
+                if (!ATFieldNow /*&& !isguardBreak*/)
                 {
                     Shield.Instance.OnShield();
                 }
