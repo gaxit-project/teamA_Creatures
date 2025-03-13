@@ -13,6 +13,7 @@ public class EnemyRayCast : MonoBehaviour
     public static bool isBackWallSmash = false;
     public static bool isBackWall = false;
     public static bool isFowardWall = false;
+    public static bool isFowardPlayer = false;
     float BackWallTime = 0f;
 
 
@@ -24,10 +25,15 @@ public class EnemyRayCast : MonoBehaviour
         isBackWall = false;
         isBackWallSmash = false;
         isFowardWall = false;
+        isFowardPlayer = false;
         BackWallTime = 0f;
     }
     void Update()
     {
+
+        Vector3 rayOrigin = transform.position + new Vector3(0, 1.5f, 0);
+
+
         // 前方向のレイキャスト（すべてのオブジェクトを取得）
         RaycastHit[] hitsForward = Physics.RaycastAll(transform.position, transform.forward, rayDistance);
         if (hitsForward.Length > 0)
@@ -44,7 +50,9 @@ public class EnemyRayCast : MonoBehaviour
             }
         }
 
-        RaycastHit[] hitForward = Physics.RaycastAll(transform.position, transform.forward, rayFowardDistance);
+
+
+        RaycastHit[] hitForward = Physics.RaycastAll(rayOrigin, transform.forward, rayFowardDistance);
         if (hitForward.Length > 0)
         {
             for (int i = 0; i < hitForward.Length; i++)
@@ -58,6 +66,16 @@ public class EnemyRayCast : MonoBehaviour
                 {
                     Debug.Log("壁際じゃないです");
                     isFowardWall = false;
+                }
+
+                if (hitForward[i].collider.CompareTag("Player"))
+                {
+                    isFowardPlayer = true;
+                    Debug.Log("目の前にプレイヤーがいます");
+                }
+                else
+                {
+                    isFowardPlayer = false;
                 }
             }
         }

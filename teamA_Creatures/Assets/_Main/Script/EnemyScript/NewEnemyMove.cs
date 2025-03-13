@@ -94,6 +94,9 @@ public class NewEnemyMove : MonoBehaviour
 
     public static int damege = 10;
 
+    public int playerCombo = 0;
+    public bool isComboDamage = false;
+
     public static NewEnemyMove Instance;
     public void Awake()
     {
@@ -155,6 +158,8 @@ public class NewEnemyMove : MonoBehaviour
         isBeastMode = true;
         transform.position = new Vector3(4, 0, 0);
         transform.rotation = Quaternion.Euler(0, -90, 0);
+        playerCombo = 0;
+        isComboDamage = false;
         // リジットボディの設定
         _rb = GetComponent<Rigidbody>();
         _rb.constraints = RigidbodyConstraints.FreezePositionZ  | RigidbodyConstraints.FreezeRotation;
@@ -189,6 +194,16 @@ public class NewEnemyMove : MonoBehaviour
                 isBeastMode = false;
                 isBeastModeMaterial = true;
                 _currentState = EnemyState.BeastMode;
+            }
+            // カウンターを発動するまでの条件
+            if(playerCombo >= 5)
+            {
+                Debug.Log("カウンター発動条件達成中！");
+                isComboDamage = true;
+            }
+            else
+            {
+                isComboDamage = false;
             }
             // 互いの距離計測 + 敵の向き交換
             _distancePtoE = Vector2.Distance(transform.position, _playerTr.position);
@@ -1362,14 +1377,17 @@ public class NewEnemyMove : MonoBehaviour
                 Debug.Log("プレイヤーの攻撃にあたった");
                 AudioManager.Instance.PlaySE("enemyAttack", 3);
                 //_currentState = EnemyState.HitStan;
-                //if (EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 70)
-                //{
-                //    // 敵のカウンター攻撃！！！！！
-                //    Debug.Log("敵のカウンター攻撃！！！！！！！");
-                //    isCoroutineStop = true;
-                //    _currentState = EnemyState.Counter;
-                //}
-                if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
+                if (EnemyRayCast.isFowardPlayer && isComboDamage && RndCounter >= 70 && EnemyDriveGauge.Instance.isEnemyDriveGaugeTwo)
+                {
+                    // 敵のカウンター攻撃！！！！！
+                    Debug.Log("敵のカウンター攻撃！！！！！！！");
+                    isComboDamage = false;
+                    playerCombo = 0;
+                    EnemyDriveGauge.Instance.EnemyGaugeDown("counter");
+                    isCoroutineStop = true;
+                    _currentState = EnemyState.Counter;
+                }
+                else if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
                 {
                     AudioManager.GetInstance().PlaySE("enemyVoice", 13);
                     EnemyHitStanState();
@@ -1383,6 +1401,7 @@ public class NewEnemyMove : MonoBehaviour
                 //HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
                 AttackComponent.Instance.isAttackHit = true;
                 ReduceEnemyHP(damege);
+                playerCombo++;
                 //_currentState = EnemyState.Guard; // 状態をガードに変更
             }
         }
@@ -1417,6 +1436,7 @@ public class NewEnemyMove : MonoBehaviour
                 //HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
                 AttackComponent.Instance.isAttackHit = true;
                 ReduceEnemyHP(damege);
+                playerCombo++;
                 //_currentState = EnemyState.Guard; // 状態をガードに変更
             }
         }
@@ -1449,6 +1469,7 @@ public class NewEnemyMove : MonoBehaviour
                 DriveGauge.Instance.GaugeUp("damage");
                 HitStopScript.Instance.StartHitStop(0.5f, "Enemy");
                 ReduceEnemyHP(damege);
+                playerCombo++;
             }
         }
 
