@@ -8,7 +8,7 @@ public class EnemyRayCast : MonoBehaviour
     public float rayFowardDistance = 9f;
     public float backRayDistance = 5f; // ƒŒƒC‚Ì’·‚³
     public float pushRayDistance = 3f; // ƒŒƒC‚Ì’·‚³
-    float downRayDistance = 1f;
+    float downRayDistance = 3f;
     public static bool isTackleWall = false;
     public static bool isBackWallSmash = false;
     public static bool isBackWall = false;
