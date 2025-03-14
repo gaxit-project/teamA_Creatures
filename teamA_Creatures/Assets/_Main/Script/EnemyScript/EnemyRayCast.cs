@@ -130,6 +130,7 @@ public class EnemyRayCast : MonoBehaviour
             {
                 if (groundHits[i].collider.CompareTag("Ground"))
                 {
+                    Debug.Log("°‚Ì”»’è");
                     foundGround = true;
                 }
             }
