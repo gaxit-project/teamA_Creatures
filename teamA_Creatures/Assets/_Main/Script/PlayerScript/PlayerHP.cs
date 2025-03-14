@@ -41,7 +41,7 @@ public class PlayerHP : MonoBehaviour
     void Start()
     {
         BeastModeHP = 1f;
-        playerMaxHP = 300;
+        playerMaxHP = 30000;
         playerHP = playerMaxHP;
         animator = GetComponent<Animator>();
         HitNow = false;
@@ -73,7 +73,9 @@ public class PlayerHP : MonoBehaviour
         }
         if (back)
         {
-            Knockback(-transform.forward, 10f * Time.deltaTime);
+            //ç°ÇÃÇ‹Ç‹Ç∂Ç·ï«Ç…ñÑÇ‡ÇÍÇƒÇµÇ‹Ç§
+            Knockback(-transform.forward, 20f * Time.deltaTime);
+            //transform.position -= transform.forward * 10f * Time.deltaTime;
         }
     }
     public void Hit()
@@ -88,11 +90,6 @@ public class PlayerHP : MonoBehaviour
         {
             // ï«Ç™ãﬂÇ≠Ç…Ç»Ç¢Ç»ÇÁêÅÇ´îÚÇŒÇµ
             transform.position += forceDirection * forceAmount;
-        }
-        else
-        {
-            // ï«Ç™ãﬂÇ¢Ç»ÇÁâüÇµñﬂÇ≥Ç»Ç¢
-            Debug.Log("ï«Ç™ãﬂÇ¢ÇÃÇ≈êÅÇ´îÚÇŒÇµÇêßå¿");
         }
     }
     public void Back()
@@ -325,11 +322,21 @@ public class PlayerHP : MonoBehaviour
     {
         animator.ResetTrigger("EnemyTackleHit");
         animator.SetTrigger("GetUp");
-        animator.speed = 2f;
         isPlayerDown = false;
     }
     public void Stand()
     {
+        animator.ResetTrigger("GetUp");
+        animator.SetBool("falter", false);
+        animator.SetTrigger("Stand");
+        animator.CrossFade("Stand", 0f);
+
+        StartCoroutine(Mmuteki());
+
+    }
+    public void FalterStand()
+    {
+        StartCoroutine(Mmuteki());
         if (!GardBreak)
         {
             animator.ResetTrigger("GetUp");
@@ -337,9 +344,8 @@ public class PlayerHP : MonoBehaviour
             animator.SetTrigger("Stand");
             animator.CrossFade("Stand", 0f);
 
-            StartCoroutine(Mmuteki());
+            
         }
-
     }
     public IEnumerator Mmuteki()
     {

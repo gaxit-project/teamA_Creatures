@@ -201,7 +201,7 @@ public class MoveComponent : MonoBehaviour
                 }
 
                 AudioManager.GetInstance().PlayLoopSE("playerMove", 0);
-                // AudioManager.GetInstance().PlayLoopSE("playerMove");  ←これ音止める奴
+                //   ←これ音止める奴
                 ///<summary>
                 //if (!audioSource.isPlaying)
                 //{

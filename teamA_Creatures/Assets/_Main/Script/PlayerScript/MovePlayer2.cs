@@ -38,6 +38,11 @@ public class MovePlayer2 : MonoBehaviour
 
     void Update()
     {
+
+        if (velocity.x<velocity.y&&velocity.x < 0.05)
+        {
+            AudioManager.GetInstance().StopLoopSE("playerMove");
+        }
         if (MoveComponent.Instance.left)
         {
             animator.SetBool("Mirror", false);
