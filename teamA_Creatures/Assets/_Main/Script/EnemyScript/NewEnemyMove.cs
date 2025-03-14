@@ -1380,8 +1380,17 @@ public class NewEnemyMove : MonoBehaviour
     /// <summary>
     /// 攻撃を受けたか+壁に当たったかの判定を返す
     /// </summary>
+    /// 
     void OnTriggerEnter(Collider collision)
     {
+        //if (collision.CompareTag("Player"))
+        //{
+        //    Rigidbody playerRb = collision.gameObject.GetComponent<Rigidbody>();
+        //    if (playerRb != null)
+        //    {
+        //        playerRb.AddForce(Vector3.right * 300f); // 横方向に弾く
+        //    }
+        //}
         if (collision.CompareTag("PlayerJab"))
         {
             if (!isGameOverFlag)
