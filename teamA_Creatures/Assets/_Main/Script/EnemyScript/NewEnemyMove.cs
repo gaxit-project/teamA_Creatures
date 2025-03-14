@@ -99,6 +99,8 @@ public class NewEnemyMove : MonoBehaviour
 
     bool isRemoveStan = false;
 
+    bool isEnemyMuteki = false;
+
     public static NewEnemyMove Instance;
     public void Awake()
     {
@@ -148,6 +150,7 @@ public class NewEnemyMove : MonoBehaviour
         enemyHP = enemyInitialHP;
         isFollow = false;
         isRemoveStan = false;
+        isEnemyMuteki = false;
         isPushFlag = false;
         _isTackle = false;
         _isAtackEnd = false;
@@ -1122,6 +1125,7 @@ public class NewEnemyMove : MonoBehaviour
         _enemyAnim.CrossFade("Fly", 0.1f);
         AudioManager.Instance.PlaySE("playerAttack", 6);
         ReduceEnemyHP(30);
+        //isEnemyMuteki = true;
         if (_directionX.x > 0)
         {
             blowDirection = new Vector3(-1, 1, 0);
@@ -1226,6 +1230,10 @@ public class NewEnemyMove : MonoBehaviour
             _enemyAnim.SetBool("Mirror", true);
             Debug.Log("プレイヤーは左側にいます");
         }
+        if(isEnemyMuteki)
+        {
+            isEnemyMuteki = false;
+        }
         float _IdleRnd = Random.Range(_attackStiffnessMin, _attackStiffnessMax);
         yield return new WaitForSeconds(_IdleRnd);
         _isCoroutineRunning = false;
@@ -1318,6 +1326,7 @@ public class NewEnemyMove : MonoBehaviour
     IEnumerator EnemyBeastMode()
     {
         Debug.Log("ビーストモード！！！！");
+        isEnemyMuteki = true;
         _isCoroutineRunning = true;
         PlayerHP.BeastModeHP = 1.5f;
         StanMaxTime = 20f;
@@ -1325,9 +1334,15 @@ public class NewEnemyMove : MonoBehaviour
         EnemyCancel();
         _enemyAnim.SetBool("BeastMode", true);
         _enemyAnim.CrossFade("BeastMode", 0f);
+        _attackStiffnessMin = 0.3f;
+        _attackStiffnessMax = 0.5f;
         AudioManager.Instance.PlaySE("enemyAttack",14);
         EnemyMaterialChange.Instance.ChangeMaterial(1);
         yield return null;
+    }
+    public void BeastModeHP()
+    {
+        //isBeastModeHP = false;
     }
     IEnumerator EnemyDown()
     {
@@ -1409,114 +1424,117 @@ public class NewEnemyMove : MonoBehaviour
         //        playerRb.AddForce(Vector3.right * 300f); // 横方向に弾く
         //    }
         //}
-        if (collision.CompareTag("PlayerJab"))
+        // ビーストモードの演出時じゃないときにHPを減らす
+        if(!isEnemyMuteki)
         {
-            if (!isGameOverFlag)
+            if (collision.CompareTag("PlayerJab"))
             {
-                damege = 10;
-                int RndCounter = Random.Range(1, 101);
-                Debug.Log("プレイヤーの攻撃にあたった");
-                AudioManager.Instance.PlaySE("enemyAttack", 3);
-                //_currentState = EnemyState.HitStan;
-                if (EnemyRayCast.isFowardPlayer && isComboDamage && RndCounter >= 70 && EnemyDriveGauge.Instance.isEnemyDriveGaugeTwo)
+                if (!isGameOverFlag)
                 {
-                    // 敵のカウンター攻撃！！！！！
-                    Debug.Log("敵のカウンター攻撃！！！！！！！");
-                    isComboDamage = false;
-                    playerCombo = 0;
-                    EnemyDriveGauge.Instance.EnemyGaugeDown("counter");
-                    isCoroutineStop = true;
-                    _currentState = EnemyState.Counter;
-                }
-                else if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
-                {
-                    AudioManager.GetInstance().PlaySE("enemyVoice", 13);
-                    EnemyHitStanState();
-                }
-                else
-                {
-                    // スタン中は攻撃力アップ
-                    damege += 5;
-                }
+                    damege = 10;
+                    int RndCounter = Random.Range(1, 101);
+                    Debug.Log("プレイヤーの攻撃にあたった");
+                    AudioManager.Instance.PlaySE("enemyAttack", 3);
+                    //_currentState = EnemyState.HitStan;
+                    if (EnemyRayCast.isFowardPlayer && isComboDamage && RndCounter >= 70 && EnemyDriveGauge.Instance.isEnemyDriveGaugeTwo)
+                    {
+                        // 敵のカウンター攻撃！！！！！
+                        Debug.Log("敵のカウンター攻撃！！！！！！！");
+                        isComboDamage = false;
+                        playerCombo = 0;
+                        EnemyDriveGauge.Instance.EnemyGaugeDown("counter");
+                        isCoroutineStop = true;
+                        _currentState = EnemyState.Counter;
+                    }
+                    else if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
+                    {
+                        AudioManager.GetInstance().PlaySE("enemyVoice", 13);
+                        EnemyHitStanState();
+                    }
+                    else
+                    {
+                        // スタン中は攻撃力アップ
+                        damege += 5;
+                    }
 
-                //HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
-                isRemoveStan = true;
-                AttackComponent.Instance.isAttackHit = true;
-                ReduceEnemyHP(damege);
-                playerCombo++;
-                //_currentState = EnemyState.Guard; // 状態をガードに変更
+                    //HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
+                    isRemoveStan = true;
+                    AttackComponent.Instance.isAttackHit = true;
+                    ReduceEnemyHP(damege);
+                    playerCombo++;
+                    //_currentState = EnemyState.Guard; // 状態をガードに変更
+                }
+            }
+            if (collision.CompareTag("PlayerJab2"))
+            {
+                if (!isGameOverFlag)
+                {
+                    damege = 10;
+                    int RndCounter = Random.Range(1, 101);
+                    Debug.Log("プレイヤーの攻撃にあたった");
+                    AudioManager.Instance.PlaySE("enemyAttack", 3);
+                    //_currentState = EnemyState.HitStan;
+                    //if (EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 70)
+                    //{
+                    //    // 敵のカウンター攻撃！！！！！
+                    //    Debug.Log("敵のカウンター攻撃！！！！！！！");
+                    //    isCoroutineStop = true;
+                    //    _currentState = EnemyState.Counter;
+                    //}
+                    if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
+                    {
+                        AudioManager.GetInstance().PlaySE("enemyVoice", 13);
+                        EnemyHitStanState();
+                        StartCoroutine(KnockBack());
+                    }
+                    else
+                    {
+                        // スタン中は攻撃力アップ
+                        damege += 5;
+                    }
+
+                    //HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
+                    isRemoveStan = true;
+                    AttackComponent.Instance.isAttackHit = true;
+                    ReduceEnemyHP(damege);
+                    playerCombo++;
+                    //_currentState = EnemyState.Guard; // 状態をガードに変更
+                }
+            }
+            else if (collision.CompareTag("PlayerStreat"))
+            {
+                if (!isGameOverFlag)
+                {
+                    damege = 20;
+                    int RndCounter = Random.Range(1, 101);
+                    AudioManager.Instance.PlaySE("playerAttack", 11);
+                    //if (EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 50)
+                    //{
+                    //    // 敵のカウンター攻撃！！！！！
+                    //    Debug.Log("敵のカウンター攻撃！！！！！！！");
+                    //    isCoroutineStop = true;
+                    //    _currentState = EnemyState.Counter;
+                    //}
+                    if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
+                    {
+                        AudioManager.GetInstance().PlaySE("enemyVoice", 13);
+                        EnemyHitStanState();
+                        _currentState = EnemyState.StreatPush;
+                        isCoroutineStop = true;
+                    }
+                    else
+                    {
+                        // スタン中は攻撃力アップ
+                        damege += 5;
+                    }
+                    isRemoveStan = true;
+                    DriveGauge.Instance.GaugeUp("damage");
+                    HitStopScript.Instance.StartHitStop(0.5f, "Enemy");
+                    ReduceEnemyHP(damege);
+                    playerCombo++;
+                }
             }
         }
-        if (collision.CompareTag("PlayerJab2"))
-        {
-            if (!isGameOverFlag)
-            {
-                damege = 10;
-                int RndCounter = Random.Range(1, 101);
-                Debug.Log("プレイヤーの攻撃にあたった");
-                AudioManager.Instance.PlaySE("enemyAttack", 3);
-                //_currentState = EnemyState.HitStan;
-                //if (EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 70)
-                //{
-                //    // 敵のカウンター攻撃！！！！！
-                //    Debug.Log("敵のカウンター攻撃！！！！！！！");
-                //    isCoroutineStop = true;
-                //    _currentState = EnemyState.Counter;
-                //}
-                if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
-                {
-                    AudioManager.GetInstance().PlaySE("enemyVoice", 13);
-                    EnemyHitStanState();
-                    StartCoroutine(KnockBack());
-                }
-                else
-                {
-                    // スタン中は攻撃力アップ
-                    damege += 5;
-                }
-
-                //HitStopScript.Instance.StartHitStop(0.2f, "Enemy");
-                isRemoveStan = true;
-                AttackComponent.Instance.isAttackHit = true;
-                ReduceEnemyHP(damege);
-                playerCombo++;
-                //_currentState = EnemyState.Guard; // 状態をガードに変更
-            }
-        }
-        else if (collision.CompareTag("PlayerStreat"))
-        {
-            if (!isGameOverFlag)
-            {
-                damege = 20;
-                int RndCounter = Random.Range(1, 101);
-                AudioManager.Instance.PlaySE("playerAttack", 11);
-                //if (EnemyDriveGauge.Instance.isEnemyDriveGaugeMax && RndCounter >= 50)
-                //{
-                //    // 敵のカウンター攻撃！！！！！
-                //    Debug.Log("敵のカウンター攻撃！！！！！！！");
-                //    isCoroutineStop = true;
-                //    _currentState = EnemyState.Counter;
-                //}
-                if (!isEnemyStanFlag && !isBMJudge && !EnemyMaterialChange.Instance.isHitStopStop)
-                {
-                    AudioManager.GetInstance().PlaySE("enemyVoice", 13);
-                    EnemyHitStanState();
-                    _currentState = EnemyState.StreatPush;
-                    isCoroutineStop = true;
-                }
-                else
-                {
-                    // スタン中は攻撃力アップ
-                    damege += 5;
-                }
-                isRemoveStan = true;
-                DriveGauge.Instance.GaugeUp("damage");
-                HitStopScript.Instance.StartHitStop(0.5f, "Enemy");
-                ReduceEnemyHP(damege);
-                playerCombo++;
-            }
-        }
-
     }
     /// <summary>
     /// 敵のHPを減らしたりする
