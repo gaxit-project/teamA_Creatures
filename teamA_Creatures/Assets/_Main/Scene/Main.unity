@@ -17123,8 +17123,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  gaugeDownSpeed: 0.1
-  guardGaugeDown: 0.2
+  gaugeDownSpeed: 0.3
+  guardGaugeDown: 1
   counterMoveGaugeDown: 2
   blowAwayGaugeDown: 0.7
   timeGaugeUp: 0.1
