@@ -57,9 +57,10 @@ public class PlayerHP : MonoBehaviour
         }
         //slider.value = playerHP / playerMaxHP;
         playerHPGauge.fillAmount = playerHP / playerMaxHP;
-        if (Input.GetKeyDown(KeyCode.K))
+        if (Input.GetKeyDown(KeyCode.K)&&!muteki)
         {
             animator.SetTrigger("EnemyTackleHit");
+            StartCoroutine(GetUpTime());
             HitNow = true;
         }
         if (Input.GetKeyDown(KeyCode.L))
@@ -67,7 +68,7 @@ public class PlayerHP : MonoBehaviour
             animator.SetTrigger("falter");
             HitNow = true;
         }
-        if (Input.GetKeyDown(KeyCode.I))
+        if (Input.GetKeyDown(KeyCode.I)&&!muteki)
         {
             StartCoroutine(GuardBreakStop());
         }
@@ -219,7 +220,7 @@ public class PlayerHP : MonoBehaviour
         // 敵スマッシュ攻撃
         if (other.gameObject.tag == "EnemySmashAttack" && !muteki)
         {
-            //if (muteki) return;
+            if (muteki) return;
             HitNow = true;
             muteki = true;
             GardBreak = false;
@@ -231,6 +232,7 @@ public class PlayerHP : MonoBehaviour
             EE.BurstEffect();
 
             animator.SetTrigger("EnemyTackleHit");
+            StartCoroutine(GetUpTime());
             EnemyDriveGauge.Instance.EnemyGaugeUp("Smash");
             // ヒットストップ
             //animator.CrossFade("EnemyTackleHit", 0f);
@@ -318,20 +320,23 @@ public class PlayerHP : MonoBehaviour
         }
     }
 
-    public void GetUpTime()
+    public IEnumerator GetUpTime()
     {
+        animator.ResetTrigger("Stand");
+        yield return new WaitForSeconds(47 / 60f);
         animator.ResetTrigger("EnemyTackleHit");
         animator.SetTrigger("GetUp");
         isPlayerDown = false;
     }
     public void Stand()
     {
+        StartCoroutine(Mmuteki());
         animator.ResetTrigger("GetUp");
         animator.SetBool("falter", false);
         animator.SetTrigger("Stand");
-        animator.CrossFade("Stand", 0f);
+        //animator.CrossFade("Stand", 0f);
 
-        StartCoroutine(Mmuteki());
+        
 
     }
     public void FalterStand()
@@ -342,16 +347,18 @@ public class PlayerHP : MonoBehaviour
             animator.ResetTrigger("GetUp");
             animator.SetBool("falter", false);
             animator.SetTrigger("Stand");
-            animator.CrossFade("Stand", 0f);
+            //animator.CrossFade("Stand", 0f);
 
             
         }
     }
     public IEnumerator Mmuteki()
     {
+        Debug.Log("al;fdjksa");
         HitNow = false;
         yield return new WaitForSeconds(1f);
         //HitNow = false;
+        Debug.Log("la;ksdjfa");
         muteki = false;
     }
 
