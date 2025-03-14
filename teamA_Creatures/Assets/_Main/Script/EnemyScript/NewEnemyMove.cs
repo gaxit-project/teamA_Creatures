@@ -1094,6 +1094,7 @@ public class NewEnemyMove : MonoBehaviour
         _enemyAnim.SetBool("RightPunch2", true);
         _enemyAnim.CrossFade("RightPunch2", 0f);
         _enemyAnim.speed = 0.1f;
+        AudioManager.Instance.PlaySE("enemyAttack", 25);
     }
 
     IEnumerator EnemyPush()
