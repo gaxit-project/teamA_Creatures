@@ -49,6 +49,13 @@ public class DriveGauge : MonoBehaviour
 
     private void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            for(int i = 0; i < driveGauge.Length; i++)
+            {
+                driveGauge[i].fillAmount = 1f;
+            }
+        }
         if (isDGMax)
         {
             PlayerMaterialChange.Instance.ChangeMaterial(3);
