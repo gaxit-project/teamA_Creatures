@@ -34,6 +34,10 @@ public class PlayerHP : MonoBehaviour
 
     public bool HitNow;
     public bool muteki;
+
+    public bool back;
+
+    public bool GardBreak;
     void Start()
     {
         BeastModeHP = 1f;
@@ -63,14 +67,56 @@ public class PlayerHP : MonoBehaviour
             animator.SetTrigger("falter");
             HitNow = true;
         }
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            StartCoroutine(GuardBreakStop());
+        }
+        if (back)
+        {
+            Knockback(-transform.forward, 10f * Time.deltaTime);
+        }
     }
-    
+    public void Hit()
+    {
+        muteki = true;
+        HitNow = true;
+    }
+    void Knockback(Vector3 forceDirection, float forceAmount)
+    {
+        float maxDistance = 1.0f; // 壁の近さを判定する距離
+        if (!Physics.Raycast(transform.position, forceDirection, maxDistance))
+        {
+            // 壁が近くにないなら吹き飛ばし
+            transform.position += forceDirection * forceAmount;
+        }
+        else
+        {
+            // 壁が近いなら押し戻さない
+            Debug.Log("壁が近いので吹き飛ばしを制限");
+        }
+    }
+    public void Back()
+    {
+        back = true;
+        muteki = true;
+        HitNow = true;
+    }
+
+    public void Backfalse()
+    {
+        back = false;
+    }
+
     public void Button()
     {
         playerHP = playerHP - 7;
     }
     public void OnTriggerEnter(Collider other)
     {
+        if (other.gameObject.tag == "Wall")
+        {
+            back = false;
+        }
         if (!MoveComponent.Instance.ATFieldNow && !muteki)
         {
             Destroy(AttackComponent.Instance.CountorCube);
@@ -89,13 +135,14 @@ public class PlayerHP : MonoBehaviour
                 // 敵右パンチ
                 if (other.gameObject.tag == "EnemyRightPunchAttack")
                 {
+                    GardBreak = false;
                     playerHP = playerHP - (10 * BeastModeHP);
                     AudioManager.GetInstance().PlaySE("enemyVoice", 21);
                     EE.PunchEffect();
-                    PlayerEffect2.Instance.DamageEffect();
+
                     animator.SetTrigger("falter");
                     // ヒットストップ
-                    animator.CrossFade("falter", 0f);
+                    //animator.CrossFade("falter", 0f);
                     HitStopScript.Instance.StartHitStop(0.2f, "Player");
                     AudioManager.GetInstance().PlaySE("enemyAttack", 3);
                     NewEnemyMove.Instance.backWallSpeed = 1f;
@@ -111,13 +158,14 @@ public class PlayerHP : MonoBehaviour
                 // 敵左パンチ
                 if (other.gameObject.tag == "EnemyLeftPunchAttack")
                 {
+                    GardBreak = false;
                     playerHP = playerHP - (10 * BeastModeHP);
                     AudioManager.GetInstance().PlaySE("enemyVoice", 21);
                     EE.PunchEffect();
-                    PlayerEffect2.Instance.DamageEffect();
+
                     animator.SetTrigger("falter");
                     // ヒットストップ
-                    animator.CrossFade("falter", 0f);
+                    //animator.CrossFade("falter", 0f);
                     HitStopScript.Instance.StartHitStop(0.2f, "Player");
                     AudioManager.GetInstance().PlaySE("enemyAttack", 3);
                     NewEnemyMove.Instance.backWallSpeed = 1f;
@@ -134,6 +182,7 @@ public class PlayerHP : MonoBehaviour
                 // 敵チェーンアタック
                 if (other.gameObject.tag == "EnemyChainAttack")
                 {
+                    GardBreak = false;
                     playerHP = playerHP - (10 * BeastModeHP);
                     animator.SetTrigger("falter");
                     HitNow = true;
@@ -149,9 +198,10 @@ public class PlayerHP : MonoBehaviour
                 // 敵タックル
                 if (other.gameObject.tag == "EnemyTackleAttack")
                 {
+                    GardBreak = false;
                     playerHP = playerHP - (20 * BeastModeHP);
                     AudioManager.GetInstance().PlaySE("enemyVoice", 21);
-                    PlayerEffect2.Instance.DamageEffect();
+
                     animator.SetTrigger("falter");
                     HitNow = true;
                     muteki = true;
@@ -165,24 +215,28 @@ public class PlayerHP : MonoBehaviour
 
                 }
 
-                
+
 
             }
         }
         // 敵スマッシュ攻撃
         if (other.gameObject.tag == "EnemySmashAttack" && !muteki)
         {
+            //if (muteki) return;
+            HitNow = true;
+            muteki = true;
+            GardBreak = false;
             playerHP = playerHP - (30 * BeastModeHP);
             AudioManager.GetInstance().PlaySE("enemyVoice", 21);
             isPlayerDown = true;
             Shield.Instance.OffShield();
             EE.SmashEffect();
             EE.BurstEffect();
-            PlayerEffect2.Instance.DamageEffect();
+
             animator.SetTrigger("EnemyTackleHit");
             EnemyDriveGauge.Instance.EnemyGaugeUp("Smash");
             // ヒットストップ
-            animator.CrossFade("EnemyTackleHit", 0f);
+            //animator.CrossFade("EnemyTackleHit", 0f);
             HitStopScript.Instance.StartHitStop(0.5f, "Player");
             HitNow = true;
             muteki = true;
@@ -192,24 +246,24 @@ public class PlayerHP : MonoBehaviour
             StartCoroutine(SmoothHPBar());
             //吹っ飛ぶ
             Destroy(AttackComponent.Instance.CountorCube);
+
         }
 
         // 敵ガードブレイク攻撃
-        else if(other.gameObject.tag == "EnemyGuardBreakAttack" && !muteki )
+        else if (other.gameObject.tag == "EnemyGuardBreakAttack" && !muteki && !HitNow)
         {
             isPlayerDown = true;
             Shield.Instance.OffShield();
             AudioManager.GetInstance().PlaySE("enemyVoice", 21);
             //EE.SmashEffect();
             //EE.BurstEffect();
-            PlayerEffect2.Instance.DamageEffect();
+
             animator.SetTrigger("falter");
             EnemyDriveGauge.Instance.EnemyGaugeUp("GuardBreak");
             // ヒットストップ
-            animator.CrossFade("falter", 0f);
+            //animator.CrossFade("falter", 0f);
             HitStopScript.Instance.StartHitStop(0.5f, "Player");
-            HitNow = true;
-            muteki = true;
+
             AudioManager.GetInstance().PlaySE("enemyAttack", 3);
             NewEnemyMove.Instance.backWallSpeed = 3f;
             NewEnemyMove.EnemyBack();
@@ -217,37 +271,80 @@ public class PlayerHP : MonoBehaviour
             //吹っ飛ぶ
             Destroy(AttackComponent.Instance.CountorCube);
 
-            //if(Shield.Instance.onGuard)
-            //{
-            //    StartCoroutine(GuardBreakStop());
-            //}
+            if (Shield.Instance.onGuard)
+            {
+                StartCoroutine(GuardBreakStop());
+            }
+            else
+            {
+                GardBreak = false;
+                HitNow = true;
+                muteki = true;
+            }
             Debug.Log("ブレイクされた。うわああああああああああああ！！！！");
         }
 
-        else if(Shield.Instance.onGuard)
+        else if (Shield.Instance.onGuard)
         {
             Debug.Log("ガード成功！！！");
             AudioManager.Instance.PlaySE("playerAttack", 12);
             KnockBack();
         }
     }
+
+    public IEnumerator GuardBreakStop()
+    {
+
+        if (GardBreak)
+        {
+            yield break;
+        }
+        GardBreak = true;
+        animator.SetBool("falter", true);
+        Debug.Log("ガードブレイクされた");
+        float guardBreakTime = 0f;
+        while (true)
+        {
+            muteki = false;
+            if (!GardBreak)
+            {
+                break;
+            }
+            guardBreakTime += Time.deltaTime;
+            if (guardBreakTime >= 5f)
+            {
+                //animator.SetBool("falter", false);
+                GardBreak = false;
+                break;
+            }
+            yield return null;
+        }
+    }
+
     public void GetUpTime()
     {
+        animator.ResetTrigger("EnemyTackleHit");
         animator.SetTrigger("GetUp");
         isPlayerDown = false;
     }
     public void Stand()
     {
-        animator.SetTrigger("Stand");
-        animator.CrossFade("Stand", 0f);
-        
-        StartCoroutine(Mmuteki());
+        if (!GardBreak)
+        {
+            animator.ResetTrigger("GetUp");
+            animator.SetBool("falter", false);
+            animator.SetTrigger("Stand");
+            animator.CrossFade("Stand", 0f);
+
+            StartCoroutine(Mmuteki());
+        }
+
     }
     public IEnumerator Mmuteki()
     {
-        //HitNow = false;
-        yield return new WaitForSeconds(1f);
         HitNow = false;
+        yield return new WaitForSeconds(1f);
+        //HitNow = false;
         muteki = false;
     }
 
@@ -305,20 +402,6 @@ public class PlayerHP : MonoBehaviour
             knockBackTime += Time.deltaTime;
             transform.position -= transform.forward * knockBackSpeed * Time.deltaTime;
             if (knockBackTime >= 1f || PlayerRayCast.isPlayerWall)
-            {
-                break;
-            }
-            yield return null;
-        }
-    }
-
-    IEnumerator GuardBreakStop()
-    {
-        float guardBreakTime = 0f;
-        while (true)
-        {
-            guardBreakTime += Time.deltaTime;
-            if (guardBreakTime >= 5f)
             {
                 break;
             }

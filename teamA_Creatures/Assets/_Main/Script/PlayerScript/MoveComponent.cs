@@ -97,7 +97,7 @@ public class MoveComponent : MonoBehaviour
     /// <param name="Down"></param>
     public void MoveHorizontal(float Speed, float Down)
     {
-        
+
 
         bool isBackInput = (!left && Speed < 0) || (left && Speed > 0); // 後ろ入力判定
 
@@ -119,7 +119,7 @@ public class MoveComponent : MonoBehaviour
         prevBackInput = isBackInput;
 
 
-        bool isFrontInput = (left && Speed < 0)||(!left&&Speed>0);
+        bool isFrontInput = (left && Speed < 0) || (!left && Speed > 0);
 
         if (isFrontInput && !prevFrontInput)
         {
@@ -140,7 +140,7 @@ public class MoveComponent : MonoBehaviour
 
 
         Debug.Log(Speed);
-        if (Mathf.Abs(Speed) > Mathf.Abs(Down)||Down>0)
+        if (Mathf.Abs(Speed) > Mathf.Abs(Down) || Down > 0)
         {
             if (moveF && JumpComponent.Instance.jumpFlag)
             {
@@ -162,7 +162,7 @@ public class MoveComponent : MonoBehaviour
                 transform.Translate(transform.TransformDirection(new Vector2(Speed, 0) * moveBJumpSpeed * Time.deltaTime));
             }
         }
-        if (JumpComponent.Instance.jumpFlag&&(Speed!=0||Down!=0))
+        if (JumpComponent.Instance.jumpFlag && (Speed != 0 || Down != 0))
         {
             if (Mathf.Abs(Speed) > -Down)
             {
@@ -199,8 +199,8 @@ public class MoveComponent : MonoBehaviour
                         moveB = false;
                     }
                 }
-                
-                AudioManager.GetInstance().PlayLoopSE("playerMove",0);
+
+                AudioManager.GetInstance().PlayLoopSE("playerMove", 0);
                 // AudioManager.GetInstance().PlayLoopSE("playerMove");  ←これ音止める奴
                 ///<summary>
                 //if (!audioSource.isPlaying)
@@ -215,11 +215,11 @@ public class MoveComponent : MonoBehaviour
                     Shield.Instance.OffShield();
                 }
             }
-            else if ( Down < -0.4)
+            else if (Down < -0.4)
             {
                 animator.SetBool("Shield", true);
                 moveF = false;
-                moveB = false; 
+                moveB = false;
                 runningNow = false;
                 if (audioSource.isPlaying)
                 {
@@ -263,7 +263,7 @@ public class MoveComponent : MonoBehaviour
                     moveBNow = false;
                 }
             }
-            
+
 
 
             animator.SetBool("Shield", false);
@@ -282,19 +282,19 @@ public class MoveComponent : MonoBehaviour
         {
             Runwait += 0.25f * Time.deltaTime;
         }
-        if (Mathf.Abs(Speed)> 0.4)
+        if (Mathf.Abs(Speed) > 0.4)
         {
             Runwait = 0;
-            
+
         }
 
         if (runningNow)
         {
-            animator.SetBool("run",true);
+            animator.SetBool("run", true);
         }
         else
         {
-            animator.SetBool("run",false);
+            animator.SetBool("run", false);
         }
     }
 
@@ -322,8 +322,8 @@ public class MoveComponent : MonoBehaviour
     public float zantime = 0.2f;
     public bool zannnnn;
     public void zann()
-    { 
-        zanntime=Time.time;
+    {
+        zanntime = Time.time;
         zannnnn = true;
         while (zanntime + zantime > Time.time)
         {
@@ -361,7 +361,7 @@ public class MoveComponent : MonoBehaviour
         // デフォルトの移動距離を設定
         float targetDistance = teleportDistance;
 
-        
+
 
         Debug.DrawRay(transform.position, teleportDirection * teleportDistance, Color.red, 1f);
 
@@ -378,7 +378,7 @@ public class MoveComponent : MonoBehaviour
 
         Vector3 targetPosition = startPosition + teleportDirection * teleportDistance;
 
-        
+
         float time = 0f;
         float duration = teleportDistance / teleportSpeed; // 時間 = 距離 ÷ 速度
 
@@ -393,7 +393,7 @@ public class MoveComponent : MonoBehaviour
         // 最終位置を補正
         transform.position = targetPosition;
 
-        
+
         Destroy(zan);
 
         // 走るアニメーションを終了
@@ -438,22 +438,22 @@ public class MoveComponent : MonoBehaviour
         }
 
 
-            if (moveF)
-            {
-                animator.SetBool("run", true);
-                animator.SetBool("Buckrun", false);
-            }
-            else if (moveB)
-            {
-                animator.SetBool("run", false);
-                animator.SetBool("Buckrun", true);
-            }
-            else
-            {
-                animator.SetBool("run", false);
-                animator.SetBool("Buckrun", false);
-            }
-        
+        if (moveF)
+        {
+            animator.SetBool("run", true);
+            animator.SetBool("Buckrun", false);
+        }
+        else if (moveB)
+        {
+            animator.SetBool("run", false);
+            animator.SetBool("Buckrun", true);
+        }
+        else
+        {
+            animator.SetBool("run", false);
+            animator.SetBool("Buckrun", false);
+        }
+
 
     }
 

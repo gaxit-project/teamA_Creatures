@@ -218,7 +218,7 @@ public class AttackComponent : MonoBehaviour
                 CounterRange = true;
                 animator.SetTrigger("Counter");
                 attackNow = true;
-                StartCoroutine(AttackTimeout(32f/60f));
+                StartCoroutine(AttackTimeout(32f / 60f));
                 lastCounterTime = Time.time;
                 break;
         }
@@ -289,8 +289,8 @@ public class AttackComponent : MonoBehaviour
 
     private IEnumerator AttackTimeout(float duration)
     {
-        PlayerHP.Instance.muteki = false;
-        yield return new WaitForSeconds(duration*0.2f);
+        //PlayerHP.Instance.muteki = false;
+        yield return new WaitForSeconds(duration * 0.2f);
         animator.ResetTrigger("Attack");
         animator.ResetTrigger("Smash");
         animator.ResetTrigger("Counter");

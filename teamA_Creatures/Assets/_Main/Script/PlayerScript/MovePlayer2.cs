@@ -32,7 +32,7 @@ public class MovePlayer2 : MonoBehaviour
     }
 
     void OnEnable()
-    { 
+    {
         input.Enable();
     }
 
@@ -41,7 +41,8 @@ public class MovePlayer2 : MonoBehaviour
         if (MoveComponent.Instance.left)
         {
             animator.SetBool("Mirror", false);
-        }else
+        }
+        else
         {
             animator.SetBool("Mirror", true);
         }
@@ -55,7 +56,7 @@ public class MovePlayer2 : MonoBehaviour
                 animator.SetBool("run", false);
                 animator.SetBool("Buckrun", false);
             }
-            else if (!PlayerHP.Instance.HitNow)
+            else if (!PlayerHP.Instance.HitNow && !PlayerHP.Instance.GardBreak)
             {
                 if (!AttackComponent.Instance.attackNow)
                 {
