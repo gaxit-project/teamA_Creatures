@@ -148,10 +148,12 @@ public class NewEnemyMove : MonoBehaviour
     {
         _playerTr = GameObject.FindGameObjectWithTag("Player").transform;
         enemyHP = enemyInitialHP;
+        isCoroutineStop = false;
         isFollow = false;
         isRemoveStan = false;
         isEnemyMuteki = false;
         isPushFlag = false;
+        isPushWall = false;
         _isTackle = false;
         _isAtackEnd = false;
         _shortDistance = false;
@@ -162,6 +164,7 @@ public class NewEnemyMove : MonoBehaviour
         isBMJudge = false;
         isBeastModeMaterial = false;
         isBeastMode = true;
+        isGameOverFlag = false;
         transform.position = new Vector3(4, 0, 0);
         transform.rotation = Quaternion.Euler(0, -90, 0);
         playerCombo = 0;
@@ -1291,6 +1294,11 @@ public class NewEnemyMove : MonoBehaviour
         isRemoveStan = false;
         float stanTime = 0f;
         EnemyCancel();
+        if (isBMJudge)
+        {
+            EnemyMaterialChange.Instance.ChangeMaterial(1);
+            EnemyMaterialChange.Instance.isHitStopStop = false;
+        }
         while (true)
         {
             stanTime += Time.deltaTime;
@@ -1697,6 +1705,7 @@ public class NewEnemyMove : MonoBehaviour
     {
         // 技の処理をすべて消す
         EnemyAtackEnd();
+        
         EnemyMaterialChange.Instance.ReturnMaterial();
         EnemyMaterialChange.Instance.isHitStopStop = false;
         _isAtackEnd = false;
