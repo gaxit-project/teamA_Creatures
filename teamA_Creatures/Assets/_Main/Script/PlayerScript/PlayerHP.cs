@@ -325,6 +325,7 @@ public class PlayerHP : MonoBehaviour
     {
         animator.ResetTrigger("EnemyTackleHit");
         animator.SetTrigger("GetUp");
+        animator.speed = 2f;
         isPlayerDown = false;
     }
     public void Stand()
