@@ -1077,7 +1077,23 @@ public class NewEnemyMove : MonoBehaviour
     public void EnemyPushFanction()
     {
         _currentState = EnemyState.Push;
+        EnemyPushCancel();
         isCoroutineStop = true;
+    }
+
+    public void EnemyPushAnim()
+    {
+        _enemyAnim.Play("HitStan", -1, 0f);
+        //_enemyAnim.SetBool("RightPunch", true);
+        _enemyAnim.speed = 0.5f;
+    }
+
+    public void EnemyPushAnim2()
+    {
+        //_enemyAnim.Play("RIghtPunch", -1, 0f);
+        _enemyAnim.SetBool("RightPunch2", true);
+        _enemyAnim.CrossFade("RightPunch2", 0f);
+        _enemyAnim.speed = 0.1f;
     }
 
     IEnumerator EnemyPush()
@@ -1087,7 +1103,6 @@ public class NewEnemyMove : MonoBehaviour
         float backTime = 0f;
         _isCoroutineRunning = true;
         isPushFlag = true;
-        EnemyCancel();
         // ラッシュ待機
         while (true)
         {
@@ -1097,6 +1112,8 @@ public class NewEnemyMove : MonoBehaviour
             }
             yield return null;
         }
+        _enemyAnim.SetBool("RightPunch2", false);
+        _enemyAnim.speed = 1f;
 
         // ここからが吹っ飛び
         isPushWall = false;
@@ -1646,7 +1663,17 @@ public class NewEnemyMove : MonoBehaviour
     #endregion
 
     #region 終了処理とデバッグキー
-
+    void EnemyPushCancel()
+    {
+        // 技の処理をすべて消す
+        EnemyAtackEnd();
+        _enemyAnim.SetBool("HitStan", false);
+        EnemyMaterialChange.Instance.isHitStopStop = false;
+        _isAtackEnd = false;
+        EnemyRayCast.isTackleWall = false;
+        _isTackle = false;
+        EnemyHit2.DestroyCube();
+    }
     void EnemyCancel()
     {
         // 技の処理をすべて消す
