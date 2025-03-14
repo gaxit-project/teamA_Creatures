@@ -2571,7 +2571,18 @@ MonoBehaviour:
   prevBackInput: 0
   FrontStepReady: 0
   prevFrontInput: 0
+  teleportDistance: 5
+  teleportSpeed: 20
+  stageBounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0, y: 0, z: 0}
+  Zanzou: {fileID: 0}
+  isZanCoroutine: 0
+  isguardBreak: 0
   Speed: 0
+  zanntime: 0
+  zantime: 0.2
+  zannnnn: 0
 --- !u!114 &1342990850141463123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2617,6 +2628,7 @@ MonoBehaviour:
   isCounterCooldown: 0
   ComboStart: 0
   maxCombo: 0
+  isAttackHit: 0
   start: 0
   Cube: {fileID: 0}
   CountorCube: {fileID: 0}
@@ -2648,6 +2660,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShieldObject: {fileID: 6355284357238028309, guid: 3f5540ad59a33704085a04178e632bbd, type: 3}
   shieldRotation: {x: 0, y: 90, z: 0}
+  onGuard: 0
 --- !u!82 &-6503064737649331773
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2660,7 +2673,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.10000002
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -2759,7 +2772,6 @@ MonoBehaviour:
   JM: {fileID: 0}
   NewEnemyMove: {fileID: 0}
   EE: {fileID: 0}
-  PE: {fileID: 0}
   playerHPGauge: {fileID: 0}
   playerSmoothHPGauge: {fileID: 0}
   slider: {fileID: 0}
