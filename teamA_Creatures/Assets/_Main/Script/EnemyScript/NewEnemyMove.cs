@@ -1549,6 +1549,7 @@ public class NewEnemyMove : MonoBehaviour
     /// </summary>
     public void ReduceEnemyHP(int _lostHP)
     {
+        EnemyEffect.Instance.EnemyDamageEffect();
         enemyHP -= _lostHP;
         EnemyHP.Instance.TakeDamage(_lostHP);
         PlayerEffect2.Instance.PunchEffect();

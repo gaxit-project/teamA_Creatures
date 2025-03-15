@@ -9,11 +9,23 @@ public class EnemyEffect : MonoBehaviour
     public ParticleSystem TackleEff; // シーン内のパーティクル
     public ParticleSystem SmashEff; // シーン内のパーティクル
     public ParticleSystem BurstEff; // シーン内のパーティクル
+    public ParticleSystem DamageEff;
 
     public float spawnDistance = 1.0f; // キャラクターの前方距離
     public float heightOffset = 3.0f; // 高さのオフセット
 
-
+    public static EnemyEffect Instance;
+    public void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(Instance);
+        }
+    }
 
     /// <summary>
     /// パンチエフェクト
@@ -114,6 +126,16 @@ public class EnemyEffect : MonoBehaviour
         
             
             BurstEff.Play();
+        }
+    }
+
+    public void EnemyDamageEffect()
+    {
+        if (DamageEff != null)
+        {
+
+            // パーティクルを再生
+            DamageEff.Play();
         }
     }
 }
