@@ -15,4 +15,9 @@ public class UltFunction : MonoBehaviour
     {
         NewEnemyMove.Instance.EnemyPushAnim2();
     }
+
+    public void WalkSound()
+    {
+        AudioManager.Instance.PlaySE("playerMove", 26);
+    }
 }

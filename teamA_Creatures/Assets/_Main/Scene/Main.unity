@@ -20897,7 +20897,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
       propertyPath: SE_List.Array.size
-      value: 26
+      value: 27
       objectReference: {fileID: 0}
     - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
       propertyPath: BGM_List.Array.size
@@ -20991,6 +20991,10 @@ PrefabInstance:
       propertyPath: SE_List.Array.data[25]
       value: 
       objectReference: {fileID: 8300000, guid: 1cc03519c18bc684fa11050f6480ec06, type: 3}
+    - target: {fileID: 3620492474565013685, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
+      propertyPath: SE_List.Array.data[26]
+      value: 
+      objectReference: {fileID: 8300000, guid: 04077afc03601af4bb8282e688153354, type: 3}
     - target: {fileID: 5434118842909102825, guid: 27d6ddea7d966cc419affcbe2cf93796, type: 3}
       propertyPath: m_Volume
       value: 0
